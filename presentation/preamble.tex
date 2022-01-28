@@ -1,0 +1,123 @@
+
+\usepackage[utf8]{inputenc}
+% or whatever
+% \usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+\usepackage{graphicx}      % include this line if your document contains figures
+\usepackage{grffile}       % filenames
+\usepackage{booktabs}       % filenames
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{xparse}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage{tikzscale}
+\usepackage{bm}
+\usepackage{ifthen}
+\usepackage[ruled,noend]{algorithm2e}
+\usepackage[justification=centering]{caption}
+\usepackage{subcaption}
+\usepackage[english]{babel}
+\usepackage{pgfpages}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,positioning}
+\usetikzlibrary{overlay-beamer-styles}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepackage{pgfplots}
+\usepgfplotslibrary{patchplots}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+
+
+
+\SetKwRepeat{Do}{do}{while}
+\usepackage[author={Accacio}]{pdfcomment}
+
+\usepackage[acronym]{glossaries}%
+
+\newcommand{\acrSing}[3]{\newacronym{#1}{#2}{#3}
+  \expandafter\newcommand\csname #1\endcsname{\gls{#1}}}
+
+\newcommand{\acrPl}[5]{
+  \newacronym[plural=#4,firstplural=#5 (#4)]{#1}{#2}{#3}
+  \expandafter\newcommand\csname #1\endcsname{\gls{#1}}
+  \expandafter\newcommand\csname #4\endcsname{\glspl{#1}}
+}
+\newcommand{\acr}[5][4=,5=]{
+  \ifthenelse{\equal{#5}{}}
+  {
+    \acrSing{#1}{#2}{#3}
+  }
+  {
+    \acrPl{#1}{#2}{#3}{#4}{#5}
+  }
+}
+
+% \newcommand{\symbl}[3]{\newglossaryentry{#1}{name ={#2},	description ={#3}}
+%   \expandafter\newcommand\csname #1\endcsname{\gls{#1}}
+% }
+
+
+
+\usepackage{color}
+
+\usepackage{stfloats}
+
+\newif\ifdebug%
+\newcommand{\draft}{\debugtrue}
+\newcommand{\final}{\debugfalse}
+\newcommand{\question}[1]{\ifdebug%
+  {\pdfcomment[color=red,opacity=0.4,subject=Should I?]{#1}} \fi}
+\newcommand{\todo}[2][FORGOT TO DO SOMETHING]{\ifdebug%
+  {\color{red}#2}\else \PackageError{}{#1}{#2}#2\fi}%
+\newcommand\doing[2][FORGOT TO DO SOMETHING]{\ifdebug%
+  {\color{blue}#2}\else \PackageError{}{#1}{#2}#2\fi}%
+\newcommand\warning[1]{\ifdebug%
+  {\color{red}#1}\fi}
+
+
+%===============================================================================
+
+\graphicspath{{../img/}}
+
+\makeatletter
+\hypersetup{
+  bookmarks=true,         % show bookmarks bar?
+  unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+  pdftoolbar=true,        % show Acrobat’s toolbar?
+  pdfmenubar=true,        % show Acrobat’s menu?
+  pdffitwindow=false,     % window fit to page when opened
+  pdfstartview={FitH},    % fits the width of the page to the window
+  pdftitle={\@title},    % title
+  pdfauthor={\@author},     % author
+  pdfsubject={},   % subject of the document
+  pdfcreator={Rafael Accácio},   % creator of the document
+  % pdfproducer={Producer}, % producer of the document
+  pdfkeywords={keyword1, key2, key3}, % list of keywords
+  pdfnewwindow=true,                  % links in new PDF window
+  % colorlinks=true,            % false: boxed links; true: colored links
+  % colorlinks=false,            % false: boxed links; true: colored links
+  % linkcolor=black, % color of internal links (change box color with linkbordercolor)
+  citecolor=black,          % color of links to bibliography
+  filecolor=black,          % color of file links
+  % urlcolor=black            % color of external links
+}
+\makeatother
+\newtheorem{assumption}{Assumption}%[numberby]
+
+\newif\ifwebcast
+\webcastfalse
+
+\newcommand{\webcast}{\webcasttrue}% Add circles to put webcam
+
+% \newcommand<>{\script}[1]{\note#2{{#1}}}
+\newcommand<>{\script}[1]{\note{\onslide#2{#1~\\}}}

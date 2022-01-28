@@ -1,0 +1,138 @@
+\usepackage{graphicx}      % include this line if your document contains figures
+\usepackage{grffile}       % filenames
+\usepackage{booktabs}       % filenames
+\usepackage{xparse}
+% \usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary {graphs}
+
+\usepackage{tikzscale}
+\usepackage{bm}
+\usepackage{ifthen}
+\usepackage[ruled,noend,algo2e]{algorithm2e}
+\SetKwRepeat{Do}{do}{while}
+
+\usepackage[justification=centering]{caption}
+\usepackage{subcaption}
+% \usepackage{pdfcomment}
+
+
+% \newcommand{\symbl}[3]{\newglossaryentry{#1}{name ={#2},	description ={#3}}
+%   \expandafter\newcommand\csname #1\endcsname{\gls{#1}}
+% }
+
+
+
+
+\usepackage{color}
+\newcommand{\no}[1]{}
+
+\def\maybeonecolumn{}
+
+\makeatletter
+\def\comments{
+  \usepackage{geometry}
+  \newgeometry{
+    textwidth=8cm,
+    hoffset=-1.5in,
+    bottom=0.41in,
+    vscale=.5,
+    % height=.2\textheight,
+    top=0.41in,
+    footskip=1cm,
+  }
+\@TwoColumnfalse
+\@twocolumnfalse
+}
+\makeatother
+
+% \usepackage{stfloats}
+
+% \usepackage[showframe]{geometry}
+% \usepackage{geometry}
+% \geometry{
+%   top=19.1mm,
+%   bottom=36.7mm,
+%   left=19.1mm,
+%   right=13.1mm,
+% }
+
+
+
+\newif\ifdebug%
+\newcommand{\draft}{\debugtrue}
+\newcommand{\final}{\debugfalse}
+\newcommand{\todo}[2][FORGOT TO DO SOMETHING]{\ifdebug%
+  {
+    \color{red}
+    #2}\else \PackageError{}{#1}{#2}#2\fi}%
+\newcommand\doing[2][FORGOT TO DO SOMETHING]{\ifdebug%
+  {
+    \color{blue}
+    #2}\else \PackageError{}{#1}{#2}#2\fi}%
+\newcommand\warning[1]{\ifdebug%
+  {
+    \color{red}
+    #1}\fi}
+
+\makeatletter
+\@ifpackageloaded{pdfcomment}
+{
+  \newcommand\pdfnote[1]{
+    \ifdebug%
+    {\pdfcomment[color=orange,opacity=0.4,subject=note]{#1}
+    }\fi
+  }
+  \newcommand{\question}[1]{
+    \ifdebug%
+    {\pdfcomment[color=red,opacity=0.4,subject=Should I?]{#1}
+    }\fi}
+}
+{
+  \newcommand\pdfnote[1]{
+    \ifdebug%
+    {\tikz[opacity=.7]{\node[text width=2cm,align={center},color=black,fill=red,draw] {#1} }
+    }\fi
+  }
+  \newcommand{\question}[1]{
+    \ifdebug%
+    {\tikz[opacity=.7]{\node[text width=2cm,align={center},rotate=2,color=black,fill=orange,draw] {#1} }
+    }\fi
+  }
+}
+\makeatother
+% \newcommand\pdfnote[1]{}
+
+
+%===============================================================================
+\newtheorem{theorem}{theorem}[section]
+\newtheorem{problem}[thm]{Problem}%[numberby]
+\newtheorem{example}{Example}%[numberby]
+\newtheorem{remark}{Remark}%[numberby]
+\newtheorem{assumption}{Assumption}%[numberby]
+
+\graphicspath{{../img/}}
+
+% \makeatletter
+% \hypersetup{
+%   bookmarks=true,         % show bookmarks bar?
+%   unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+%   pdftoolbar=true,        % show Acrobat’s toolbar?
+%   pdfmenubar=true,        % show Acrobat’s menu?
+%   pdffitwindow=false,     % window fit to page when opened
+%   pdfstartview={FitH},    % fits the width of the page to the window
+%   pdftitle={\@title},    % title
+%   pdfauthor={\@author},     % author
+%   pdfsubject={},   % subject of the document
+%   pdfcreator={Rafael Accácio},   % creator of the document
+%   % pdfproducer={Producer}, % producer of the document
+%   pdfkeywords={keyword1, key2, key3}, % list of keywords
+%   pdfnewwindow=true,                  % links in new PDF window
+%   colorlinks=true,            % false: boxed links; true: colored links
+%   % colorlinks=false,            % false: boxed links; true: colored links
+%   linkcolor=black, % color of internal links (change box color with linkbordercolor)
+%   citecolor=black,          % color of links to bibliography
+%   filecolor=black,          % color of file links
+%   urlcolor=black            % color of external links
+% }
+% \makeatother
