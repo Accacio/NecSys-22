@@ -545,7 +545,7 @@
 % Michael Shell (MDS) made extensive changes and additions:
 %
 %
-% BUGS FIXED (and many others too numerous to mention!):
+% bugs fixed (and many others too numerous to mention!):
 % 1) Fixed improper alignment with itemized, enumerated and
 %    description lists. Added new controls to these three
 %    environments so that it is easy to get the alignment IEEE
