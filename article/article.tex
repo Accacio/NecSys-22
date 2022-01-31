@@ -185,13 +185,38 @@ the problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are ap
   ,0\right\}
 \end{equation}
 }
-where ${I_{c}^{M}=\kron{\1_{M,1}}{I_{c}}}$.
-\todo{Observe that ${I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{v}=\frac{\sum_{i=0}^{M}\vec{v}_{i}}{M}}$}
-
-\todo{
-  The coordinator must also assure that ${\thetaik\succeq\0}$ so the local problems are feasible.
+\no{\todo[delete probably]{
   But observe in~\eqref{eq:projectedSubgradient} that if ${\vec{\theta}_{i}\p=\0}$, ${(\vec{\lambda}_{i}^{\star} (\vec{\theta}_{i}\p)-I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{\lambda}^{\star} (\vec{\theta}\p))}$ needs to be negative so $\vec{\theta}_{i}\pplusone$ becomes negative, which is impossible \question{is it though?} since $\lambdaik\succeq\0$, from the KKT optimality conditions, seen in~\cite[Chapter 5]{BoydVandenberghe2004}.
-}
+}}
+
+% TODO(accacio): correct image
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.7cm]
+    \tikzset{
+      agent/.style={draw,circle,minimum width=1cm,},
+      coord/.style={draw,circle,minimum width=1.7cm,very thick}
+    }
+    % \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
+    % \node at (1.2,-1.3) {O};
+    % \node (pi) at (-2.5,.5) {$\pi$};
+    % \node (phi) at (2.5,-1.) {$\phi_{c}$};
+
+    \node[agent] (a1) {A$_{1}$};
+    \node (a2) [right of=a1]  {$\dots$};
+    \node[agent] (am) [right of=a2] {A$_{M}$};
+    \node[coord] (c) [above of=a2] {Coord};
+
+
+    \draw[-latex] (a1) to [out=60,in=210] node [sloped,above] {$\vec{\lambda_{1}}$} (c) ;
+    \draw[-latex] (c) to [out=-120,in=30] node [sloped,below] {$\vec{\theta}_{1}$} (a1);
+
+    \draw[-latex] (am) to [out=150,in=-60]node [sloped,below] {$\vec{\lambda}_{M}$} (c);
+    \draw[-latex] (c) to [out=-30,in=120] node [sloped,above] {$\vec{\theta}_{M}$} (am);
+
+  \end{tikzpicture}
+  \caption{Graph representation of Coordinator exchangin with $M$ agents in a \dmpc{} framework.}\label{fig:dmpc_graph}
+\end{figure}
 
 \begin{algorithm2e}[h]
   \DontPrintSemicolon%
