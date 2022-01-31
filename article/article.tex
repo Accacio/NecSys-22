@@ -273,14 +273,18 @@ Similarly, we can get an explicit  solution for its dual variables $\vec{\lambda
     \label{eq:lambdafuntheta}
     \lambdai=
     \begin{cases}
-      -P_{i}^{1}\vec{\theta}_{i}-\vec{s}_{i}^{1}[k]&\text{if}\ G_{1}\thetai \preceq z_{1} \\
+      -P_{i}^{1}\vec{\theta}_{i}-\vec{s}_{i}^{1}[k]&\text{if}\ G_{1}[k]\thetai \preceq z_{1}[k] \\
       \qquad\quad \vdots&\qquad\quad \vdots\\
-      -P_{i}^{N}\vec{\theta}_{i}-\vec{s}_{i}^{N}[k]&\text{if}\ G_{N}\thetai \preceq z_{N} \\
+      -P_{i}^{N}\vec{\theta}_{i}-\vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetai \preceq z_{N}[k] \\
     \end{cases}
   \end{aligned}
 \end{equation}
-The halfspaces defined by the set of pairs $(G_{j},z_{j})$ represent a combination of active constraints.
-As each constraint can be active or inactive, for a group of $n$ constraints, \todo{potentially} we can have $N=2^{n}$ different combinations of active/inactive sets, consequently $N$ regions (or zones).
+The halfspaces defined by the set of pairs $(G_{j}[k],z_{j}[k])$ represent a combination of active constraints for a given time $k$.
+
+\begin{challenge}
+It is important to note that since the actual state is unknown we cannot anticipate how the space is partitioned, nor the values of $\vec{s}_{i}[k]$.
+\end{challenge}
+ As each constraint can be active or inactive, for a group of $n$ constraints, \todo{potentially} we can have $N=2^{n}$ different combinations of active/inactive sets, consequently $N$ regions (or zones).
 \todo{
   Here we say potentially because depending on the constraints, some of these combinations can be infeasible.\question{Remove??}
 }
