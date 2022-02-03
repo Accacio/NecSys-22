@@ -19,14 +19,16 @@
 \newcommand{\pplusone}{^{(p+1)}}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \newcommand{\random}[1]{\underline{#1}}
-\newcommand{\randomvec}[1]{\pmb{\underline{#1}}}
+\newcommand{\randomvec}[1]{{\underline{\vec{#1}}}}
 \newcommand{\probability}[1]{\mathbb{P}(#1)}
-\newcommand{\expectation}[2][]{\mathbb{E}_{#1}[#2]}
+\newcommand{\expectation}[2][]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\indicator}[1]{\mathbb{1}_{\{#1\}}}
 
 \newcommand{\setbuild}[2]{\{#1\mid#2\}}
 \newcommand{\seq}[2][n]{\lbrace #2_{0},\ldots,\,#2_{#1} \rbrace}
-\newcommand{\hadamard}[2]{#1\circ #2}
+\newcommand{\hadamard}[2]{#1\odot #2}
 \newcommand{\kron}[2]{#1\otimes#2}
+\newcommand{\vectorize}[1]{\mathrm{vec} (#1)}
 \newcommand{\symmetric}{\mathbb{S}}
 \newcommand{\semidefpos}{\mathbb{S}_{+}}
 \newcommand{\defpos}{\mathbb{S}_{++}}
