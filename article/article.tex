@@ -81,9 +81,13 @@ Large scale optimization problems
 $\Proj^{\set{T}}(\cdot)$ is the Euclidean projection onto set $\set{T}$.
 $\card{x}$ is the number of elements in $x$.
 $\kron{}{}$ represents the Kronecker product.
+$\vectorize{A}$ vectorizes matrix $A$.
+$\hadamard{}{}$ represents the Hadamard product.
 $n\mathbin{:}i\mathbin{:}j$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where $m=\mathrm{truncate}(\frac{j-n}{i})$, and ${n\mathbin{:}j}$ is equal to ${n\mathbin{:}1\mathbin{:}j}$.
+$[A,B]$ and $[A;B]$ are horizontal and vertical concatenation of matrices of adequate sizes.
 $0_{m\times n}$ and $1_{m\times n}$ are ${m\times n}$ matrices filled with $0$ and $1$.
 $\0$ and $\1$ are 0 and 1 filled vectors of adequate size.
+$\indicator{x}$ is the indicator function returning $1$ if $x$ is true and $0$ otherwise.
 $\preceq$ is the component-wise less or equal for vectors and matrix inequality for matrices in ${\symmetric=\setbuild{X:\R^{n\times n}}{X'=X}}$.
 ${\defpos=\setbuild{X:\symmetric}{X\succ 0}}$, ${\semidefpos=\setbuild{X:\symmetric}{X\succeq 0}}$.
 $I_{c}$ is the identity matrix of size $c$.
@@ -375,154 +379,163 @@ and from~\eqref{eq:lambdafuntheta}, we can derive a method to reconstruct $\vec{
 
 \section{Expectation-Maximization Algorithm}\label{sec:expect-maxim-algo}
 
-\todo{
-  The main objective of the \EM{} algorithm is to maximize the complete-data likelihood for models with latent variables.
-}
-\todo{
-  The \EM{} problem can be described as such:
-  \begin{problem}{Expectation Maximization Problem}\label{pb:EM}
+The main objective of the \EM{} algorithm is to find maximum likelihood estimators for models with latent variables.
 
-    Given a set of observed data $\random{X}$, and unknown latent variables $\random{Z}$ and parameters $\random{P}$ that generated these observed data, find estimates of $\random{Z}$ and $\random{P}$ that maximize the complete-data log likelihood
-    \begin{equation}\label{eq:completedataLogLikelihood}
-    \ln\probability{\random{X},\random{Z}|\random{P}} .
-  \end{equation}
-  Since nor $\random{Z}$ nor $\random{P}$ are given, we cannot calculate~\eqref{eq:completedataLogLikelihood}, instead we calculate the expectation of this value for a given estimate $\random{P}^{\mathrm{cur}}$:
+We will use our estimation problem to illustrate how the algorithm works, and
+we will concentrate on the estimation of the parameters for a single agent in a single step $k$, so we drop the subscript $i$ and the time dependency $[k]$ to simplify the notation.
+
+As in~\eqref{eq:lambdafuntheta},  any response variable $\tilde{\vec{\lambda}}$, is a function of an input $\vec{\theta}$, which belongs to a unknown zone ${\set{Z}=\{1\mathbin{:}Z\}}$, Challenge~\ref{ch:zone_unknown}.
+The relationship between the input and the response is given by a set of parameters we want to estimate ${\set{P}=\setbuild{(\tilde{P}^{z},\tilde{\vec{s}}^{z})}{z\in\set{Z}}}$.
+
+For an observation $o$, we have the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$.
+As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose to use a expansion of the model referred as \emph{mixture of switching regressions} in~\cite{QuandtRamsey1978} and \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010}, which we will call \emph{mixture of switching affine regressions}, since our regressors have a linear term (matrices $\tilde{P}^{z}$) and a constant term (vectors $\tilde{\vec{s}}^{z}$):
+% TODO(accacio): change subscript n
   \begin{equation}
-    \label{eq:expectedcompletedataloglikelihood}
-Q(\random{P},\random{P}^{\mathrm{cur}})=\sum_{\randomvec{z}}\probability{\random{Z}|\random{X},\random{P}^{\mathrm{cur}}}\ln\probability{\random{X},\random{Z}|\random{P}}
+    \label{eq:linear_cheating_random}
+    \random{\lambda}_{o}=
+        \begin{cases}
+      -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{with probability}\ \pi_{1} \\
+      \qquad\quad \vdots&\qquad\quad \vdots\\
+      -\tilde{P}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{Z}&\text{with probability}\ \pi_{Z} \\
+    \end{cases}
   \end{equation}
 
-  Then we can find a new estimate of $\random{P}$ that maximizes $Q(\random{P},\random{P}^{\mathrm{cur}})$:
-  \begin{equation} \label{eq:Mstep}
-    \random{P}^{\mathrm{new}}=\underset{\mathrm{P}}{\argmax}\ Q(\random{P},\random{P}^{\mathrm{cur}}).
-  \end{equation}
-
-  But as seen in~\eqref{eq:expectedcompletedataloglikelihood}, we need first to calculate the posterior distribution
-  \begin{equation}
-    \label{eq:responsibilities}
-    \zeta(\random{X},\random{P}^{\mathrm{cur}})=\probability{\random{Z}|\random{X},\random{P}^{\mathrm{cur}}},
+As we can see, this observation does not gives us the complete data, since we don't know which zone generated the response, but only the probability of the input being in that zone.
+We consider the complete data consisting of the input, the response, and a non-observable variable. Therefore, for each observation $o$ there exists a latent random variable ${\random{z}_{o}\in\set{Z}}$, with associated probabilities ${\Pi=\{\pi_{1},\dots,\pi_{Z}\}}$ such prior probability
+   \begin{equation}
+     \label{eq:prob_zo_equal_z}
+\probability{\random{z}_{o}=z}=\pi_{z}.
 \end{equation}
-which is also called responsibilities.
-With this information we can describe the \EM{} in algorithm~\ref{alg:em} adpated from~\mbox{\cite[Chapter 9]{Bishop2006}}:
-  \end{problem}
-}
+Since $\vec{\theta}$ is our input, we know \emph{almost surely} their values giving
+\begin{equation}
+  \label{eq:theta_almost_surely}
+  \probability{\randomvec{\theta}_{o}}=1.
+\end{equation}
+With this information we can use the graph in Fig.~\ref{fig:model} to represent the model.
+\begin{figure}[b]
+  \centering
+  \begin{tikzpicture}
+    \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
+    \node at (1.2,-1.3) {O};
+    \node (pi) at (-2.5,.5) {$\Pi$};
+    \node (phi) at (2.5,-1.) {$\set{P}$};
+
+    \graph [edge quotes={fill=white,inner sep=1pt},
+    clockwise=3,nodes={circle,draw,rotate=-60,minimum width=1cm}] {
+      a/"${\randomvec{\theta}_{o}}$"[rotate=60],b/"${\random{\vec{\lambda}}_{o}}$"[rotate=60],c/"${\random{z}}_{o}$"[rotate=60];
+      {a,c} ->[-latex] b;
+      (pi) ->[thick,{Circle[length=3.pt]}-latex] c;
+      (phi) ->[thick,{Circle[length=3.pt]}-latex] b;
+      };
+  \end{tikzpicture}
+  \caption{Graph representation of model proposed.}\label{fig:model}
+\end{figure}
+
+As said, the objective of the \EM{} algorithm is to maximize the likelihood, more precisely the complete data log-likelihood $\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}$.
+Using the dependency graph in Fig.~\ref{fig:model} yields
+    \begin{equation}\label{eq:completedataLogLikelihood}
+      \ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}=\ln \prod_{o=1}^{O}\probability{\randomvec{\theta}_{o},\randomvec{\lambda}_{o},\random{z}_{o};\set{P}} .
+    \end{equation}
+where the probability $\probability{\randomvec{\theta}_{o},\randomvec{\lambda}_{o},\random{z}_{o};\set{P}}$ is
+\begin{equation}\label{eq:condional}
+ \prod_{z=1}^{Z}{[\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z;\set{P}^{z}}\probability{\random{z}_{o}=z}\probability{\randomvec{\theta}_{o}}]}^{\indicator{\random{z}_{o}=z}},
+\end{equation}
+and $\set{P}^{z}$ is the $z$-th tuple in $\set{P}$.
+
+For the likelihood $\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z,\set{P}^{z}}$, we use multivariate normal probability density functions
+\begin{equation}
+  \label{eq:multivariate_gaussian}
+\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}}),
+\end{equation}
+where the mean is
+\[f(\randomvec{\theta}_{o};(P,\vec{s}))=-{P}\randomvec{\theta}_{o}-{\vec{s}}\]
+and the covariance is ${\Sigma^{z}}$, which tends to $0$.
+
+Using~\eqref{eq:prob_zo_equal_z},~\eqref{eq:theta_almost_surely}, and~\eqref{eq:multivariate_gaussian} in~\eqref{eq:completedataLogLikelihood} yields
+\begin{equation}\label{eq:completedataLogLikelihood_complete}
+\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}=  \sum_{o=1}^{O}\sum_{z=1}^{Z}{\indicator{\random{z}_{o}=z}}
+  \alpha_{zo},
+\end{equation}
+where ${\alpha_{zo}=\ln{\pi_{z}}+\ln{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}$.
+
+Now we can formalize the \EM{} problem.
+\begin{problem}{Expectation Maximization Problem}\label{pb:EM}
+
+  Given a set of observed data $(\random{\Theta},\random{\Lambda})$, estimate the unknown latent variables $\random{Z}$ and parameter set $\set{P}$ which maximize the complete-data log likelihood in~\eqref{eq:completedataLogLikelihood_complete}.
+\end{problem}
+
+
+But as mentioned, we do not observe the complete data $(\random{\Theta},\random{\Lambda},\random{Z})$, instead we observe only $(\random{\Theta},\random{\Lambda})$ and all information we can get from $\random{Z}$ is the posterior probability  ${\zeta(z_{zo};\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}}$, also called \emph{responsibility}, which can be calculated as
+\begin{align}
+  \label{eq:responsibilities}
+\zeta(z_{zo};\set{P})&=\frac{\probability{\random{z}_{o}=z}\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o};\set{P}^{z}}}{\sum\limits_{j=1}^{Z}\probability{\random{z}_{o}=j}\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o};\set{P}^{j}}}\nonumber\\
+  &=\frac{\pi_{z}{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}{\sum\limits_{j=1}^{Z}\pi_{j}\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{j}),{\Sigma^{j}})}.
+\end{align}
+
+Observe that by taking
+\begin{equation}\label{eq:argmaxz}
+\underset{z_{o}}{\argmax}\ {\zeta(z_{zo};\set{P})},
+\end{equation}
+we can get the most probable $z$-zone which generated the observation $\randomvec{\lambda}_{o}$.
+
+
+So, rather than using the complete data log-likelihood~\eqref{eq:completedataLogLikelihood_complete}, which we do not have, we use its expectation with respect to the prior calculated using a given set of parameter estimates $\set{P}_{\mathrm{cur}}$,  ${Q\left(\set{P},\set{P}_{\mathrm{cur}}\right)=\expectation[{\zeta(z_{zo};\set{P}_{\mathrm{cur}}}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}}$:
+\begin{equation}
+  \label{eq:completedataLogLikelihood_expectation}
+ Q\left(\set{P},\set{P}_{\mathrm{cur}}\right) =
+  \sum_{o=1}^{O}\sum_{z=1}^{Z}  \zeta(z_{zo};\set{P}_{\mathrm{cur}})\alpha_{zo}
+      ,
+\end{equation}
+
+
+Then we can find a new estimate of $\set{P}$ that maximizes $Q(\set{P},\set{P}_{\mathrm{cur}})$:
+\begin{equation} \label{eq:Mstep}
+  \set{P}_{\mathrm{new}}=\underset{\set{P}}{\argmax}\ Q(\set{P},\set{P}^{\mathrm{cur}}).
+\end{equation}
+
+With this information we can describe the \EM{} algorithm in two parts, first calculate the responsibilities $\zeta(z_{zo};\set{P}_{\mathrm{cur}})$, and then update the parameters.
+Algorithm~\ref{alg:em} adpated from~\mbox{\cite[Chapter 9]{Bishop2006}} describes the steps.
+
 \begin{algorithm2e}[h]
   \DontPrintSemicolon%
-  Initialize parameters $\random{P}^{\mathrm{new}}$\;
-  \Repeat{$\random{P}^{\mathrm{cur}}$ converge}{
-    $\random{P}^{\mathrm{cur}}=\random{P}^{\mathrm{new}}$\;
+  Initialize parameters $\set{P}_{\mathrm{new}}$\;
+  \Repeat{$\set{P}_{\mathrm{cur}}$ converge}{
+    $\set{P}_{\mathrm{cur}}=\set{P}_{\mathrm{new}}$\;
   \textbf{E step} Evaluate responsibilities~\eqref{eq:responsibilities}\;
   \textbf{M step} Reestimate parameters~\eqref{eq:Mstep}\;
 }
  \caption{Expectation Maximization}\label{alg:em}
 \end{algorithm2e}
-\todo{
-  We can see the similarities to K-planes algorithm (see~\cite{BradleyMangasarian2000}), but \EM{} is more compromising.
-  Instead of affecting the observed data to a cluster with 100\% of certainty, \EM{} gives a responsibility (posterior probability of point belonging to cluster) for each cluster.
-  Then, when we solve the \textbf{M Step} we take into account all the data, but weighted by these responsibilities.
-}
 
-\section{Using the algorithm to estimate $P_{i}^{1}[k]$}\label{sec:using-em-algorithm}
-\todo{
-  Here to simplify the notation for this section we concentrate on a single agent, and in a single step $k$, so we drop the subscript $i$ and the time dependency $[k]$.
+We can see some similarities to the K-planes algorithm (see~\cite{BradleyMangasarian2000}), but \EM{} is more compromising.
+Instead of affecting the observed data to a cluster with 100\% of certainty (\emph{hard assignment}), \EM{} uses the responsibilities (\emph{soft assignment}) for each cluster.
+Then, when we solve the \textbf{M Step}, rather than using only the data assigned to update the parameters of a certain cluster, we take into account all data, whose contribution to the update is weighted by their associated responsibilities.
 
-  % First we need to define our model.
-}
-% TODO(accacio): change subscript n
-\todo{
-  For any component of $\tilde{\vec{\lambda}}$, given an input $\randomvec{\theta}_{o}$,  we can define a latent variable $\random{z}_{o}$ which determine to which zone ${z=\{1:Z\}}$ the $\randomvec{\theta}_{o}$ belongs and which parameters $P_{i}^{z}$ and $\vec{s}^{z}$ were used
-to generate an observation $o$ of the $c^{\mathrm{th}}$ component of $\tilde{\lambda}$, $\random{\lambda}_{c,o}$.
-
-}
-\todo{
-  We propose to transform~\eqref{eq:linear_cheating} into a random \pwa{} for each component $c$ of $\lambda$:
-}
-  \begin{equation}
-    \label{eq:linear_cheating_random}
-    \random{\lambda}_{c,o}=
-        \begin{cases}
-      -\tilde{P}_{c}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}_{c}}^{1}&\text{with probability}\ \pi_{1} \\
-      \qquad\quad \vdots&\qquad\quad \vdots\\
-      -\tilde{P}_{c}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}_{c}}^{Z}&\text{with probability}\ \pi_{Z} \\
-    \end{cases}
-  \end{equation}
-  where $\tilde{P}_{c}^{j}$ and $\tilde{\vec{s}}_{c}^{j}$ are the $c^{\mathrm{th}}$ row of  $\tilde{P}^{j}$ and $\tilde{\vec{s}}^{j}$.
-
-\todo{
-  As a consequence of this formulation, we have  \[\probability{\randomvec{z}_{o}=z}=\pi_{z},\]
-  and since $\vec{\theta}$ is our input, we know \emph{almost surely} their values: \[\probability{\randomvec{\theta}_{o}}=1.\]
-}
-\todo{
-  With this data, we can use the following graph in Fig.~\ref{fig:model} to represent the model for the $O$ observations of generated $\random{\lambda}_{c}$, where $\phi_{c}=\{P_{c}^{z},\vec{s}_{c}^{z}\}$ for ${z=\{1:Z\}}$ are the parameters we want to estimate for each zone $z$ and component $c$.
-
-}
-
-\usetikzlibrary{arrows.meta}
-\begin{figure}[h]
-  \centering
-  \begin{tikzpicture}
-    \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
-    \node at (1.2,-1.3) {O};
-    \node (pi) at (-2.5,.5) {$\pi$};
-    \node (phi) at (2.5,-1.) {$\phi_{c}$};
-
-    \graph [edge quotes={fill=white,inner sep=1pt},
-    clockwise=3,nodes={circle,draw,rotate=-60,minimum width=1cm}] {
-      a/"${\randomvec{\theta}_{o}}$"[rotate=60],b/"${\random{\lambda}_{c,o}}$"[rotate=60],c/"${\random{z}}_{o}$"[rotate=60];
-      {a,c} ->[-latex] b;
-      (pi) ->[thick,{Circle[length=3.pt]}-latex] c;
-      (phi) ->[thick,{Circle[length=3.pt]}-latex] b;
-      };
-
-
-  \end{tikzpicture}
-  \caption{Graph representation of generation of $\random{\lambda}_{c,o}$.}\label{fig:model}
-\end{figure}
-\todo{
-Similar as in~\cite{FariaSoromenho2010}, we can model ${\probability{\random{\lambda}_{c,o}\mid\randomvec{\theta}_{o},\random{z}_{o}=z,\phi_{c}}}$ as an univariate Gaussian distribution with mean \[f_{c}^{z}(\randomvec{\theta})=-\tilde{P_{c}^{z}}\randomvec{\theta}_{o}-\tilde{\vec{s}_{c}}^{z}\] and variance ${\sigma^{z}}^2\to 0$:
-}
-\begin{equation}\label{eq:1}
-\probability{\random{\lambda}_{c,o}\mid\randomvec{\theta}_{o},\random{z}_{o}=z,\phi_{c}}=\mathcal{N}(\random{y};f_{c}^{z}(\randomvec{\theta}_{o}),{\sigma^{z}}^{2}).
-\end{equation}
-
-The responsibilities \({{\zeta(z)}_{c,o}=\probability{\random{z}_{o}=z\mid\random{\lambda}_{c,o},\randomvec{\theta}_{o},\phi_{c}}}\) can be calculated as
-\[\zeta(z)_{c,o}=\frac{\pi_{z}\probability{\random{\lambda}_{c,o}\mid\randomvec{\theta}_{o},\random{z}_{o}=z,\phi_{c}}}{\sum\limits_{j=1}^{Z}\pi_{j}\probability{\random{\lambda}_{c,o}\mid\randomvec{\theta}_{o},\random{z}_{o}=j,\phi_{c}} }\]
-Observe that by taking
-\begin{equation}\label{eq:argmaxz}
-\underset{z}{\argmax} {\zeta(z)}_{c,o},
-\end{equation}
-we can get the most probable $z$-zone which generated the observation $\random{\lambda}_{c,o}$.
-
-Then, as in~\cite[Chapter 9]{Bishop2006}, the expected value of the complete-data log-likelihood can be computed by
-\begin{equation}
- Q(\phi_{c},\phi_{c}^{\mathrm{cur}})=\expectation[\probability{\random{z}\mid \random{\lambda}_{c},\randomvec{\theta},\phi_{c}^{\mathrm{cur}}}]{\ln\probability{\random{\lambda}_{c},\randomvec{\theta},\random{z},\phi_{c}}},
-\end{equation}
-which can be developed to
-\begin{equation}\label{eq:completedataLogLikelihoodestimation}
-  % Q(\phi_{c},\phi_{c}^{\mathrm{cur}})=
-  \small
-  \sum_{z=1}^{Z}\sum_{o=1}^{O}\zeta(z)_{c,o}^{\mathrm{cur}}\left(\ln \pi_{z}-\frac{\ln{\sigma^{z}}^{2}}{2}-\frac{{{\left(\random{\lambda}_{c,o}-f_{c}^{z}(\randomvec{\theta}_{o})\right)}^{2}}}{2{\sigma^{z}}^{2}}\right)+\ \mathrm{cnt},
-\end{equation}
-where the constant term is independent of any parameter in $\phi_{c}$ and it is not computed.
-
-Calculating the gradient of~\eqref{eq:completedataLogLikelihoodestimation} with respect to vectors $\vec{\phi}_{c,z}={[{P_{c}^{z}}\ \vec{s}_{c}^{z}]}^{T}$ and making it vanish, it is possible to calculate an optimal new estimate $\vec{\phi}_{c,z}^{\mathrm{new}}$ using:
+Here we introduce a variable ${\phi^{z}={[\vectorize{\tilde{P}^{z}}^{T}\ {(\tilde{\vec{s}}^{z})}^{T} ]}^{T}}$ so we can calculate the new estimates of $\set{P}$ from~\eqref{eq:Mstep}. Using the KKT conditions~\cite{BoydVandenberghe2004}, we can find an optimal solution for the problem in~\eqref{eq:Mstep}, by
+taking the gradients of~\eqref{eq:completedataLogLikelihood_expectation} with respect to vectors $\vec{\phi}^{z}$ and making them vanish.
+Because of the multidimensional nature of the problem, some matrix operations are needed to synthesize the results.
+After those operations, we have a matricial solution that yields the optimal estimates $\vec{\phi}_{z}^{\mathrm{new}}$:
 \begin{equation}
   \label{eq:mstepestimation}
-  \vec{\phi}_{c,z}^{\mathrm{new}}=\pseudoinv{(\Xi_{c,z}\randomvec{\theta})}\Xi_{c,z}\randomvec{\lambda}_{c},
+  \vec{\phi}_{z}^{\mathrm{new}}=\pseudoinv{(\Xi_{z}\random{\Omega})}\Xi_{z}\vectorize{\random{\Lambda}},
 \end{equation}
 where
-${\randomvec{\theta}={[ {[\randomvec{\theta}_{1}^{T}\ 1]}\ \dots\ [\randomvec{\theta}_{O}^{T}\ 1] ]}^{T}}$%
-,
-${\randomvec{\lambda}_{c}={[\random{\lambda}_{c,1}\ \dots\ \random{\lambda}_{c,O}]}^{T}}$%
+${\random{\Omega}=[\hadamard{(\Upsilon \random{\Theta}\Delta)}{Y};G]}$,
+with matrices
+${\Upsilon=\kron{\1_{n}^{T}}{I_{n}}}$,
+${\Delta=\kron{I_{N}}{\1_{n}^{T}}}$,
+${Y=\kron{G}{\1_{n}}}$,
+${G=\kron{\1_{N}^{T}}{I_{n}}}$,
 and
-${\Xi_{c,z}={\diag(\sqrt{{\zeta(z)}_{c,1}},\cdots,\sqrt{{\zeta(z)}_{c,O}})}}$.
+\[{\Xi_{z}={\diag(\sqrt{{\zeta(z_{z1};\set{P}_{\mathrm{cur}})}}I_{n},\cdots,\sqrt{{\zeta(z_{zO};\set{P}_{\mathrm{cur}})}}I_{n})}}.\]
 
 As we can see,~\eqref{eq:mstepestimation} is a weighted Least-Squares, that uses the responsibilities as weights, ignoring those values closer to $0$.
 
-Once all $\tilde{P}_{c}^{z}$ and $\tilde{\vec{s}}_{c}^{z}$ are estimated, we can stack them creating estimates of $\tilde{P}^{z}$ and $\tilde{\vec{s}}^{z}$.
+Once the estimates $\vec{\phi}_{z}^{\mathrm{new}}$ converge, we can reconstruct the estimates $\tilde{P}^{z}$ and $\tilde{\vec{s}}^{z}$, and use in our mitigation scheme proposed in \S\ref{sec:attack}.
 
-Observe that
-
+\todo {
+  Observe that not necessarily the parameters estimated associated to a value z corresponds to the z shown in
+}
 % \begin{equation*}
 %   p(\randomvec{x})=\sum_{i=0}^{N}\pi_{i} \mathcal{N}(\random{y};f_{i}(\randomvec{x}),\Sigma_{i})
 % \end{equation*}
@@ -551,7 +564,7 @@ the main points of the paper, do not replicate the abstract as the
 conclusion. A conclusion might elaborate on the importance of the work
 or suggest applications and extensions.
 \begin{ack}
-Simon Leglaive
+
 \end{ack}
 
 % \nocite{*}
