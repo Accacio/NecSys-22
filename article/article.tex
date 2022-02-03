@@ -1,6 +1,6 @@
-\loop\iftrue%
-\errmessage{This article is copyrighted by ___ and should not be TeXed}%
-\repeat%
+% \loop\iftrue%
+% \errmessage{This article is copyrighted by ___ and should not be TeXed}%
+% \repeat%
 
 \documentclass{ifacconf}  % Comment this line out
 \usepackage{natbib}        % required for bibliography
@@ -72,6 +72,10 @@ Large scale optimization problems
 \end{frontmatter}
 
 \section{INTRODUCTION}
+\todo{Some citations:
+  \cite{MaestreEtAl2021}
+
+}
 % % % \mpc{} \dmpc{}
 
 
@@ -115,13 +119,12 @@ ${\diag(A_{1},\dots,A_{N})}$ corresponds to a block diagonal matrix.
   \label{eq:constraint}
   \sum^{\nsubsystems}_{i=1}\Gamma_{i}\uik\preceq\umax
 \end{equation}
-where ${\Gamma_{i}:\R^{n_{u}\times n_{u}}}$, ${\umax:\R^{n_{u}\times 1}}$ and ${n_{u}=\card{\uik}}$.
+where ${\Gamma_{i}:\R^{n_{u}\times n_{u}}}$\todo{$\Gamma_{i}:\semidefpos$?}, ${\umax:\R^{n_{u}\times 1}}$ and ${n_{u}=\card{\uik}}$.
 
 \begin{problem}{Global \mpc{} Problem.}\label{Pb:GOP}
 \begin{equation*}
 \begin{matrix}
-
-\underset{\uiseq}{\mathrm{minimize}}&\resizebox{0.35\textwidth}{!}{$\overbrace{\sum\limits^{M}_{i=1} \overbrace{\sum_{j=1}^{\predhorz} \norm{\mpcvec{v}[i][k+j][k]}^{2}_{Q_i}+\norm{\mpcvec{u}[i][k+j-1][k]}^{2}_{R_i}}^{\textstyle{} \obji}}^{\textstyle{} \globobj}$}\\
+\underset{\useq}{\mathrm{minimize}}&\resizebox{0.35\textwidth}{!}{$\overbrace{\sum\limits^{M}_{i=1} \overbrace{\sum_{j=1}^{\predhorz} \norm{\mpcvec{v}[i][k+j][k]}^{2}_{Q_i}+\norm{\mpcvec{u}[i][k+j-1][k]}^{2}_{R_i}}^{\textstyle{} \obji}}^{\textstyle{} \globobj}$}\\
 \mathrm{subject~ to}&~\eqref{eq:systems},\eqref{eq:upositive}\ \mathrm{and}\ \eqref{eq:constraint}
 \left\}\small
 \begin{aligned}
@@ -136,8 +139,8 @@ where ${Q_{i}:\semidefpos}$ and ${R_{i}:\defpos}$, $\vik$ is a control objective
 Reference tracking can be written as ${\vik=\wik-\xik}$, where $\wik$ is a state reference.
 Disturbance rejection can be written as ${\vik=\xik}$.
 
-$\optglobobj$ denotes the optimal value of the problem~\ref{Pb:GOP}, and ${\optuiseq}$ is the optimal control sequences.
-the problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in each respective $i$ subsystem, following a receding horizon strategy.
+$\optglobobj$ denotes the optimal value of the problem~\ref{Pb:GOP}, and ${\optuseq}$ is the optimal control sequences for all agents.
+The problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in each respective $i$ subsystem, following a receding horizon strategy.
 \end{problem}
 
 \subsection{Distributed Model Predictive Control}\label{ssec:dMPC}
@@ -163,7 +166,7 @@ the problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are ap
   \begin{equation}
     \small
     \begin{aligned}
-      J^{\star}&=\underset{\thetaiseq}{\mathrm{minimize}}\sum^{\nsubsystems}_{i=1} J^{\star}_i(\thetaik)\\
+      J^{\star}&=\underset{\thetaseq}{\mathrm{minimize}}\sum^{\nsubsystems}_{i=1} J^{\star}_i(\thetaik)\\
       \mathrm{s.t.} &\quad \sum_{i=1}^{\nsubsystems}\thetaik\preceq\umax
     \end{aligned}
     \label{eq:DOP_master}
@@ -175,14 +178,22 @@ the problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are ap
 \vec{\theta}^{(p+1)}=\Proj^{\set{H}}(\vec{\theta}\p-\rho\p\vec{g}\p)
 \end{equation}
 
-\todo{The sum $\sum_{i=1}^{M}\vec{\theta}_{i}$ can also be represented by the matrix multiplication $I_{c}^{M}\vec{\theta}$. Where ${c=\pi_{\vec{u}_{i}(k:k+N_{p}-1|k)}=N_{p}\pi_{\uik}}$.}
+Where ${\set{H} = \setbuild{\vec{\theta}}{\sum_{i=1}^{M}\vec{\theta}_{i}=\vec{u}_{\max}}}$, $\vec{\theta}$ are the allocations for all agents.
+\todo{The sum $\sum_{i=1}^{M}\vec{\theta}_{i}$ can also be represented by the matrix multiplication $I_{c}^{M}\vec{\theta}$. Where ${c=N_{p}\pi_{\uik}}$.}
 
 
 \begin{equation}
   \label{eq:thetaNegot}
 \thetai\pplusone=\thetai\p+\rho\left(\vec{\lambda}_{i}^{\star} (\vec{\theta}_{i}\p)-I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{\lambda}^{\star} (\vec{\theta}\p)\right)
 \end{equation}
-\todo[verify if need to use max]{
+
+where ${I_{c}^{M}=\kron{\1_{M,1}}{I_{c}}}$.
+\todo{Observe that ${I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{v}=\frac{\sum_{i=0}^{M}\vec{v}_{i}}{M}}$}
+
+\todo{
+  But as the coordinator must also assure that ${\thetaik\succeq\0}$ so the local problems are feasible, we set 0 as lower bounds:
+  }
+  \todo[verify if need to use max]{
 \begin{equation}
   % \label{eq:thetaNegot}
   \thetai\pplusone=
@@ -235,12 +246,6 @@ the problem~\ref{Pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are ap
  \caption{Quantity decomposition based \acrlong{dmpc}.}\label{alg:quantityAlg}
 \end{algorithm2e}
 
-\section{Attack in DMPC scheme}\label{sec:attack}
-
-\begin{equation}\label{eq:cheating}
-\lambdaicheat=\gamma_{i}(\lambdai)
-\end{equation}
-
 \subsection{Quadratic Case --- Formal Analysis}\label{ssec:FA}
 % \todo{As seen in \cite{NogueiraEtAl2021}},
 
@@ -271,7 +276,7 @@ $\bar{Q}_{i}$, $\bar{R}_{i}$, and $\Theta_{i}$ are block diagonal matrices built
   Observe that $H_{i}:\defpos$.
 }
 
-\todo{As seen in~\cite{BemporadEtAl2002,BorrelliEtAl2017}, the solution for a constrained linear quadratic regulation problem yields in a \pwa{} function.
+\todo{As seen in~\cite{BemporadEtAl2002} and in~\cite{BorrelliEtAl2017}, the solution for a constrained linear quadratic regulation problem yields in a \pwa{} function.
 Similarly, we can get an explicit  solution for its dual variables $\vec{\lambda}_{i}$, which is also a \pwa{} function with respect to $\vec{\theta}_{i}$:}
 \begin{equation}
   \begin{aligned}
@@ -286,13 +291,20 @@ Similarly, we can get an explicit  solution for its dual variables $\vec{\lambda
 \end{equation}
 The halfspaces defined by the set of pairs $(G_{j}[k],z_{j}[k])$ represent a combination of active constraints for a given time $k$.
 
-\begin{challenge}
-It is important to note that since the actual state is unknown we cannot anticipate how the space is partitioned, nor the values of $\vec{s}_{i}[k]$.
+\begin{challenge}\label{ch:partition_unknown}
+  It is important to note that since the actual state is unknown we cannot anticipate the partition of the space.
 \end{challenge}
- As each constraint can be active or inactive, for a group of $n$ constraints, \todo{potentially} we can have $N=2^{n}$ different combinations of active/inactive sets, consequently $N$ regions (or zones).
-\todo{
-  Here we say potentially because depending on the constraints, some of these combinations can be infeasible.\question{Remove??}
-}
+\begin{challenge}\label{ch:zone_unknown}
+ For the same reason the values of $\vec{s}_{i}[k]$ are also unknown.
+\end{challenge}
+
+ As each constraint can be active or inactive, for a group of $n$ constraints, we can have at most $N=2^{n}$ different combinations of active/inactive sets and consequently $N$ regions (or zones).
+ \begin{remark}\label{re:N_different_zones}
+  Observe that depending on the constraints, some of these combinations can redundant or even make the optimization infeasible.
+ \end{remark}
+ \begin{assumption}
+   We assume that none of these cases in Remark~\ref{re:N_different_zones} can occur, and we have $N$ zones.
+ \end{assumption}
 
 \todo{
   The values of $P_{i}^{j}$ and $\vec{s}_{i}^{j}$, depend on $H_{i}$, $\fik$ and parts of $\Theta_{i}$ which represents the active constraints.
@@ -301,20 +313,28 @@ It is important to note that since the actual state is unknown we cannot anticip
   Observe that in all functions, only $\vec{s}_{i}^{j}[k]$ depend on time $k$.
 }
 
-\subsection{Detection and mitigation}
+\section{Attack in DMPC scheme}\label{sec:attack}
+
+\begin{equation}\label{eq:cheating}
+\lambdaicheat=\gamma_{i}(\lambdai)
+\end{equation}
+
+% \subsection{Detection and mitigation}
 \begin{assumption}
   $\gamma_{i}(\cdot)$ is the same during the negotiation phase for a given time $k$ (it does not depend on $p$).
 \end{assumption}
 
 \begin{assumption}
-  We suppose the agent chooses a linear function such as $\tilde{\lambdai}=\gamma_{i}(\vec{x})=\Tik\vec{x}$ resulting in:
+  equation
+  T inversivel
+  We suppose the agent chooses a linear function such as \[ {\tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i}} \] resulting in:
   \begin{equation}
     \label{eq:linear_cheating}
     \tilde{\lambdai}=
         \begin{cases}
-      -\Tik P_{i}^{1}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{1}[k]&\text{if}\ G_{1}\thetai \preceq z_{1} \\
+      -\Tik P_{i}^{1}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{1}[k]&\text{if}\ G_{1}[k]\thetai \preceq z_{1}[k] \\
       \qquad\quad \vdots&\qquad\quad \vdots\\
-      -\Tik P_{i}^{N}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{N}[k]&\text{if}\ G_{N}\thetai \preceq z_{N} \\
+      -\Tik P_{i}^{N}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetai \preceq z_{N}[k] \\
     \end{cases}
   \end{equation}
 and we define $\tilde{P}_{i}^{j}[k]=\Tik P_{i}^{j}$ and $\tilde{\vec{s}}_{i}^{j}[k]=\Tik\vec{s}_{i}^{j}[k]$.
@@ -375,7 +395,6 @@ and from~\eqref{eq:lambdafuntheta}, we can derive a method to reconstruct $\vec{
   If we choose $\bar{\theta}_{i}=\0$, the constraints will be active when the  will only  that can assure that all constraints are active, then we can estimate ${\widehat{\tilde{P}_{i}^{1}}[k]}$ around this point. Unfortunately, since we don't know the hyperplanes that separates the different zones, some points generated for the estimation can belong to other zones.
   So we use the \EM{} algorithm to estimate the parameter for the $1$-zones, as it can clusterize the points and estimate parameters at the same time.
 }
-
 
 \section{Expectation-Maximization Algorithm}\label{sec:expect-maxim-algo}
 
