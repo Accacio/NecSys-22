@@ -411,7 +411,7 @@ As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we pr
 % TODO(accacio): change subscript n
 \begin{equation}
   \label{eq:linear_cheating_random}
-  \random{\lambda}_{o}=
+  \randomvec{\lambda}_{o}=
   \begin{cases}
     -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{with probability}\ \pi_{1} \\
     \qquad\quad \vdots&\qquad\quad \vdots\\
@@ -419,7 +419,7 @@ As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we pr
   \end{cases}.
 \end{equation}
 
-Each couple of observed input and response variables $(    \random{\lambda}_{o}, \randomvec{\theta}_{o})$ is associated in this model to a latent unobserved random variable ${\random{z}_{o}\in\set{Z}}$ that indicates from which of the $Z$ affine regression models in~\eqref{eq:linear_cheating_random} the response variable was obtained.
+Each couple of observed input and response variables $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ is associated in this model to a latent unobserved random variable ${\random{z}_{o}\in\set{Z}}$ that indicates from which of the $Z$ affine regression models in~\eqref{eq:linear_cheating_random} the response variable was obtained.
 The latent variable $\random{z}_{o}$ follows a categorical prior distribution, with associated probabilities ${\Pi=\{\pi_{1},\dots,\pi_{Z}\}}$:
    \begin{equation}
      \label{eq:prob_zo_equal_z}
@@ -439,7 +439,7 @@ Given the input and latent variables, the response variable $\random{\lambda}_{o
   \label{eq:multivariate_gaussian}
 \probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z; \set{P}^{z}} = \mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}}),
 \end{equation}
-where, following \eqref{eq:linear_cheating_random}, the mean vector is defined by
+where, following~\eqref{eq:linear_cheating_random}, the mean vector is defined by
 \[f(\randomvec{\theta}_{o};(P,\vec{s}))=-{P}\randomvec{\theta}_{o}-{\vec{s}},\]
 and the covariance matrix ${\Sigma^{z}}$ tends to $0$.
 
@@ -463,7 +463,7 @@ Instead, we can exploit the latent-variable structure of the model to derive an 
 
     \graph [edge quotes={fill=white,inner sep=1pt},
     clockwise=3,nodes={circle,draw,rotate=-60,minimum width=1cm}] {
-      a/"${\randomvec{\theta}_{o}}$"[rotate=60],b/"${\random{\vec{\lambda}}_{o}}$"[rotate=60],c/"${\random{z}}_{o}$"[rotate=60];
+      a/"${\randomvec{\theta}_{o}}$"[rotate=60,fill=lightgray],b/"${\random{\vec{\lambda}}_{o}}$"[rotate=60,fill=lightgray],c/"${\random{z}}_{o}$"[rotate=60];
       {a,c} ->[-latex] b;
       (pi) ->[thick,{Circle[length=3.pt]}-latex] c;
       (phi) ->[thick,{Circle[length=3.pt]}-latex] b;
@@ -471,7 +471,6 @@ Instead, we can exploit the latent-variable structure of the model to derive an 
   \end{tikzpicture}
   \caption{Graph representation of model proposed.}\label{fig:model}
 \end{figure}
-% SL: observed variables are generally represented as shaded nodes in probabilistic graphical models, and latent variables as empty nodes.
 
 Now we can formalize the \EM{} problem.
 \begin{problem}{Expectation Maximization Problem}\label{pb:EM}
@@ -499,7 +498,7 @@ But as mentioned, we do not observe the complete data $(\random{\Theta},\random{
 Observe that by taking
 \todo[Change Notation?]{Change Notation?}
 \begin{equation}\label{eq:argmaxz}
-\underset{z_{o}}{\argmax}\ {\zeta(z_{zo};\set{P})},
+\arg\underset{z}{\max}\ {\zeta_{zo}(;\set{P})},
 \end{equation}
 we can get the most probable $z$-zone which generated the observation $\randomvec{\lambda}_{o}$.
 
