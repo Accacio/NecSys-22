@@ -149,15 +149,6 @@ selfish_time= [ simK/2;
                 simK;
               ];
 
-identity=@(sys,x) x;
-
-if selfish
-    modify_lambda=@linear_modify;
-else
-    modify_lambda=identity;
-end
-
-
 rho_fun = @(a,b,negot) 1/(a+b*negot);
 % rho = @(a,b,negot) (1/a)/negot;
 a=100;
