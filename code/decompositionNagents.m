@@ -22,13 +22,10 @@ simK = 50;    %= Simulation horizon
 negotP = 100; %= max # of iteration for each negotiation
 err_theta=1e-2; %= err to test theta convergence in each negotiation
 
-chSetpoint = 0; %= Change setpoint?
-selfish = 1;    %= Selfish behaviour?
-secure = 1;     %= Secure algorithm?
-for chSetpoint=1
-for selfish=0:1
-for secure=0:1
-tic
+% TODO(accacio): change name of these variables
+chSetpoint_list = 0; %= Change setpoint?
+selfish_list = 0:1;    %= Selfish behaviour?
+secure_list = 0:1;     %= Secure algorithm?
 %= Global constraint
 Umax=4;
 % Umax=2;
@@ -88,7 +85,7 @@ f_fun=@(Cmat,Mmat,Q,xt,Wt) Cmat'*Q*(Mmat*xt-Wt);
 
 %= Gains Q and R for $\sum_{j=1}^n \|v\|^2_{Q}+\|u\|^2_{R}$
 for i=M:-1:1 % make it backward to "preallocate"
-    Qbar(:,:,i)=1*eye(Np*size(dsys(:,:,1,i).C,1)); % no x no
+    Qbar(:,:,i)=10*eye(Np*size(dsys(:,:,1,i).C,1)); % no x no
     Rbar(:,:,i)=eye(n); % nc x nc
 end
 
@@ -115,7 +112,7 @@ X0(:,1,3) = [15 3.1]';
 X0(:,1,4) = [17. 5.7]';
 
 %= Setpoint
-Wt = [X0(1,1)*1.05;
+Wt = [X0(1,1)*1.5;
       X0(1,2)*1.05;
       X0(1,3)*1.05;
       X0(1,4)*1.05;
@@ -137,14 +134,14 @@ umax(1:M)=u_max;
 
 %= Selfish behavior profile
 % T(:,:,1)=4*eye(n);
-T(:,:,1)=(10*rand(n));
+T(:,:,1)=20*diag(rand(n,1));
 T(:,:,2)=10*eye(n);
 T(:,:,3)=1*eye(n);
 T(:,:,4)=1*eye(n);
 
 %= Time selfish behavior activated
 selfish_time= [ simK/2;
-                simK*2/3;
+                simK;
                 simK;
                 simK;
               ];
@@ -155,16 +152,20 @@ a=100;
 b=100;
 
 %% === Control Loop ===
+for chSetpoint=chSetpoint_list
+for selfish=selfish_list
+for secure=secure_list
+tic
 
 u=zeros(n,M);
-J=zeros(n,M);
+J=zeros(simK,M);
 theta=zeros(n,negotP,simK,M);
 lambda=zeros(n,M);
 lambdaHist=zeros(n,negotP,simK,M);
 uHist=zeros(ni,simK,M);
 xt=zeros(ns,simK,M);
 xt(:,1,1:M)=X0(:,1,1:M);
-lastp=zeros(simK,M);
+lastp=zeros(simK);
 norm_err=zeros(simK,M);
 
 for k=1:simK
@@ -260,7 +261,7 @@ for k=1:simK
         %= Get lambda
         for i=1:M
             % QUADPROG(H,f,A,b,Aeq,beq,LB,UB,X0)
-            [u(:,i) ,J(:,i),~,~,l(:,p,k,i)] = quadprog(H(:,:,i), f(:,i), ...
+            [u(:,i) ,J(k,i),~,~,l(:,p,k,i)] = quadprog(H(:,:,i), f(:,i), ...
                                                        eye(ni*n), theta(:,p,k,i), ...
                                                        [], [], ...
                                                        umin(:,i)*ones(ni*n,1), ...  % Lower Bound
@@ -284,8 +285,8 @@ for k=1:simK
                 if norm_err(k,i)>1e-4
                     % estimate T using hest = T*horig
                     invT_est=H(:,:,i)/(H_est(:,:,k,i));
-                    disp(invT_est)
-                    disp(inv(T(:,:,i)))
+                    % disp(invT_est)
+                    % disp(inv(T(:,:,i)))
                     lambda(:,i)=-H(:,:,i)*theta(:,p,k,i)-invT_est*f_est(:,k,i);
                 end
             end
@@ -307,7 +308,7 @@ for k=1:simK
         for i=1:M
             theta_converged=theta_converged && (norm(theta(:,p+1,k,i)-theta(:,p,k,i),'fro')<=err_theta);
         end
-        lastp(k,i)=p;
+        lastp(k)=p;
         if (theta_converged)
             % disp('theta converged');
             break;
