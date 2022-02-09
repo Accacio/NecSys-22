@@ -61,6 +61,7 @@
 % \pagestyle{empty}
 
 \begin{abstract}% Abstract of not more than 250 words.
+  \todo[write abstract]{\blindtext}
 \end{abstract}
 
 \begin{keyword}
@@ -72,14 +73,64 @@ Large scale optimization problems
 \end{frontmatter}
 
 \section{INTRODUCTION}
+\todo{Voilà ce que je propose en introduction. Il manque les références et
+peut-être un ou deux articles (j'ai laissé un endroit « libre »). Redis moi
+ce que tu en penses.
+}
+
+The cybersecurity of critical infrastructures (energy networks, industrial
+processes, water production plants, etc.) is a worldwide and sensitive
+issue. The information collected, transmitted, and processed within these
+infrastructures impact physical systems whose proper functioning is
+essential for society.
+
+Given the complexity of these structures, it is necessary to adopt a control
+structure that is distributed rather than centralized. For these systems, a
+set of controllers are designed to ensure the safe and efficient operation
+of the facilities collectively. To do this, they exchange information with
+each other, allowing them to work collaboratively. This kind of approach can
+be the case for the voltage regulation of electrical networks [REF] or the
+production-consumption balance in these same networks [REF]. Multi-agent
+systems [REF] or distributed model predictive control [REF] are standard
+tools to design the controllers.
+
+But attacking of one of these controllers, which then leaves the cooperative
+mode, can result in the violent destruction of the corrupted element. More
+subtly, it can lead to deviant behavior that is more difficult to detect. It
+aims to de-optimize the global operation or to lead the system slowly
+towards a state of non-functioning or instability [REF].
+
+With this in mind, a few articles have focused on safety in distributed
+control structures.
+
+The recent state of the art (REF Maetre 2021) highlights the complexity of
+the problems. A modification of a local goal, the hacking of communication,
+or the failure of one of the agents are events that disrupt global behavior.
+
+[QUELQUES AUTRES REFERENCES A AJOUTER]
+
+Our previous work~\citep{NogueiraEtAl2021} proposed a framework dedicated to
+sharing resource algorithms. The attack consists of communication corruption
+between a coordinator and constraint-free local agents. In this paper, we
+propose an extension of our approach by including local constraints. This
+extension profoundly changes the complexity, as the exchanges between the
+agents and the coordinator are no longer characterized by an affine function
+but a piecewise affine function. This leads not only to a combinatorial
+explosion but also to a parametric identification challenge. To overcome
+this problem, we propose using a learning method based on the Expectation
+Maximisation algorithm (REF), which allows us to estimate the corruption
+mechanism and correct it if necessary.
+
+
+The paper is constructed as follows ...
+
 \todo{Some citations:
   \cite{MaestreEtAl2021}
 
 }
-% % % \mpc{} \dmpc{}
 
-
-% % ~\\
+\section{Problem Statement}\label{sec:PS}
+In this section we present an algorithm to decompose a \mpc{} problem based on the primal decomposition \citep{BoydEtAl2015}, and a vulnerability of the decomposition that can be exploited by a malicious agent.
 
 \emph{Notation:}
 In this paper, $\norm{\cdot}$, $\norm{\cdot}_{F}$, and $\norm{\vec{v}}_{Y}$ represent the $\ell_{2}$ norm, the Frobenius norm and the weighted norm $\norm{Y^{\frac{1}{2}}\vec{v}}$.
@@ -89,21 +140,21 @@ $\kron{}{}$, and $\hadamard{}{}$ are the Kronecker and Hadamard products.
 $\vectorize{A}$ vectorizes matrix $A$.
 ${n\mathbin{:}i\mathbin{:}j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\mathbin{:}j}$ is equal to ${n\mathbin{:}1\mathbin{:}j}$.
 $[A,B]$ and $[A;B]$ are horizontal and vertical concatenation of matrices.
-$0_{m\times n}$ and $1_{m\times n}$ are ${m\times n}$ matrices filled with $0$ and $1$.
-$\0$ and $\1$ are 0 and 1 filled vectors of adequate size.
+${\0_{m}=0_{m\times 1}}$ (${\1_{m}=1_{m\times 1}}$), where
+$0_{m\times n}$ ($1_{m\times n}$) is a $0$ ($1$) filled \mbox{$m$-by-$n$} matrix.
 $\indicator{x}$ is the indicator function returning $1$ if $x$ is true and $0$ otherwise.
 $\preceq$ is the component-wise less or equal for vectors and matrix inequality for matrices in ${\symmetric^{n}=\setbuild{X:\R^{n\times n}}{X'=X}}$.
 ${\defpos^{n}=\setbuild{X:\symmetric^{n}}{X\succ 0}}$, ${\semidefpos^{n}=\setbuild{X:\symmetric^{n}}{X\succeq 0}}$.
 $I_{c}$ is the identity matrix of size $c$.
 $A^{\dagger}$ is the generalized inverse ${{(A^{T}A)}^{-1}A^{T}}$.
-$|A|$ is the determinant of $A$.
+$\det{A}$ is the determinant of $A$.
 A vector $\vec{v}_{i}$, correspond to the $i$-th agent, and these vectors can be stacked in a vector $\vec{v}$.
 $\random{a},\random{A},\randomvec{a}$ are random variables, scalar, matrix and vector respectively.
 $\expectation{\random{x}}$ is the expected value of $\random{x}$, and $\probability{A \mid B}$ is the conditional probability of $A$ given condition $B$.
 $\pdf{\cdot}$ is a probability density function. ${\diag(A_{1},\dots,A_{N})}$ corresponds to a block diagonal matrix.
 
-\section{Problem Statement}\label{sec:PS}
-In this section we present an algorithm to decompose a MPC problem based on the primal decomposition (\cite{BoydEtAl2015}), and a vulnerability that can be exploited by a malicious agent.
+
+
 \subsection{Model Predictive Control}\label{ssec:MPC}
 Let us consider a system composed of $M$ discrete-time linear time-invariant agents.
 The dynamics of an agent $i$ is ruled by:
@@ -111,24 +162,25 @@ The dynamics of an agent $i$ is ruled by:
 \begin{matrix}
   \label{eq:systems}
 \vec{x}_{i}[k+1]&=&A_{i}\xik &+& B_{i}\uik\\
-\vec{y}_{i}[k+1]&=&C_{i}\xik &&\\
-\end{matrix}
+\vec{y}_{i}[k+1]&=&C_{i}\xik &&
+\end{matrix},
 \end{equation}
+with $\vec{x}_{i}[k]:\R^{n_{x}}$, $\vec{u}_{i}[k]:\R^{n_{u}}$ and $\vec{y}_{i}[k]:\R^{n_{y}}$.
+
 Each agent's input $\uik$ is constrained by
 \begin{equation}
   \label{eq:u_local_constraints}
-  \0\preceq\uik\preceq\vec{u}_{\max},
+  \0_{n_{u}}\preceq\uik\preceq\vec{u}_{\max},
 \end{equation}
-where ${\umax:\R^{n_{u}\times 1}}$ and ${n_{u}=\card{\uik}}$.
-
-All agents are coupled by a global input constraint
+with ${\umax:\R^{n_{u}}}$, and
+the $M$ agents are coupled by a global input constraint with weighting matrices \todo{${\Gamma_{i}:\semidefpos^{n_{u}}}$}:
 \begin{equation}
   \label{eq:global_constraint}
-  \sum^{\nsubsystems}_{i=1}\Gamma_{i}\uik\preceq\umax,
+  \sum^{\nsubsystems}_{i=1}\Gamma_{i}\uik\preceq\umax.
 \end{equation}
-where \todo{$\Gamma_{i}:\semidefpos^{n_{u}}$}.
 
-The overall system can be controlled by a \mpc{}, by predicting the dynamics of the system for a finite prediction horizon $N_{p}$ and computing the optimal input by solving the following optimization problem:
+
+The overall system is controlled by a \mpc{}, which predicts the dynamics for a finite prediction horizon $\predhorz$ and computes the optimal input by solving the following problem:
 \begin{problem}{Global \mpc{} Problem.}\label{pb:GOP}
 \begin{equation*}
 \begin{matrix}
@@ -144,71 +196,121 @@ The overall system can be controlled by a \mpc{}, by predicting the dynamics of 
 % \label{eq:dmpcModLOP}
 \end{equation*}
 where ${Q_{i}:\semidefpos}$, ${R_{i}:\defpos}$, and $\vik$ is a control objective.
-\todo{Reference tracking can be written as ${\vik=\wik-C_{i}\xik}$, where $\wik$ is a state reference.
-Disturbance rejection can be written as ${\vik=C_{i}\xik}$.
-}
-
-$\optglobobj$ denotes the optimal value of the objective function of problem~\ref{pb:GOP}, and ${\optuseq}$ is the optimal control sequences for all agents.
-The problem~\ref{pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in each respective $i$ subsystem, following a receding horizon strategy.
+$\optglobobj$ denotes the optimal value of the objective function for the the optimal control sequences ${\optuiseq}$.
+The problem~\ref{pb:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in their respective subsystem $i$, following a receding horizon strategy.
 \end{problem}
 
-Due to the monolithic aspect of problem~\ref{pb:GOP}, the prediction horizon and the number of agents, solving the problem can be computationally intensive. One can see that if it were not for the global constraints~\eqref{eq:global_constraint}, the problem would be easily decomposed in $M$ parts and solvable in parallel.
+Due to the monolithic aspect of problem~\ref{pb:GOP}, solving it at each time $k$ can be quite challenging, since the prediction horizon and the number of agents can be large making the process computationally intensive. Another issue that can arise is the fact that the complete information (${\set{I}_{i}=\{A_{i},B_{i},C_{i},\vec{v}_{i}[k],Q_{i},R_{i}\}}$) from all the subsystems is needed to solve the problem,
+which can be viewed negatively in a confidentiality point of view.
 
-\subsection{Distributed Model Predictive Control}\label{ssec:dMPC}
-&continue from here
-The technique consists of decomposing the
-\todo{\dmpc{},
-}
+One can see that if it were not for the global constraints~\eqref{eq:global_constraint}, the problem would be easily decomposed in $M$ parts and solvable in parallel.
+So, we use the \emph{primal decomposition} method~\citep{BoydEtAl2015}, sometimes called \emph{quantity decomposition} or \emph{resource allocation}~\citep{Cohen1978}, with wich we can profit from the parallelism, while avoiding the use of the complete information $\set{I}_{i}$.
+
+\subsection{Primal Decomposition based \todo{dMPC}}\label{ssec:dMPC}
+
+The technique consists of decomposing the monolithic \mpc{} problem~\ref{pb:GOP} into $M$ modified \mpc{} problems~\eqref{eq:DOP_local}, called \emph{local problems}, which can be solved in parallel by each subsystem, and a \emph{master problem}~\eqref{eq:DOP_master}, which is equivalent to the global problem and is solved by a coordinator.
 \begin{subequations}
   \begin{equation}
     \left.
       \small
       \begin{aligned}
         J_{i}^{\star}(\thetaik)&=\underset{\uiseq}{\mathrm{minimize}} \obji\\
-        \mathrm{s.t.} &\quad\eqref{eq:systems}\ \&\ \eqref{eq:upositive}\\
-        &\quad\Gamma_{i}\uik\preceq\thetaik:\lambdaik\\
+        \mathrm{s.t.} &\quad\eqref{eq:systems}\ \&\ \eqref{eq:u_local_constraints}\\
+        &\quad\Gamma_{i}\uik\preceq\qik:\dik\\
       \end{aligned}
     \right\}
     \small
     \begin{aligned}
-      &\forall i\in \{1:\nsubsystems\}\\
-      &\forall j\in \{1:\predhorz\}
+      &\forall i\in \{1\mathbin{:}\nsubsystems\}\\
+      &\forall j\in \{1\mathbin{:}\predhorz\}
     \end{aligned}
     \label{eq:DOP_local}
   \end{equation}
   \begin{equation}
     \small
     \begin{aligned}
-      J^{\star}&=\underset{\thetaseq}{\mathrm{minimize}}\sum^{\nsubsystems}_{i=1} J^{\star}_i(\thetaik)\\
-      \mathrm{s.t.} &\quad \sum_{i=1}^{\nsubsystems}\thetaik\preceq\umax
+      J^{\star}&=\underset{\qiseq}{\mathrm{minimize}}\sum^{\nsubsystems}_{i=1} J^{\star}_i(\qik)\\
+      \mathrm{s.t.} &\quad \sum_{i=1}^{\nsubsystems}\qik\preceq\umax,\ \forall j\in\{1\mathbin{:}\predhorz\}\\
+      &\quad \qik[k]\succeq\0_{n_{u}}\text{, } \forall i\in\{1\mathbin{:}M\},\forall j\in\{1\mathbin{:}\predhorz\}
     \end{aligned}
     \label{eq:DOP_master}
   \end{equation}
 \end{subequations}
+The modified \mpc{} problems in~\eqref{eq:DOP_local} are created by exchanging the $\vec{u}_{\max}$ in~\eqref{eq:global_constraint} by vectors $\qik$, where which one corresponds to the quantity of the total resource $\vec{u}_{\max}$ that is allocated to agent $i$ in time $[k]$ for each prediction $j$, thus the names \emph{resource allocation} and \emph{quatity decomposition}. This new set of constraints have associated dual variables ${\dik\succeq\0_{n_{u}}}$. The sequence of this variables variables ${\qiseq}$ and ${\diseq}$ can be aggregated in vectors ${\thetaik=\kron{\1_{\predhorz}}{\qik}}$, and ${\lambdaik=\kron{\1_{\predhorz}}{\dik}}$.
 
+The \emph{master problem}, finds the optimal allocation sequences $\optthetai$ by using a projected sub-gradient method~\citep{BoydVandenberghe2004}:
 \begin{equation}
   \label{eq:projectedSubgradient}
-\vec{\theta}^{(p+1)}=\Proj^{\set{H}}(\vec{\theta}\p-\rho\p\vec{g}\p)
+\vec{\theta}[k]\pplusone=\Proj^{\set{H}}(\vec{\theta}[k]\p-\rho\p\vec{g}[k]\p),
 \end{equation}
+where ${\set{H} = \setbuild{\vec{\theta}}{I_{c}^{M}\vec{\theta}\preceq \vec{U}_{\max}\ \&\&\ \vec{\theta}\succeq\0 }}$, being ${c=\predhorz n_{u}}$, ${I_{c}^{M}=\kron{\1_{M}}{I_{c}}}$, ${\vec{U}_{\max}=\kron{\1_{\predhorz}}{\vec{u}_{\max}}}$, $(p)$ is a given step in the iterative process and $\vec{g}\p[k]$ is a sub-gradient of the objective of the function problem in~\eqref{eq:DOP_master} in step $(p)$.
 
-Where ${\set{H} = \setbuild{\vec{\theta}}{\sum_{i=1}^{M}\vec{\theta}_{i}\preceq \vec{u}_{\max}\ \&\&\ \vec{\theta}_{i}\succeq\0,i }}$.
-\todo{The sum $\sum_{i=1}^{M}\vec{\theta}_{i}$ can also be represented by the matrix multiplication $I_{c}^{M}\vec{\theta}$.
-}
-
+From~\cite{BoydEtAl2015} it is known that $-\lambdaik$ are sub-gradients of objectives $J_{i}$ and by consequence also of objective $J[k]$.
+Plugging it in the place of $\vec{g}[k]\p$ we can find an update of the form
 \begin{equation}
   \label{eq:thetaNegot}
-\thetai\pplusone=\thetai\p+\rho\left(\vec{\lambda}_{i}^{\star} (\vec{\theta}_{i}\p)-I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{\lambda}^{\star} (\vec{\theta}\p)\right)
+\vec{\theta}[k]\pplusone=\Proj^{\set{H}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p),
+\end{equation}
+which henceforth is referred as the \emph{negotiation} phase.
+
+Once the \emph{negotiation} for a given time $k$ converges, the $\optuikk$ found in the last step of the negotiation are applied in their corresponding agent and then the receding horizon strategy is followed.
+
+The algorithm to find the optimal $\optthetai[k]$ can be summarized in algorithm~\ref{alg:quantityAlg}, and the exchange between coordinator and agents can be seen in Fig.~\ref{fig:dmpc_graph}.
+
+\begin{algorithm2e}[h]
+  \DontPrintSemicolon%
+  $p:=0$\;
+  Coordinator initializes $\vec{\theta}\p$ \;
+  \Repeat{$\|\vec{\theta}^{(p)} -\vec{\theta}^{(p-1)}\|\leq\epsilon$}{
+  Subsystems solve~\eqref{eq:DOP_local}, and send $\optlambdai (\thetai\p)$\;
+  Coordinator updates allocations~\eqref{eq:thetaNegot}\;
+  $p:=p+1$
+}
+ \caption{Quantity decomposition based \acrlong{dmpc}.}\label{alg:quantityAlg}
+\end{algorithm2e}
+
+One can observe that instead of using $\mathcal{I}_{i}$, each agent only sends $\vec{\lambda}_{i}[k]$. The coordinator trusts in the authenticity of the $\vec{\lambda}_{i}[k]$ received to update the allocations, but if false data is injected, the negotiation can be driven by a malicious agent that can take advantage of this trust to favor itself at the expense of others or even destabilize the negotiation, as shown in~\cite{NogueiraEtAl2021}.
+
+Our main objective is to mitigate the effects of a given configuration where agents send untrustworthy
+\begin{equation}\label{eq:cheating}
+\lambdaicheat=\gamma_{i}(\lambdai).
 \end{equation}
 
-where ${I_{c}^{M}=\kron{\1_{M,1}}{I_{c}}}$, with ${c=N_{p}\pi_{\uik}}$.
-Observe that ${I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{v}=\frac{\sum_{i=0}^{M}\vec{v}_{i}}{M}}$.
+\section{Towards a safe dMPC}\label{sec:TSM}
 
-\no{\todo[delete probably]{
-  But observe in~\eqref{eq:projectedSubgradient} that if ${\vec{\theta}_{i}\p=\0}$, ${(\vec{\lambda}_{i}^{\star} (\vec{\theta}_{i}\p)-I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{\lambda}^{\star} (\vec{\theta}\p))}$ needs to be negative so $\vec{\theta}_{i}\pplusone$ becomes negative, which is impossible \question{is it though?} since $\lambdaik\succeq\0$, from the KKT optimality conditions, seen in~\cite[Chapter 5]{BoydVandenberghe2004}.
-}}
+Here we focus on the local problems in~\eqref{eq:DOP_local}, and study how their structure can contribute for a safe dMPC algorithm.
 
+\subsection{Local Problems --- Formal Analysis}\label{ssec:FA}
+
+The \emph{local problems} can be rewritten in a equivalent (same solution) constrained \qp{} form:
+\begin{equation}
+\begin{matrix}
+\underset{\Uik}{\mathrm{minimize}}& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
+\mathrm{s.t.}&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\\
+&\Uik\succeq\0_{c},
+\end{matrix}
+\label{eq:quadratic_case}
+\end{equation}
+where we stack the input prediction sequences in ${\Uik}$, and
+${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
+The exact values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
+The approach depends only on the fact that $H_{i}:\semidefpos$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
+
+We choose reference tracking just to illustrate the approach. With this objective, we have
+${\vik=\wik-C_{i}\xik}$, where $\wik$ is the output reference in time $k$, which yields
+\begin{equation}
+\small\begin{matrix*}[l]
+ H_i&=&\mathcal{D}_i^T\bar{Q}_i\mathcal{D}_i+\bar{R}_i\\
+\fik&=&\mathcal{D}_i^T\bar{Q}_i(\mathcal{M}_i\xik-\Wik),
+\end{matrix*}
+\label{eq:matrices}
+\end{equation}
+where $\Wik$ stacks the setpoint prediction sequence, which is supposed to be constant during the predicted horizon ${\Wik=\kron{\1_{\predhorz}}{\vec{w}_{i}[k]}}$ (no prior information).
+${\mathcal{M}_{i}}$  and ${\mathcal{D}_{i}}$ are the prediction matrices of the \mpc{}.
+${\bar{Q}_{i}=\kron{I_{\predhorz}}{Q_{i}}}$, and ${\bar{R}_{i}=\kron{I_{\predhorz}}{R_{i}}}$.
+
+\begin{figure}[t]
 % TODO(accacio): correct image
-\begin{figure}[h]
   \centering
   \begin{tikzpicture}[node distance=1.7cm]
     \tikzset{
@@ -233,65 +335,26 @@ Observe that ${I_{c}^{M} \pseudoinv{I_{c}^{M}}\vec{v}=\frac{\sum_{i=0}^{M}\vec{v
     \draw[-latex] (c) to [out=-30,in=120] node [sloped,above] {$\vec{\theta}_{M}$} (am);
 
   \end{tikzpicture}
-  \caption{Graph representation of Coordinator exchangin with $M$ agents in a \dmpc{} framework.}\label{fig:dmpc_graph}
+  \caption{Graph representation of Coordinator exchanging with $M$ agents in a \dmpc{} framework.}\label{fig:dmpc_graph}
 \end{figure}
 
-\begin{algorithm2e}[h]
-  \DontPrintSemicolon%
-  $p:=0$\;
-  Coordinator initializes $\vec{\theta}\p$ \;
-  \Repeat{$\|\vec{\theta}^{(p)} -\vec{\theta}^{(p-1)}\|\leq\epsilon$}{
-  Subsystems solve~\eqref{eq:DOP_local}, and send $\optlambdai (\thetai\p)$\;
-  Coordinator updates allocations~\eqref{eq:thetaNegot}\;
-  $p:=p+1$
-}
- \caption{Quantity decomposition based \acrlong{dmpc}.}\label{alg:quantityAlg}
-\end{algorithm2e}
-
-\subsection{Local Problems --- Formal Analysis}\label{ssec:FA}
-% \todo{As seen in \cite{NogueiraEtAl2021}},
-
+As seen in~\cite{BemporadEtAl2002} and in~\cite{BorrelliEtAl2017}, the solution for a constrained linear quadratic regulation problem yields in a \pwa{} function.
+Similarly, we can get an explicit solution for its dual variables $\vec{\lambda}_{i}[k]$, which is a \pwa{} function with respect to $\vec{\theta}_{i}[k]$:
 \begin{equation}
-\begin{matrix}
-\underset{\Uik}{\mathrm{minimize}}& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
-\mathrm{s.t.}&\Theta_{i}\Uik\preceq\vec{\theta}_{i}:\vec{\lambda}_{i}\\
-&\Uik\succeq\0
-\end{matrix}
-\label{eq:quadratic_case}
-\end{equation}
-
-If we choose reference tracking as our, for instance, we have:
-\begin{equation}
-\small\begin{matrix*}[l]
- H_i&=&\mathcal{D}_i^T\bar{Q}_i\mathcal{D}_i+\bar{R}_i\\
-\fik&=&\mathcal{D}_i^T\bar{Q}_i(\mathcal{M}_i\xik-\Wik)\\
-
-\end{matrix*}
-\label{eq:matrices}
-\end{equation}
-
-We stack in vectors $\Uik$ and $\Wik$
-the input and setpoint predictions sequences ${\uiseq}$ and ${\wiseq}$.
-${\mathcal{M}_{i}}$  and ${\mathcal{D}_{i}}$ are the prediction matrices of the \mpc{}.
-$\bar{Q}_{i}$, $\bar{R}_{i}$, and $\Theta_{i}$ are block diagonal matrices built repeating $\predhorz$ times $Q_{i}$, $R_{i}$, and $\Gamma_i$ respectively.
-\todo{
-  Observe that $H_{i}:\defpos$, and that $\fik$ varies with $k$.
-}
-
-\todo{As seen in~\cite{BemporadEtAl2002} and in~\cite{BorrelliEtAl2017}, the solution for a constrained linear quadratic regulation problem yields in a \pwa{} function.
-Similarly, we can get an explicit  solution for its dual variables $\vec{\lambda}_{i}$, which is also a \pwa{} function with respect to $\vec{\theta}_{i}$:}
-\begin{equation}
+\resizebox{.88\columnwidth}{!}{$
   \begin{aligned}
     \label{eq:lambdafuntheta}
-    \lambdai=
+    \lambdaik=
     \begin{cases}
-      -P_{i}^{1}\vec{\theta}_{i}-\vec{s}_{i}^{1}[k]&\text{if}\ G_{1}[k]\thetai \preceq z_{1}[k] \\
+      -P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]&\text{if}\ G_{1}[k]\thetaik \preceq z_{1}[k] \\
       \qquad\quad \vdots&\qquad\quad \vdots\\
-      -P_{i}^{N}\vec{\theta}_{i}-\vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetai \preceq z_{N}[k] \\
+      -P_{i}^{N}\thetaik-\vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetaik \preceq z_{N}[k] \\
     \end{cases}
   \end{aligned}
+  $}
 \end{equation}
-The halfspaces defined by the set of pairs $(G_{j}[k],z_{j}[k])$ represent a combination of active/inactive constraints of $\Theta_{i}\Uik\preceq\vec{\theta}_{i}$ for a given time $k$.
+
+The halfspaces defined by the set of pairs $(G_{j}[k],z_{j}[k])$ represent a combination of active/inactive constraints of ${\bar{\Gamma}_{i}\Uik\preceq\thetaik}$ for a given time $k$.
 
 \begin{challenge}\label{ch:partition_unknown}
   It is important to note that since the actual state is unknown by the coordinator, it cannot anticipate the partition of the space for each agent.
@@ -302,54 +365,63 @@ The halfspaces defined by the set of pairs $(G_{j}[k],z_{j}[k])$ represent a com
 
  As each constraint can be active or inactive, for a group of $n$ constraints, we can have at most $N=2^{n}$ different combinations of active/inactive sets and consequently $N$ regions (or zones).
  \begin{remark}\label{re:N_different_zones}
-  Observe that depending on the constraints, some of these combinations can be redundant or even make the optimization infeasible.
+  Observe that depending on the constraints, some of these combinations can be redundant or even make the optimization infeasible (empty intersection).
  \end{remark}
  \begin{assumption}
-   We assume that none of these cases in Remark~\ref{re:N_different_zones} can occur, and we have $N$ zones.
+   We assume that none of these cases in Remark~\ref{re:N_different_zones} can occur, thus we have $N$ zones.
  \end{assumption}
 
-\todo{
-  The values of $P_{i}^{j}$ and $\vec{s}_{i}^{j}$, depend on $H_{i}$, $\fik$ and parts of $\Theta_{i}$ which represents the active constraints.
-  If we take for example when all constraints are active, we have ${P_{i}^{1}={(\Theta_{i}H_{i}^{-1}\Theta_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\Theta_{i}H_{i}^{-1}\fik}$.
-  And if all constraints are inactive, ${P_{i}^{N}=0_{\card{\Theta_{i}}\times\card{\Theta_{i}}}}$ and ${\vec{s}_{i}^{N}=\0}$.
-  Observe that in all functions, only $\vec{s}_{i}^{j}[k]$ depend on time $k$.
-}
+  $P_{i}^{j}$ and $\vec{s}_{i}^{j}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$, depending on the active constraints.
+  For example, if we take the case when all constraints are active, we have ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
+  And if all constraints are inactive, ${P_{i}^{N}=0_{c\times c}}$ and ${\vec{s}_{i}^{N}=\0_{c}}$.\\
+  Observe that in all components of the function in~\eqref{eq:lambdafuntheta}, only $\vec{s}_{i}^{j}[k]$ depend on time $k$.
 
-\subsection{Attack in DMPC scheme}\label{ssec:attack}
 
-\begin{equation}\label{eq:cheating}
-\lambdaicheat=\gamma_{i}(\lambdai)
-\end{equation}
-
-% \subsection{Detection and mitigation}
+\subsection{The Attack}\label{ssec:attack}
+We suppose the malicious agent choose a function $\gamma_{i}(\cdot)$ to use throughout a given time $k$.
 \begin{assumption}
-  $\gamma_{i}(\cdot)$ is the same during the negotiation phase for a given time $k$ (it does not depend on $p$).
+  $\gamma_{i}(\cdot)$ does not change during the negotiation phase for a given time $k$.
 \end{assumption}
 
+In~\cite{NogueiraEtAl2021}, we have seen that one interpretation of $\lambdai$ is the dissatisfaction of an agent with the resource allocated for it, with $\lambdai=\0_{c}$ meaning total satisfaction.
+\begin{assumption}\label{ass:gamma_zero}
+  We suppose $\gamma(\cdot)=0\iff\lambdai=\0_{c}$
+\end{assumption}
+
+
 \begin{assumption}
-  equation
-  T inversivel
-  We suppose the agent chooses a linear function such as \[ {\tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i}} \] resulting in:
-  \begin{equation}
+  We suppose the agent chooses a linear function such as \[ {\tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i}}, \]
+  where $\determinant{T}\neq 0$ (from assumption~\ref{ass:gamma_zero}).
+\end{assumption}
+
+Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
+\begin{equation}
+  \resizebox{.88\columnwidth}{!}{$
     \label{eq:linear_cheating}
-    \tilde{\lambdai}=
-        \begin{cases}
+    \lambdaicheat[k]=
+    \begin{cases}
       -\Tik P_{i}^{1}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{1}[k]&\text{if}\ G_{1}[k]\thetai \preceq z_{1}[k] \\
       \qquad\quad \vdots&\qquad\quad \vdots\\
-      -\Tik P_{i}^{N}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetai \preceq z_{N}[k] \\
+      -\Tik P_{i}^{N}\vec{\theta}_{i}-\Tik \vec{s}_{i}^{N}[k]&\text{if}\ G_{N}[k]\thetai \preceq z_{N}[k],
     \end{cases}
-  \end{equation}
-and we define $\tilde{P}_{i}^{j}[k]=\Tik P_{i}^{j}$ and $\tilde{\vec{s}}_{i}^{j}[k]=\Tik\vec{s}_{i}^{j}[k]$.
-\end{assumption}
+    $}
+\end{equation}
+where we define $\tilde{P}_{i}^{j}[k]=\Tik P_{i}^{j}$ and $\tilde{\vec{s}}_{i}^{j}[k]=\Tik\vec{s}_{i}^{j}[k]$.
+Observe that as the function is applied only in $\lambdaik$ it does not affect the hyperplanes generating the zones.
+
 \todo{
-  Since $\Theta_{i}$ are diagonal we can assure\pdfnote{proof?} there exists one \question{zone?}zone where all constraints are active. We will fix $j=1$ for this zone and called it the $1$-zones.
-  We can estimate the values for this partition using:
+  Since $\bar{\Gamma}_{i}$ are block diagonal we can assure\pdfnote{proof?} there exists one zone where all constraints are active.
 }
+\begin{assumption}
+  We suppose that for every time $k$ there exists a zone for each agent $i$ where all constraints are active.
+\end{assumption}
+
+Fixing the index for the zones where all constraints are active to $1$, we can called them the $1$-zones.
+We can estimate the parameters of their respective solution in~\eqref{eq:linear_cheating} with
 \begin{equation}
   \label{eq:lambdafuntheta_tilde}
-\tilde{\lambdai}=\gamma_{i}(\lambdai(\thetai))=-\widehat{\tilde{P}_{i}^{1}}[k]\vec{\theta}_{i}-\widehat{\tilde{\vec{s}}_{i}^{1}}[k]
+\lambdaicheat[k]=\gamma_{i}(\lambdai(\thetaik))=-\widehat{\tilde{P}_{i}^{1}}[k]\thetaik-\widehat{\tilde{\vec{s}}_{i}^{1}}[k].
 \end{equation}
-
 
 \begin{assumption}\label{ass:Pnominal}
   The nominal value of $P_{i}^{1}$, denoted $\bar{P}_{i}^{1}$, is available from reliable attack-free historical data.
@@ -415,9 +487,9 @@ As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we pr
   \label{eq:linear_cheating_random}
   \randomvec{\lambda}_{o}=
   \begin{cases}
-    -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{with probability}\ \pi_{1} \\
+    -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{if in zone } 1\\
     \qquad\quad \vdots&\qquad\quad \vdots\\
-    -\tilde{P}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{Z}&\text{with probability}\ \pi_{Z} \\
+    -\tilde{P}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{Z}&\text{if in zone } Z\\
   \end{cases}.
 \end{equation}
 

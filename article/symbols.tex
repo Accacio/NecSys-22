@@ -80,16 +80,18 @@
 \newcommand{\wiseq}{\mpcvec{w}[i][k:k+\predhorz-1][k]}
 \newcommand{\Wik}{\mpcvec{W}}
 
+\newcommand{\qik}{\mpcvec{q}}
+\newcommand{\qiseq}{\mpcvec{q}[i][k:k+\predhorz-1][k]}
 \newcommand{\thetaik}{\mpcvec{\theta}}
-\newcommand{\thetaiseq}{\mpcvec{\theta}[i][k:k+\predhorz-1][k]}
 \newcommand{\optthetaiseq}{\mpcvec*{\theta}[i][k:k+\predhorz-1][k]}
 \newcommand{\thetaseq}{\mpcvec{\theta}[][k:k+\predhorz-1][k]}
 \newcommand{\optthetaseq}{\mpcvec*{\theta}[][k:k+\predhorz-1][k]}
 \newcommand{\thetai}{\vec{\theta}_i}
 \newcommand{\optthetai}{\vec{\theta}_i^{\star}}
 
+\newcommand{\dik}{\mpcvec{d}}
+\newcommand{\diseq}{\mpcvec{d}[i][k:k+\predhorz-1][k]}
 \newcommand{\lambdaik}{\mpcvec{\lambda}}
-\newcommand{\lambdaiseq}{\mpcvec{\lambda}[i][k:k+\predhorz-1][k]}
 \newcommand{\lambdai}{\vec{\lambda}_i}
 \newcommand{\lambdaicheat}{\tilde{\vec{\lambda}}_i}
 \newcommand{\optlambdai}{\vec{\lambda}_i^{\star}}
@@ -118,6 +120,7 @@
 }
 
 \acrSing{mpc}{MPC}{Model-based Predictive Control}
+\acrSing{qp}{QP}{\emph{quadratic program}}
 \acrSing{dmpc}{dMPC}{distributed Model-based Predictive Control}
 \acrSing{pwa}{PWA}{Piecewise Affine}
 \acrSing{EM}{EM}{Expectation Maximization}
