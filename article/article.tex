@@ -63,8 +63,8 @@
 \begin{abstract}% Abstract of not more than 250 words.
   \todo[write abstract]{
   In distributed predictive control structures, communication among agents is required to achieve a consensus and approach an optimal global behavior. Such negotiation mechanisms are sensitive to attacks on these exchanges.
-  This paper proposes a monitoring scheme that detects and mitigates these attacks' effects in a resource allocation framework.
-  The performance of the proposed method is illustrated through simulations of the temperature control of multiple rooms under input power constraints.
+  This paper proposes a monitoring scheme based on Expectation Maximization to detect and mitigate the effects of attacks in a resource allocation framework.
+  The performance is assessed through academical example of the temperature control of multiple rooms under input power constraints.
 }
 \end{abstract}
 
@@ -84,26 +84,20 @@ Given the complexity, scale and even geographic location of these structures, it
 For these systems, a set of controllers are designed to ensure the safe and efficient operation of the facilities collectively.
 
 This operation is done cooperatively, where the controllers exchange information with each other.
-This approach can be used, for example, for the voltage regulation of electrical networks~\citep{HansEtAl2019}, and the production-consumption balance in these same networks~\citep{HerreraEtAl2015}.
+This approach can be used, for example, for the voltage regulation of electrical networks, and the production-consumption balance in these same networks.
 Multi-agent systems~\citep{KantamneniEtAl2015} or \dmpc{}~\citep{MaestreEtAl2014} are standard tools to design these controllers.
 
-When one of these controllers is attacked, it can result in the violent destruction of the corrupted element (perhaps the whole system), or more subtly, it can lead to deviant behavior that is more difficult to detect.
-Usually the attacks aim to de-optimize the global operation by benefiting/prejudicing some specific group of controllers, or to \todo{slowly} lead the system towards a state of malfunction/instability~\todo[use other]{\citep{NogueiraEtAl2021}}.
+A few articles have focused on safety in \dmpc{} frameworks, presenting vulnerabilities of different frameworks, such as Lagrange-based decomposition~\citep{VelardeEtAl2017}, Jacobi-Gauss decomposition~\citep{ChanfreutEtAl2018} and primal decomposition~\citep{NogueiraEtAl2021}.
 
-With this in mind, a few articles have focused on safety in \dmpc{} frameworks, presenting vulnerabilities of different frameworks, such as lagrange-based decomposition~\citep{VelardeEtAl2017}, and Jacobi-Gauss decomposition~\citep{ChanfreutEtAl2018}.
+The authors in these works highlight the complexity of the problems. A modification of a local goal, the hacking of communication, or the failure of one of the agents are events that disrupt global behavior.
+If one of these agents is attacked, it can result in the violent destruction of the corrupted element (perhaps the whole system), or more subtly, it can lead to deviant behavior that is more difficult to detect.
+% Usually the attacks aim to de-optimize the global operation by benefiting/prejudicing some specific group of controllers, or to lead the system towards a state of malfunction/instability~\todo[use other]{}.
 
-The authors in~\cite{VelardeEtAl2017} highlight the complexity of the problems. A modification of a local goal, the hacking of communication,
-or the failure of one of the agents are events that disrupt global behavior.
+Some strategies are presented to mitigate the effects of such event.
+For instance dismissing extreme values as in~\cite{VelardeEtAl2017}, or
+using secure scenarios based on reliable historical data~\cite{MaestreEtAl2021}.
 
-Some strategies are presented to mitigate the effects of such event,
-for instance dismissing extreme values as in~\cite{VelardeEtAl2017}, or
-using secure scenarios based on reliable historical data~\cite{VelardeEtAl2017a}.
-The most recent~\cite{MaestreEtAl2021} presents ways to generate these scenarios.
-
-Our previous work~\citep{NogueiraEtAl2021} proposed a framework dedicated to
-sharing resource algorithms (primal decomposition), and shown its vulnerabilities.
-More precisely, \fdi{} in the communication
-between a coordinator and local constraint-free agents bound by global equality constraints. The paper also proposed a safe algorithm based on data reconstruction to mitigate the effects.
+Our previous work~\citep{NogueiraEtAl2021} proposed a safe algorithm based on data reconstruction to mitigate the effects of a \fdi{} in the communication between a coordinator and local constraint-free agents, which were bound by global equality constraints.
 
 In this paper, we propose an extension of our approach by including local constraints and changing the global constraints.
 This extension profoundly changes the complexity, as the exchanges between the
@@ -113,23 +107,29 @@ This leads not only to a combinatorial explosion but also to a parametric identi
 To overcome this problem, we propose using a learning method based on the \EM{} algorithm~\citep{DempsterEtAl1977}, which allows us to estimate the corruption
 mechanism and correct it if necessary.
 
-\todo{The paper is constructed as follows}
+\todo{
+This paper is organized as follows.
+First, in Section~\ref{sec:PS}, we introduce the primal decomposition-based DMPC and its vulnerabilities.
+Then in Section~\ref{sec:TSM} we study the local problems and propose a detection and mitigation mechanism based on the Expectation Maximization algorithm.
+Moreover, in Section~\ref{sec:App_dMPC}, we illustrate the algorithm with academic simulation and we assess its performance.
+Finally, in Section~\ref{sec:CC}, we conclude, and we give an outlook of future works.
+}
 
 \emph{Notation:}
 In this paper, $\norm{\cdot}$, $\norm{\cdot}_{F}$, and $\norm{\vec{v}}_{Y}$ represent the $\ell_{2}$ norm, the Frobenius norm and the weighted norm $\norm{Y^{\frac{1}{2}}\vec{v}}$.
-$\Proj^{\set{T}}(\cdot)$ is the Euclidean projection onto set $\set{T}$.
+$\Proj^{\set{T}}(\cdot)$ is the Euclidean projection onto $\set{T}$.
 % $\card{x}$ is the number of elements in $x$.
-$\kron{}{}$, and $\hadamard{}{}$ are the Kronecker and Hadamard products.
+$\kron{}{}$ ($\hadamard{}{}$) is the Kronecker (Hadamard) product.
 $\vectorize{A}$ vectorizes matrix $A$.
 ${n\mathbin{:}i\mathbin{:}j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\mathbin{:}j}$ is equal to ${n\mathbin{:}1\mathbin{:}j}$.
-$[A,B]$ and $[A;B]$ are horizontal and vertical concatenation of matrices.
+$[A,B]$ ($[A;B]$) is horizontal (vertical) concatenation of matrices.
 ${\0_{m}=0_{m\times 1}}$ (${\1_{m}=1_{m\times 1}}$), where
 $0_{m\times n}$ ($1_{m\times n}$) is a $0$ ($1$) filled \mbox{$m$-by-$n$} matrix.
 $\indicator{x}$ is the indicator function returning $1$ if $x$ is true and $0$ otherwise.
-$\preceq$ is the component-wise less or equal for vectors and matrix inequality for matrices in ${\symmetric^{n}=\setbuild{X:\R^{n\times n}}{X'=X}}$.
+$\preceq$ is the component-wise inequality for vectors and matrix inequality for matrices in ${\symmetric^{n}=\setbuild{X:\R^{n\times n}}{X\T=X}}$.
 ${\defpos^{n}=\setbuild{X:\symmetric^{n}}{X\succ 0}}$, ${\semidefpos^{n}=\setbuild{X:\symmetric^{n}}{X\succeq 0}}$.
 $I_{c}$ is the identity matrix of size $c$.
-$A^{\dagger}$ is the generalized inverse ${{(A^{T}A)}^{-1}A^{T}}$.
+$A^{\dagger}={{(A^{T}A)}^{-1}A^{T}}$.
 $\determinant{A}$ is the determinant of $A$.
 A vector $\vec{v}_{i}$, correspond to the $i$-th agent, and these vectors can be stacked in a vector $\vec{v}$.
 $\random{a},\random{A},\randomvec{a}$ are random variables, scalar, matrix and vector respectively.
@@ -141,7 +141,7 @@ ${\diag(A_{1},\dots,A_{N})}$ corresponds to a block diagonal matrix.
 In this section we present an algorithm to decompose a \mpc{} problem based on the primal decomposition \citep{BoydEtAl2015}, and a vulnerability of the decomposition that can be exploited by a malicious agent.
 
 \subsection{Model Predictive Control}\label{ssec:MPC}
-Let us consider a system composed of $M$ discrete-time linear time-invariant agents, whose dynamics are ruled by:
+Consider a system composed of discrete-time linear time-invariant agents ${i\in\set{M}=\{1\mathbin{:}\nsubsystems\}}$, modeled by
 \begin{equation}
 \begin{matrix}
   \label{eq:systems}
@@ -157,23 +157,23 @@ Each agent's input $\uik$ is constrained by
   \0_{n_{u}}\preceq\uik\preceq\vec{u}_{\max},
 \end{equation}
 with ${\umax:\R^{n_{u}}}$.
-The $M$ agents are coupled by global input constraints with weighting matrices \todo{${\Gamma_{i}:\semidefpos^{n_{u}}}$}:
+The agents are coupled by global input constraints with weighting matrices \todo{${\Gamma_{i}:\semidefpos^{n_{u}}}$}:
 \begin{equation}
   \label{eq:global_constraint}
-  \sum^{\nsubsystems}_{i=1}\Gamma_{i}\uik\preceq\umax.
+  \sum_{i\in\set{M}}\Gamma_{i}\uik\preceq\umax.
 \end{equation}
 
-
-The overall system is controlled by a \mpc{}, which predicts the dynamics for a finite prediction horizon $\predhorz$ and computes the optimal input by solving the following problem:
+The overall system is controlled by a \mpc{}, which
+computes the optimal input for a finite prediction horizon ${\set{H}=\{1\mathbin{:}\predhorz\}}$ by solving the following problem:
 \begin{equation}\label{eq:GOP}
 \resizebox{.88\columnwidth}{!}{$
 \begin{matrix}
-\underset{\useq}{\mathrm{minimize}}&\resizebox{0.35\textwidth}{!}{$\overbrace{\sum\limits^{M}_{i=1} \overbrace{\sum_{j=1}^{\predhorz} \norm{\mpcvec{v}[i][k+j][k]}^{2}_{Q_i}+\norm{\mpcvec{u}[i][k+j-1][k]}^{2}_{R_i}}^{\textstyle{} \obji}}^{\textstyle{} \globobj}$}\\
+\underset{\useq}{\mathrm{minimize}}&\resizebox{0.35\textwidth}{!}{$\overbrace{\sum\limits_{i\in\set{M}} \overbrace{\sum_{j\in\set{H}}\norm{\mpcvec{v}[i][k+j][k]}^{2}_{Q_i}+\norm{\mpcvec{u}[i][k+j-1][k]}^{2}_{R_i}}^{\textstyle{} \obji}}^{\textstyle{} \globobj}$}\\
 \mathrm{subject~ to}&~\eqref{eq:systems},\eqref{eq:u_local_constraints}\ \mathrm{and}\ \eqref{eq:global_constraint}
 \left\}\small
 \begin{aligned}
-  &\forall i\in \{1:\nsubsystems\}\\
-  &\forall j\in \{1:\predhorz\}
+  &\forall i\in\set{M}\\
+  &\forall j\in\set{H}
 \end{aligned}\right.,
 
 \end{matrix}
@@ -184,10 +184,9 @@ where ${Q_{i}:\semidefpos}$, ${R_{i}:\defpos}$, and $\vik$ is a control objectiv
 $\optglobobj$ denotes the optimal value of the objective function for the the optimal control sequences ${\optuiseq}$.
 The problem in~\eqref{eq:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in their respective subsystem $i$, following a \rhs{}.
 
-Due to the monolithic aspect of~\eqref{eq:GOP}, solving it at each time $k$ can be quite challenging, since the prediction horizon and the number of agents can be large making the process computationally intensive. Another issue that can arise is the fact that the complete information (${\set{I}_{i}=\{A_{i},B_{i},C_{i},\vec{v}_{i}[k],Q_{i},R_{i}\}}$) from all the subsystems is needed to solve the problem,
+Solving~\eqref{eq:GOP} at each time $k$ can be quite challenging, since the prediction horizon and the number of agents can be large making the process computationally intensive. Another issue that can arise is the fact that the complete information \todo[verify]{(${\set{I}_{i}=\{A_{i},B_{i},C_{i},\vec{v}_{i}[k],Q_{i},R_{i}\}}$)} from all the subsystems is needed to solve the problem,
 which can be viewed negatively in a confidentiality point of view.
 
-One can see that if it were not for the global constraints~\eqref{eq:global_constraint}, the problem would be easily decomposed in $M$ parts and solvable in parallel.
 So, we use the \emph{primal decomposition} method, sometimes called \emph{quantity decomposition} or \emph{resource allocation}, with wich we can profit from the parallelism, while avoiding the use of the complete information $\set{I}_{i}$.
 
 \subsection{Primal Decomposition based dMPC}\label{ssec:dMPC}
@@ -197,43 +196,56 @@ The technique consists of decomposing the monolithic \mpc{} in~\eqref{eq:GOP} in
   \begin{equation}
     \left.
       \small
-      \begin{aligned}
-        J_{i}^{\star}(\thetaik)&=\underset{\uiseq}{\mathrm{minimize}} \obji\\
-        \mathrm{s.t.} &\quad\eqref{eq:systems}\ \&\ \eqref{eq:u_local_constraints}\\
-        &\quad\Gamma_{i}\uik\preceq\qik:\dik\\
-      \end{aligned}
+        J_{i}^{\star}(\thetaik)=
+        \begin{matrix}
+        \underset{\uiseq}{\mathrm{minimize}}&\obji\\
+        \mathrm{subject~ to} &\eqref{eq:systems}\ \&\ \eqref{eq:u_local_constraints}\\
+        &\Gamma_{i}\uik\preceq\qik:\dik\\
+      \end{matrix}
     \right\}
     \small
     \begin{aligned}
-      &\forall i\in \{1\mathbin{:}\nsubsystems\}\\
-      &\forall j\in \{1\mathbin{:}\predhorz\}
+      &\forall i\in\set{M}\\
+      &\forall j\in\set{H}
     \end{aligned}
     \label{eq:DOP_local}
   \end{equation}
+
   \begin{equation}
     \small
     \begin{aligned}
-      J^{\star}&=\underset{\qiseq}{\mathrm{minimize}}\sum^{\nsubsystems}_{i=1} J^{\star}_i(\qik)\\
-      \mathrm{s.t.} &\quad \sum_{i=1}^{\nsubsystems}\qik\preceq\umax,\ \forall j\in\{1\mathbin{:}\predhorz\}\\
-      &\quad \qik[k]\succeq\0_{n_{u}}\text{, } \forall i\in\{1\mathbin{:}M\},\forall j\in\{1\mathbin{:}\predhorz\}
+      J^{\star}=
+      \begin{matrix}
+        \underset{\qiseq}{\mathrm{minimize}} &\sum_{i\in\set{M}} J^{\star}_i(\qik)\\
+        \mathrm{subject~ to} &
+        \left.
+          \begin{aligned}
+            \quad \sum_{i\in\set{M}}\qik\preceq\umax\\
+            \quad \qik[k]\succeq\0_{n_{u}},       \forall i\in\set{M}
+          \end{aligned}
+        \right\}
+        \begin{aligned}
+          \forall j\in\set{H}
+        \end{aligned}
+      \end{matrix}
     \end{aligned}
     \label{eq:DOP_master}
   \end{equation}
 \end{subequations}
-The modified \mpc{} problems in~\eqref{eq:DOP_local} are created by exchanging the $\vec{u}_{\max}$ in~\eqref{eq:global_constraint} by vectors $\qik$, where which one corresponds to the quantity of the total resource $\vec{u}_{\max}$ that is allocated to agent $i$ in time $[k]$ for each prediction $j$, thus the names \emph{resource allocation} and \emph{quatity decomposition}. This new set of constraints have associated dual variables ${\dik\succeq\0_{n_{u}}}$. The sequence of this variables variables ${\qiseq}$ and ${\diseq}$ can be aggregated in vectors ${\thetaik=\kron{\1_{\predhorz}}{\qik}}$, and ${\lambdaik=\kron{\1_{\predhorz}}{\dik}}$.
+The modified \mpc{} problems in~\eqref{eq:DOP_local} are created by exchanging the $\vec{u}_{\max}$ in~\eqref{eq:global_constraint} by vectors $\qik$, where which one corresponds to the quantity of the total resource $\vec{u}_{\max}$ that is allocated to agent $i$ in time $k$ for each prediction $j$, thus the names \emph{resource allocation} and \emph{quatity decomposition}. This new set of constraints have associated dual variables ${\dik\succeq\0_{n_{u}}}$. The sequence of this variables ${\qiseq}$ and ${\diseq}$ can be aggregated in vectors ${\thetaik=\kron{\1_{\predhorz}}{\qik}}$, and ${\lambdaik=\kron{\1_{\predhorz}}{\dik}}$.
 
 The \emph{master problem} finds the optimal allocation sequences $\optthetai$ by using a projected sub-gradient method:
 \begin{equation}
   \label{eq:projectedSubgradient}
-\vec{\theta}[k]\pplusone=\Proj^{\set{H}}(\vec{\theta}[k]\p-\rho\p\vec{g}[k]\p),
+\vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p-\rho\p\vec{g}[k]\p),
 \end{equation}
-where ${\set{H} = \setbuild{\vec{\theta}}{I_{c}^{M}\vec{\theta}\preceq \vec{U}_{\max}\ \&\&\ \vec{\theta}\succeq\0 }}$, being ${c=\predhorz n_{u}}$, ${I_{c}^{M}=\kron{\1_{M}}{I_{c}}}$, ${\vec{U}_{\max}=\kron{\1_{\predhorz}}{\vec{u}_{\max}}}$, $(p)$ is a given step in the iterative process and $\vec{g}\p[k]$ is a sub-gradient of the objective of the function problem in~\eqref{eq:DOP_master} in step $(p)$.
+where ${\set{S} = \setbuild{\vec{\theta}}{I_{c}^{M}\vec{\theta}\preceq \vec{U}_{\max}\ \&\ \vec{\theta}\succeq\0 }}$, being ${c=\predhorz n_{u}}$, ${I_{c}^{M}=\kron{\1_{M}}{I_{c}}}$, ${\vec{U}_{\max}=\kron{\1_{\predhorz}}{\vec{u}_{\max}}}$, $(p)$ is a given step in the iterative process and $\vec{g}\p[k]$ is a sub-gradient of the objective function of problem in~\eqref{eq:DOP_master} in step $(p)$.
 
 From~\cite{BoydEtAl2015}, it is known that $-\lambdaik$ are sub-gradients of objective $J[k]$.
 Plugging it in $\vec{g}[k]\p$ we have
 \begin{equation}
   \label{eq:thetaNegot}
-\vec{\theta}[k]\pplusone=\Proj^{\set{H}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p),
+\vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p),
 \end{equation}
 \newcommand{\negotiation}{\emph{negotiation}}
 which henceforth is referred as the \negotiation.
@@ -251,15 +263,15 @@ The algorithm to find the optimal $\optthetai[k]$ can be summarized in algorithm
   Coordinator updates allocations~\eqref{eq:thetaNegot}\;
   $p:=p+1$
 }
- \caption{Quantity decomposition based \acrlong{dmpc}.}\label{alg:quantityAlg}
+ \caption{Quantity decomposition based \acrshort{dmpc}.}\label{alg:quantityAlg}
 \end{algorithm2e}
 
 One can observe that instead of using $\mathcal{I}_{i}$, each agent only sends $\lambdaik$.
-An interpretation of $\lambdaik$ is the dissatisfaction of an agent with the resource $\thetaik$ allocated for it, where ${\lambdaik=\0_{c}}$ means total satisfaction.
-The coordinator trusts in the authenticity of the $\vec{\lambda}_{i}[k]$ received to update the allocations, but if false data is injected, the \negotiation{} can be driven by a malicious agent that can take advantage of this trust to favor itself at the expense of others or even destabilize the \negotiation{}, as shown in~\cite{NogueiraEtAl2021}.
+An interpretation of $\lambdaik$ is the dissatisfaction of agent $i$ with the resource $\thetaik$ allocated for it, where ${\lambdaik=\0_{c}}$ means total satisfaction.
+The coordinator trusts in the authenticity of the $\vec{\lambda}_{i}[k]$ received to update the allocations, but if false data is injected, the \negotiation{} can be driven by a malicious agent which can take advantage of this trust to favor itself, harm others or even destabilize the \negotiation{}, as shown in~\cite{NogueiraEtAl2021}.
 
 
-Our main objective is to mitigate the effects of a given configuration where agents send untrustworthy of the form
+Our main objective is to mitigate the effects of a given configuration where agents send untrustworthy
 \begin{equation*}
 \lambdaicheat=\gamma_{i}(\lambdai).
 \end{equation*}
@@ -270,14 +282,17 @@ Here we focus on the local problems in~\eqref{eq:DOP_local}, and study how their
 
 \subsection{Local Problems --- Formal Analysis}\label{ssec:FA}
 
-The \emph{local problems} can be rewritten in a equivalent (same solution) constrained \qp{} form:
-\begin{equation}\label{eq:quadratic_case}
-\begin{matrix}
-\underset{\Uik}{\mathrm{minimize}}& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
-\mathrm{s.t.}&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\\
-&\Uik\succeq\0_{c},
-\end{matrix}
-\end{equation}
+The \emph{local problems}~\eqref{eq:DOP_local} can be rewritten in a equivalent (same solution) constrained \qp{} form:
+\todo[Correct alignment maybe]{
+  \begin{subequations}\label{eq:quadratic_case}
+    \begin{align}
+      \label{eq:4}
+      \underset{\Uik}{\mathrm{minimize}}&& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
+      \mathrm{s.t.}&&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\label{eq:constraints}\\
+                                        &&\Uik\succeq\0_{c},
+    \end{align}
+  \end{subequations}
+}
 where ${\Uik}$ stacks the input prediction sequences, and
 ${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
 The exact values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
@@ -297,38 +312,37 @@ where $\Wik$ stacks the setpoint prediction sequence, which is supposed to be co
 ${\mathcal{M}_{i}}$  and ${\mathcal{D}_{i}}$ are the prediction matrices of the \mpc{}.
 ${\bar{Q}_{i}=\kron{I_{\predhorz}}{Q_{i}}}$, and ${\bar{R}_{i}=\kron{I_{\predhorz}}{R_{i}}}$.
 }
-
+\todo[make a better figure if time permits]{
 \begin{figure}[t]
-% TODO(accacio): correct image
   \centering
-  \begin{tikzpicture}[node distance=1.7cm]
+  \begin{tikzpicture}[node distance=1.5cm]
     \tikzset{
       agent/.style={draw,circle,minimum width=1cm,},
-      coord/.style={draw,circle,minimum width=1.7cm,very thick}
+      coord/.style={draw,circle,minimum width=1cm,very thick}
     }
     % \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
     % \node at (1.2,-1.3) {O};
     % \node (pi) at (-2.5,.5) {$\pi$};
     % \node (phi) at (2.5,-1.) {$\phi_{c}$};
 
-    \node[agent] (a1) {A$_{1}$};
+    \node[agent] (a1) {a$_{1}$};
     \node (a2) [right of=a1]  {$\dots$};
-    \node[agent] (am) [right of=a2] {A$_{M}$};
-    \node[coord] (c) [above of=a2] {Coord};
+    \node[agent] (am) [right of=a2] {a$_{M}$};
+    \node[coord] (c) [above of=a2] {C};
 
 
-    \draw[-latex] (a1) to [out=60,in=210] node [sloped,above] {$\vec{\lambda_{1}}$} (c) ;
-    \draw[-latex] (c) to [out=-120,in=30] node [sloped,below] {$\vec{\theta}_{1}$} (a1);
+    \draw[-latex] (a1) to [out=60,in=210] node [sloped,above] {$\vec{\lambda_{1}}[k]$} (c) ;
+    \draw[-latex] (c) to [out=-120,in=30] node [sloped,below] {$\vec{\theta}_{1}[k]$} (a1);
 
-    \draw[-latex] (am) to [out=150,in=-60]node [sloped,below] {$\vec{\lambda}_{M}$} (c);
-    \draw[-latex] (c) to [out=-30,in=120] node [sloped,above] {$\vec{\theta}_{M}$} (am);
+    \draw[-latex] (am) to [out=150,in=-60]node [sloped,below] {$\vec{\lambda}_{M}[k]$} (c);
+    \draw[-latex] (c) to [out=-30,in=120] node [sloped,above] {$\vec{\theta}_{M}[k]$} (am);
 
   \end{tikzpicture}
-  \caption{Graph representation of Coordinator exchanging with $M$ agents in a \dmpc{} framework.}\label{fig:dmpc_graph}
+  \caption{Exchange between coordinator (C) and agents $a_{i}$.}\label{fig:dmpc_graph}
 \end{figure}
+}
 
-As seen in~\cite{BemporadEtAl2002}, the solution for a linear constrained \qp{} problem yields in a \pwa{} function.
-Similarly, we can get an explicit solution for its dual variables $\vec{\lambda}_{i}[k]$, which is a \pwa{} function w.r.t. $\vec{\theta}_{i}[k]$:
+We can get an explicit solution for the dual variables $\vec{\lambda}_{i}[k]$, which are \acrfull{pwa} functions w.r.t. $\vec{\theta}_{i}[k]$:
 % \begin{equation}
 %   \resizebox{.88\columnwidth}{!}{$
 %     \begin{aligned}
@@ -344,8 +358,7 @@ Similarly, we can get an explicit solution for its dual variables $\vec{\lambda}
 % \end{equation}
 \begin{equation}
 \resizebox{.88\columnwidth}{!}{$
-  \begin{aligned}
-    \label{eq:lambdafuntheta}
+  \begin{aligned}\label{eq:lambdafuntheta}
     \lambdaik=
     % \begin{cases}
       -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G^{n}[k]\thetaik \preceq b^{n}[k],
@@ -355,24 +368,25 @@ Similarly, we can get an explicit solution for its dual variables $\vec{\lambda}
 \end{equation}
 with $n\in\{1\mathbin{:}N\}$.
 
-The halfspaces defined by the set of pairs $(G^{j}[k],b^{j}[k])$ represent a combination of active/inactive constraints of ${\bar{\Gamma}_{i}\Uik\preceq\thetaik}$ for a given time $k$, and vary w.r.t. $\vec{v}_{i}[k]$.
+The halfspaces defined by the set of pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
 
-The $P_{i}^{j}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$, and $\vec{s}_{i}^{j}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints.
-For example, if we take the case when all constraints are active, we have ${P_{i}^{\text{ac}}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{\text{ac}}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
-And if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\times c}}$ and ${\vec{s}_{i}^{\text{in}}=\0_{c}}$.\\
+The $P_{i}^{n}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$; and $\vec{s}_{i}^{j}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints in~\eqref{eq:constraints}.
+For example, if all constraints are active, we have ${P_{i}^{\text{ac}}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{\text{ac}}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
+And if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\times c}}$ and ${\vec{s}_{i}^{\text{in}}=\0_{c}}$.
+
 \begin{remark}\label{rmk:P_constant}
 The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
 \end{remark}
 
 
-\begin{challenge}\label{ch:partition_unknown}
+\begin{challenge}\label{ch:zone_unknown}
   It is important to note that since $\vec{v}_{i}$ is unknown by the coordinator, it cannot anticipate the partition of the space for each agent.
 \end{challenge}
-\begin{challenge}\label{ch:zone_unknown}
+\begin{challenge}\label{ch:s_unknown}
  For the same reason, the values of $\vec{s}_{i}[k]$ are also unknown.
 \end{challenge}
 
- As each constraint can be active or inactive, for a given group of $n$ constraints, we can have at most $N=2^{n}$ different combinations of active/inactive sets and consequently $N$ regions (zones).
+ As each constraint can be active or inactive, for a given group of $t$ constraints, we can have at most $N=2^{t}$ different combinations of active sets.
 
  \begin{assumption}
    We assume that none of the combinations of active/inactive constraints are redundant (no linear dependency), nor make the optimization infeasible (no empty intersection).
@@ -382,22 +396,17 @@ The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
 
 
 \subsection{The Attack}\label{ssec:attack}
-We suppose the malicious agent choose a function $\gamma_{i}(\cdot)$ to use throughout a given time $k$.
+We suppose the malicious agent chooses a function $\gamma_{i}(\cdot)$ to use throughout a given time $k$.
 \begin{assumption}
   $\gamma_{i}(\cdot)$ does not change during the \negotiation{} phase for a given time $k$.
 \end{assumption}
-
-\begin{assumption}\label{ass:gamma_zero}
-  We suppose $\gamma(\cdot)=\0_{c}\iff\lambdai=\0_{c}$
-\end{assumption}
-
 
 \begin{assumption}
   The agent chooses a linear function
   \begin{equation}
 \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
 \end{equation}
-  where $\determinant{T}\neq 0$ (from assumption~\ref{ass:gamma_zero}).
+  where $\determinant{T}\neq 0$.
 \end{assumption}
 
 Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
@@ -422,12 +431,12 @@ Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
     $}
 \end{equation}
 with $n\in\{1\mathbin{:}N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
-Observe that as the function is applied only in $\lambdaik$ it does not affect the hyperplanes generating the zones.
+Observe that as the function is applied only in $\lambdaik$, it does not affect the hyperplanes generating the zones.
 
 We fix the index for these zones where all constraints are active to $1$, and we can call them the $1$-zones.
 
 \subsection{Detection and mitigation}\label{ssec:DM}
-Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the parameters for these zones with
+Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the parameters for this zone with
 \begin{equation}
   \label{eq:lambdafuntheta_tilde}
 \lambdaicheat[k]=\gamma_{i}(\lambdai(\thetaik))=-\widehat{\tilde{P}_{i}^{j}}[k]\thetaik-\widehat{\tilde{\vec{s}}_{i}^{j}}[k].
@@ -438,81 +447,108 @@ Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the pa
 \end{assumption}
 
 Since $P_{i}^{n}$ do not change w.r.t.\ time, we can detect a deviation from nominal behavior using ${E_{i}[k] =\|\widehat{\tilde{P}_{i}^{j}}[k]-\bar{P}_{i}^{j}\|_{F}}$.
-Let ${d_{i}\in\{0,1\}}$ be an indicator that detects the attack in agent $i$.
-If the disturbance $E_{i}[k]$ respects an arbitrary bound
+Let ${d_{i}}$ be an indicator
 \begin{equation}
   \label{eq:2}
-  E_{i}[k]\leq\epsilon_{P},
+  d_{i}=\indicator{E_{i}[k]\geq\epsilon_{P}},
 \end{equation}
-then  ${d_{i}=0}$, and no attack is detected. Otherwise, ${d_{i}=1}$, and a change in behavior of agent $i$ is detected.
+which detects the attack in agent $i$
+if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
 
-Using all assumptions presented, we can estimate the inverse of $T_{i}(k)$ with
-\begin{equation*}
+If an attack is detected, we can estimate the inverse of $T_{i}(k)$ with
+\begin{equation}
 \widehat{{T_{i}(k)}^{-1}}=\bar{P}_{i}^{j}{\widehat{\tilde{P}_{i}^{j}}[k]}^{-1},
-\end{equation*}
+\end{equation}
 if $\widehat{\tilde{P}_{i}^{j}}[k]$ is invertible, and $\widehat{\tilde{P}_{i}^{j}}[k]$ is only invertible when all constraints are active, that means, when ${j=1}$.
 \begin{assumption}
   We suppose there exists a $1$-zone for each agent $i$ for every time $k$.
 \end{assumption}
 And from~\eqref{eq:lambdafuntheta}, we can derive a method to reconstruct $\vec{\lambda}_{i}$:
 \begin{equation}
-  \label{eq:lambdareconstruction}
+  \label{eq:lambda_reconstruction}
   {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
 \end{equation}
 
-Since we don't know how to generate points in the $1$-zones, we use the \EM{} algorithm which can potentially identify the parameters of all modes.
 
+In order to estimate $\widehat{\tilde{P}_{i}^{1}}[k]$, we must have enough observed points in the $1$-zones, so
+we propose to generate points surrounding arbitrary $\bar{\vec{\theta}_{i}}$ in the $1$-zones.
+
+\begin{assumption}\label{ass:}
+  Given the unconstrained solution of~\ref{eq:quadratic_case} ${ {\optuncUik}=-H_{i}^{-1}\fik}$, we suppose
+$\bar{\Gamma}_{i}\optuncUik\succeq\0_{c}$ for all $k$, that means, the points $\thetai=\0_{c}$ are in the $1$-zones.
+\end{assumption}
+
+\glsreset{EM}
+Unfortunately, since we don't know the hyperplanes that separates the different zones, we don't know how close of $\bar{\theta}_{i}=\0_{c}$ we need to generate our points.
+So we generate points arbitrarily close to $\bar{\theta}_{i}$ and we use the \EM{} algorithm which can potentially identify the parameters of all $N$ modes.
 \subsection{Expectation Maximization}
-In order to estimate $\widehat{\tilde{P}_{i}^{1}}$, we must have enough observed points in the $1$-zones.
-We propose to generate points surrounding arbitrary $\bar{\vec{\theta}_{i}}$ in the $1$-zones, and use them to estimate $\widehat{\tilde{P}_{i}^{1}}$.
+As the method is the same for all agents and repeated each time $k$, we drop the subscript $i$ and the time dependency $[k]$ to simplify the notation.
 
-% TODO(accacio): change unconstrained notation
-\todo{
-  Let $\optuncUik$ be the solution of the unconstrained version of~\ref{eq:quadratic_case}.
-  It is known that its solution is ${ {\optuncUik}=-H_{i}^{-1}\fik}$.
-  For the constrained solution we know that the constraints will be inactive if they respect the inequalities $\Theta_{i}\optuncUik\preceq\thetai$.
-  If they regard the inequalities, the constrained value is calculated as is, if not it should be projected onto the viable region.
-  This way, for all constraints to be active, all inequalities should be disrespected in $\Theta_{i}\optuncUik\preceq\thetai$, thus \[\thetai\prec\Theta_{i}\optuncUik.\]
-  % Since $H_{i}:\defpos$, then $H_{i}^{-1}:\defpos$,
-  If we choose $\bar{\theta}_{i}=\0$, the constraints will be active when the  will only  that can assure that all constraints are active, then we can estimate ${\widehat{\tilde{P}_{i}^{1}}[k]}$ around this point. Unfortunately, since we don't know the hyperplanes that separates the different zones, some points generated for the estimation can belong to other zones.
-  So we use the \EM{} algorithm to estimate the parameter for the $1$-zones, as it can clusterize the points and estimate parameters at the same time.
+
+Given a set of parameters $\set{P}$, a set of observable data $\set{B}$ and a set of non-observable data $\set{U}$, the main objective of the \EM{} algorithm is to find estimators of $\set{P}$ which maximize the log marginal likelihood of the observed data ${\ln\probability{\set{B};\set{P}}}$, for models with latent variables in $\set{U}$.
+
+Since maximizing ${\ln\probability{\set{B};\set{P}}}$ does not have an analytical solution, the algorithm solves the optimization problem in a iterative manner.
+So, rather than finding the $\set{P}$ that maximizes ${\ln\probability{\set{B};\set{P}}}$, we find the $\set{P}$ that maximizes the expectation of the complete data log-likelihood $\ln\probability{\set{B},\set{U};\set{P}}$ w.r.t.
+the posterior probabilities ${\probability{\set{U}|\set{B};\set{P}}}$
+calculated using a given set of parameter estimates $\set{P}_{\mathrm{cur}}$.
+This provides a convergence-guaranteed iterative algorithm ensuring at each iteration a monotonic increase of the log-marginal likelihood.
+
+The algorithm can be divided into 2 steps presented in algorithm~\ref{alg:em}.
+
+\SetKwBlock{Estep}{ E step:}{}
+\SetKwBlock{Mstep}{ M step:}{}
+\begin{algorithm2e}[h]
+  \DontPrintSemicolon%
+  Initialize parameters $\set{P}_{\mathrm{new}}$\;
+  \Repeat{$\set{P}_{\mathrm{cur}}$ converge}{
+    $\set{P}_{\mathrm{cur}}=\set{P}_{\mathrm{new}}$\;
+    \Estep{
+      Evaluate ${\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}$\;
+    }
+    \Mstep{
+      Reestimate parameters using:
+      \begin{equation}
+      \resizebox{.68\columnwidth}{!}{$
+        \label{eq:m_step}
+        \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max}\ \expectation[{\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}]{\ln\probability{\set{B},\set{U};\set{P}}}
+        $}
+      \end{equation}
+    }
 }
+ \caption{Expectation Maximization}\label{alg:em}
+\end{algorithm2e}
 
+For a group of $O$ exchanges between an agent and the coordinator, we observe the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$, ${o\in\set{O}=\{1\mathbin{:}O\}}$, which can be organized in ${\random{\Theta},\random{\Lambda}\in\R^{c\times O}}$. ${(\random{\Theta},\random{\Lambda})}$ is our set of observable data $\set{B}$.
 
-The main objective of the \EM{} algorithm, seen in~\cite{DempsterEtAl1977}, is to find maximum likelihood estimators for models with latent variables.
-
-We will use our estimation problem to illustrate how the algorithm works, and
-we will concentrate on the estimation of the parameters for a single agent in a single step $k$, so we drop the subscript $i$ and the time dependency $[k]$ to simplify the notation.
-
-As in~\eqref{eq:lambdafuntheta},  any response variable $\tilde{\vec{\lambda}}$, is a function of an input $\vec{\theta}$, which belongs to a unknown zone ${\set{Z}=\{1\mathbin{:}Z\}}$, Challenge~\ref{ch:zone_unknown}.
-The relationship between the input and the response is given by a set of parameters we want to estimate ${\set{P}=\setbuild{(\tilde{P}^{z},\tilde{\vec{s}}^{z})}{z\in\set{Z}}}$.
-
-For an observation ${o\in\set{O}=\{1\mathbin{:}O\}}$, we observe the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$.
-As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose to use an expansion of the model referred as \emph{mixture of switching regressions} in~\cite{QuandtRamsey1978} and \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010}, which we will call \emph{mixture of affine regressions}, since our regressors have a linear term (matrices $\tilde{P}^{z}$) and a constant term (vectors $\tilde{\vec{s}}^{z}$):
+As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose to use a multidimensional expansion of the model referred as \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010} to map the relation between $\random{\Theta}$ and $\random{\Lambda}$. We will call the model \emph{mixture of affine regressions}, since our regressors have linear and constant terms:
 % TODO(accacio): change subscript n
-\begin{equation}
-  \label{eq:linear_cheating_random}
+% \begin{equation}\label{eq:linear_cheating_random}
+%   \randomvec{\lambda}_{o}=
+%   \begin{cases}
+%     -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{if in zone } 1\\
+%     \qquad\quad \vdots&\qquad\quad \vdots\\
+%     -\tilde{P}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{Z}&\text{if in zone } Z\\
+%   \end{cases}.
+% \end{equation}
+\begin{equation}\label{eq:linear_cheating_random}
   \randomvec{\lambda}_{o}=
-  \begin{cases}
-    -\tilde{P}^{1}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{1}&\text{if in zone } 1\\
-    \qquad\quad \vdots&\qquad\quad \vdots\\
-    -\tilde{P}^{Z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{Z}&\text{if in zone } Z\\
-  \end{cases}.
+    -\tilde{P}^{z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{z}\text{, if in zone } z,\\
 \end{equation}
+with  ${z\in\set{Z}=\{1\mathbin{:}Z\}}$.
 
-Each couple of observed input and response variables $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ is associated in this model to a latent unobserved random variable ${\random{z}_{o}\in\set{Z}}$ that indicates from which of the $Z$ affine regression models in~\eqref{eq:linear_cheating_random} the response variable was obtained.
-The latent variable $\random{z}_{o}$ follows a categorical prior distribution, with associated probabilities ${\Pi=\{\pi_{1},\dots,\pi_{Z}\}}$:
-   \begin{equation}
-     \label{eq:prob_zo_equal_z}
-\probability{\random{z}_{o}=z}=\pi_{z} \in [0,1], \qquad \sum_{z=1}^{Z} \pi_{z} = 1.
-\end{equation}
-Since $\vec{\theta}$ is our input,
-we consider a non-informative improper probability density function~\cite{ChristensenEtAl2010}
-% SL: BTW, maybe we should use different notations for "the probability that some discrete random variable (e.g. z_0) is equal to something, and the probability density function of a continuous random variable (e.g. theta_0 and lambda_0).
-\begin{equation}
-  \label{eq:theta_almost_surely}
+As \eqref{eq:linear_cheating_random} is a \pwa{} function whose modes depend on the unknown zone ${z\in\set{Z}}$,
+we associate to each couple $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ a latent unobserved random variable ${\random{z}_{o}}$ that indicates in which zone in $\set{Z}$ the observable variables were obtained.
+These variables are organized in ${\random{Z}:\R^{1\times O}}$ which is our set of latent variables $\set{U}$.
+
+The latent variable $\random{z}_{o}$ follows a categorical prior distribution, with associated probabilities ${\Pi=\{\pi^{z}|z\in\set{Z}\}}$ such
+\[\probability{\random{z}_{o}=z}=\pi^{z} \in [0,1], \qquad \sum_{z\in\set{Z}} \pi^{z} = 1.
+\]
+As parameters to estimate, we have ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
+
+Since $\vec{\theta}$ is our input, we consider a non-informative improper probability density function~\citep{ChristensenEtAl2010}
+\[
   \probability{\randomvec{\theta}_{o}} \,\propto \,1.
-\end{equation}
+\]
 
 Given the input and latent variables, the response variable $\random{\lambda}_{o}$ is modeled as a multivariate normal random variable with probability density function
 \begin{equation}
@@ -520,156 +556,74 @@ Given the input and latent variables, the response variable $\random{\lambda}_{o
 \probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z; \set{P}^{z}} = \mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}}),
 \end{equation}
 where, following~\eqref{eq:linear_cheating_random}, the mean vector is defined by
-\[f(\randomvec{\theta}_{o};(P,\vec{s}))=-{P}\randomvec{\theta}_{o}-{\vec{s}},\]
+\({f(\randomvec{\theta}_{o};(P,\vec{s},\pi))=-{P}\randomvec{\theta}_{o}-{\vec{s}},}\)
 and the covariance matrix ${\Sigma^{z}}$ tends to $0$.
 
-This mixture of affine regression model is represented as a probabilistic graphical model in Fig.~\ref{fig:model}, and it corresponds to the following factorization of the complete-data (i.e., observed and latent data) likelihood, \cite{Bishop2006}:
+\no{
+This mixture of affine regression model corresponds to the following factorization of the complete-data (i.e., observed and latent data) likelihood, \cite{Bishop2006}:
 \begin{align}\label{eq:completedataLikelihood}
-  \probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}= \prod_{o=1}^{O}\prod_{z=1}^{Z}\big[&\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z;\set{P}^{z}} \nonumber \\
+  \probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}= \prod_{\set{O}}\prod_{\set{Z}}\big[&\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o},\random{z}_{o}=z;\set{P}^{z}} \nonumber \\
 & \times \probability{\random{z}_{o}=z}\probability{\randomvec{\theta}_{o}}\big]^{\indicator{\random{z}_{o}=z}},
 \end{align}
+}
 
-Ideally, we would like to estimate the unknown model parameters $\set{P}$ by maximizing the log-marginal likelihood $\ln \probability{\random{\Theta},\random{\Lambda};\set{P}}$, computed by marginalizing the latent variables $\random{Z}$ in~\eqref{eq:completedataLikelihood}.
-Unfortunately, this optimization problem does not admit a closed-form analytical solution.
-Instead, we can exploit the latent-variable structure of the model to derive an \EM{} algorithm,~\cite{DempsterEtAl1977}, which is a convergence-guaranteed iterative algorithm ensuring at each iteration a monotonic increase of the log-marginal likelihood.
-
-\begin{figure}[b]
-  \centering
-  \begin{tikzpicture}
-    \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
-    \node at (1.2,-1.3) {O};
-    \node (pi) at (-2.5,.5) {$\Pi$};
-    \node (phi) at (2.5,-1.) {$\set{P}$};
-
-    \graph [edge quotes={fill=white,inner sep=1pt},
-    clockwise=3,nodes={circle,draw,rotate=-60,minimum width=1cm}] {
-      a/"${\randomvec{\theta}_{o}}$"[rotate=60,fill=lightgray],b/"${\random{\vec{\lambda}}_{o}}$"[rotate=60,fill=lightgray],c/"${\random{z}}_{o}$"[rotate=60];
-      {a,c} ->[-latex] b;
-      (pi) ->[thick,{Circle[length=3.pt]}-latex] c;
-      (phi) ->[thick,{Circle[length=3.pt]}-latex] b;
-      };
-  \end{tikzpicture}
-  \caption{Graph representation of model proposed.}\label{fig:model}
-\end{figure}
-
-Now we can formalize the \EM{} problem.
-\begin{problem}{Expectation Maximization Problem}\label{pb:EM}
-
-  Given a set of observed data $(\random{\Theta},\random{\Lambda})$, estimate the unknown latent variables $\random{Z}$ and parameter set $\set{P}$ by iteratively maximizing \todo{a function of} the complete-data log likelihood $\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}$.
-\end{problem}
-
-Using~\eqref{eq:prob_zo_equal_z},~\eqref{eq:theta_almost_surely}, and~\eqref{eq:multivariate_gaussian} in~\eqref{eq:completedataLikelihood} yields {\color{blue}the following expression of the complete-data log-likelihood:}
-\begin{equation}\label{eq:completedataLogLikelihood_complete}
-\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}=  \sum_{o=1}^{O}\sum_{z=1}^{Z}{\indicator{\random{z}_{o}=z}}
-  \alpha_{zo},
-\end{equation}
-where ${\alpha_{zo}=\ln{\pi_{z}}+\ln{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}$.
-
-But as mentioned, we do not observe the complete data $(\random{\Theta},\random{\Lambda},\random{Z})$, instead we observe only $(\random{\Theta},\random{\Lambda})$ and all the information on $\random{Z}$ given these observations is carried by the posterior probabilities  ${\zeta(z_{zo};\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}}$, also called \emph{responsibilities}, which can be calculated as
-\todo[Change Notation?]{Change Notation?}
-% SL: the notation z_{zo} is a bit confusing and I am not sure it was defined. It's actually related to the fact that you use z_0 as the latent variable and $z$ as the values it can take in \mathcal{Z}. Using another variable for the latter may help clarifying.
-
+We can calculate the posterior probabilities  $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$, also called \emph{responsibilities}:
 \begin{align}
   \label{eq:responsibilities}
-\zeta(z_{zo};\set{P})&=\frac{\probability{\random{z}_{o}=z}\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o};\set{P}^{z}}}{\sum\limits_{j=1}^{Z}\probability{\random{z}_{o}=j}\probability{\randomvec{\lambda}_{o}|\randomvec{\theta}_{o};\set{P}^{j}}}\nonumber\\
-  &=\frac{\pi_{z}{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}{\sum\limits_{j=1}^{Z}\pi_{j}\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{j}),{\Sigma^{j}})}.
+\zeta_{zo}(\set{P})&=\frac{\pi_{z}{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}{\sum\limits_{j=1}^{Z}\pi_{j}\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{j}),{\Sigma^{j}})},
 \end{align}
-
-Observe that by taking
-\todo[Change Notation?]{Change Notation?}
-\begin{equation}\label{eq:argmaxz}
-\arg\underset{z}{\max}\ {\zeta_{zo}(;\set{P})},
-\end{equation}
-we can get the most probable $z$-zone which generated the observation $\randomvec{\lambda}_{o}$.
-
-
-So, rather than using the complete data log-likelihood~\eqref{eq:completedataLogLikelihood_complete}, which we do not have, since the latent variables are not observed by definition, the \EM{} algorithm uses its expectation with respect to the posterior calculated using a given set of parameter estimates $\set{P}_{\mathrm{cur}}$:
+and then calculate the expectation of ${\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}$ with respect to ${\zeta_{zo}(\set{P}_{\mathrm{cur}})}$ \citep[Chapter 9]{Bishop2006}
 \begin{align}
   \label{eq:completedataLogLikelihood_expectation}
- Q\left(\set{P},\set{P}_{\mathrm{cur}}\right) &= \expectation[{\zeta(z_{zo};\set{P}_{\mathrm{cur}})}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}
+\expectation[{\zeta_{zo}(\set{P}_{\mathrm{cur}})}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}&= \sum_{o\in\set{O}}\sum_{z\in\set{Z}}  \zeta_{zo}(\set{P}_{\mathrm{cur}})\alpha_{zo},
 \end{align}
-and since \[\expectation[{\zeta(z_{zo};\set{P}_{\mathrm{cur}})}]{\indicator{\random{z}_{o}=z}}=\zeta(z_{zo};\set{P}_{\mathrm{cur}}),\]
-we can rewrite~\eqref{eq:completedataLogLikelihood_expectation}:
-\begin{align}
-  \label{eq:completedataLogLikelihood_expectation_developed}
-Q\left(\set{P},\set{P}_{\mathrm{cur}}\right) &= \sum_{o=1}^{O}\sum_{z=1}^{Z}  \zeta(z_{zo};\set{P}_{\mathrm{cur}})\alpha_{zo},
-\end{align}
-\todo{\begin{remark}
-For the first iteration, the model parameters must be initialized. A discussion about the initialization of the parameters is beyond the scope of this article, and we refer the reader to~\cite{Bishop2006},~\cite{DempsterEtAl1977} and their references.
-\end{remark}}
+where ${\alpha_{zo}=\ln{\pi_{z}}+\ln{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}$.
 
-Then we can find a new estimate of $\set{P}$ that maximizes $Q(\set{P},\set{P}_{\mathrm{cur}})$:
-\begin{equation} \label{eq:Mstep}
-  \set{P}_{\mathrm{new}}=\underset{\set{P}}{\argmax}\ Q(\set{P},\set{P}^{\mathrm{cur}}).
-\end{equation}
-For the next iteration of the algorithm, this new estimate $\set{P}_{\mathrm{new}}$ will be used as $\set{P}^{\mathrm{cur}}$.
+\begin{remark}
+The $\Sigma^{z}$ used in~\eqref{eq:responsibilities} are updated using a technique called \emph{Simulated annealing}~\citep{OzerovFevotte2010}, where they are initialized with arbitrarily big values indicating the uncertainty of the parameters and it is reduced as the estimations converge.
+\end{remark}
 
-With this information we can describe the \EM{} algorithm in two parts, first calculate the responsibilities $\zeta(z_{zo};\set{P}_{\mathrm{cur}})$, and then update the parameters.
-Algorithm~\ref{alg:em} adapted from~\mbox{\cite[Chapter 9]{Bishop2006}} describes the steps.
-
-\begin{algorithm2e}[h]
-  \DontPrintSemicolon%
-  Initialize parameters $\set{P}_{\mathrm{new}}$\;
-  \Repeat{$\set{P}_{\mathrm{cur}}$ converge}{
-    $\set{P}_{\mathrm{cur}}=\set{P}_{\mathrm{new}}$\;
-  \textbf{E step} Evaluate responsibilities~\eqref{eq:responsibilities}\;
-  \textbf{M step} Reestimate parameters~\eqref{eq:Mstep}\;
-}
- \caption{Expectation Maximization}\label{alg:em}
-\end{algorithm2e}
-
-Here we introduce a variable ${\vec{\phi}^{z}={[\vectorize{\tilde{P}^{z}}^{T}\ {(\tilde{\vec{s}}^{z})}^{T} ]}^{T}}$ so we can calculate the new estimates of $\set{P}$ from~\eqref{eq:Mstep}. Using the KKT conditions~\cite{BoydVandenberghe2004}, we can find an optimal solution for the problem in~\eqref{eq:Mstep}, by
+Here we introduce a variable ${\vec{\phi}^{z}={[\vectorize{\tilde{P}^{z}}^{T}\ {(\tilde{\vec{s}}^{z})}^{T} ]}^{T}}$.
+Using the KKT conditions, we can find an optimal solution for the problem in~\eqref{eq:m_step}, by
 taking the gradients of~\eqref{eq:completedataLogLikelihood_expectation} with respect to vectors $\vec{\phi}^{z}$ and making them vanish.
 Because of the multidimensional nature of the problem, some matrix operations are needed to synthesize the results.
-After those operations, we have a matricial solution that yields the optimal estimates $\vec{\phi}_{z}^{\mathrm{new}}$:
+After those operations, we have a matricial solution that yields the optimal estimates $\vec{\phi}^{z}_{\mathrm{new}}$:
 \begin{equation}
   \label{eq:mstepestimation}
-  \vec{\phi}_{z}^{\mathrm{new}}=\pseudoinv{(\Xi_{z}\random{\Omega})}\Xi_{z}\vectorize{\random{\Lambda}},
+  \vec{\phi}^{z}_{\mathrm{new}}=\pseudoinv{(\Xi^{z}\random{\Omega})}\Xi^{z}\vectorize{\random{\Lambda}},
 \end{equation}
 where
 ${\random{\Omega}=[\hadamard{(\Upsilon \random{\Theta}\Delta)}{Y};G]}$,
 with matrices
-${\Upsilon=\kron{\1_{n}^{T}}{I_{n}}}$,
-${\Delta=\kron{I_{N}}{\1_{n}^{T}}}$,
-${Y=\kron{G}{\1_{n}}}$,
-${G=\kron{\1_{N}^{T}}{I_{n}}}$,
+${\Upsilon=\kron{\1_{c}^{T}}{I_{c}}}$,
+${\Delta=\kron{I_{O}}{\1_{c}^{T}}}$,
+${Y=\kron{G}{\1_{c}}}$,
+${G=\kron{\1_{O}^{T}}{I_{c}}}$,
 and
-\[{\Xi_{z}={\diag(\sqrt{{\zeta(z_{z1};\set{P}_{\mathrm{cur}})}}I_{n},\cdots,\sqrt{{\zeta(z_{zO};\set{P}_{\mathrm{cur}})}}I_{n})}}.\]
-% SL: I find it surprising that you have square roots of the responsabilities in this equation. Are you sure it is correct?
+\[{\Xi^{z}={\diag(\sqrt{{\zeta(z_{z1};\set{P}_{\mathrm{cur}})}}I_{c},\cdots,\sqrt{{\zeta(z_{zO};\set{P}_{\mathrm{cur}})}}I_{c})}}.\]
+Doing the same for $\pi^{z}$ we get
+\begin{equation}
+  \label{eq:3}
+  \pi^{z}=\sum\limits_{o\in\set{O}}\tfrac{\zeta_{zo}(\set{P}_{\mathrm{cur}})}{O}.
+\end{equation}
 
 As we can see,~\eqref{eq:mstepestimation} is the solution of a weighted Least-Squares, having the responsibilities as weights, adjusting the contribution of all observations to the regression model of index $z$.
 We can see some similarities to the K-planes algorithm (see~\cite{BradleyMangasarian2000}), but \EM{} is more compromising.
 Instead of affecting the observed data to a zone with 100\% of certainty (\emph{hard assignment}), \EM{} uses the responsibilities (\emph{soft assignment}) for each zone.
-Then, when we solve the \textbf{M Step}, rather than using only the data assigned to update the parameters of a certain zone, we take into account all data, whose contribution to the update is weighted by their associated responsibilities.
-
 
 Once the estimates $\vec{\phi}_{z}^{\mathrm{new}}$ converge, we can reconstruct the estimates $\tilde{P}^{z}$ and $\tilde{\vec{s}}^{z}$, and use in our mitigation scheme proposed in \S\ref{ssec:DM}.
+Observe that not necessarily the $z$ indices correspond to the indices $n$ in~\eqref{eq:lambdafuntheta}.
+So, to find the $z$ that corresponds to ${n=1}$, we take the observation $o$ for $\bar{\theta}=\0_{c}$, which we know belongs to the $1$-zone, and we find the most probable $z$ with
+\begin{equation}\label{eq:argmaxz}
+\arg\underset{z}{\max}\ {\zeta_{zo}(\set{P})}.
+\end{equation}
 
-\todo {
-  Observe that not necessarily the parameters estimated associated to a value z corresponds to the z shown in
-}
-% \begin{equation*}
-%   p(\randomvec{x})=\sum_{i=0}^{N}\pi_{i} \mathcal{N}(\random{y};f_{i}(\randomvec{x}),\Sigma_{i})
-% \end{equation*}
-
-% \begin{equation}
-%   \mathcal{N}(\random{y}; {\mu}_{i},\Sigma_{i})=\frac{1}{{\sqrt{2\pi\sigma_{i}^{2}}}}e^{-\frac{(\random{y}-{\mu}_{i})^{2}}{2\sigma^{2}}}
-% \end{equation}
-
-% for a $D-$dimensional gaussian we have:
-% \begin{equation}
-%   \mathcal{N}(\randomvec{y}; \vec{\mu}_{i},\Sigma_{i})=\frac{1}{{{(2\pi)}^{D/2}}{|\Sigma_{i}|^{\frac{1}{2}}}}e^{-\frac{1}{2}\norm{\randomvec{y}-\vec{\mu}_{i}}^{2}_{\Sigma_{i}^{-1}}}
-% \end{equation}
-
-% \begin{figure}[b]
-%   \centering
-%   \scriptsize \def\svgwidth{0.49\textwidth}
-%   \includegraphics[width=\columnwidth]{pwagaussian.pdf}
-%   \caption{Example of Gaussian Probability density functions used in mixture for identification of a 2D Piecewise Affine function with 2 modes, where \todo[verify colormap]{black represents 0 probability and white maximum }}\label{fig:pwagaussian}
-% \end{figure}
-\todo{Simulated annealing as in \cite{OzerovFevotte2010}}
+\begin{remark}
+A discussion about the initialization and update of other parameters is beyond the scope of this article, so we refer the reader to~\cite{Bishop2006}, and~\cite{DempsterEtAl1977}.
+\end{remark}
 
 \subsection{Safe dMPC Algorithm}\label{ssec:safe_algo}
+Integrating the EM to our detection and mitigation mechanism we can propose in Algorithm~\ref{alg:safeDMPC} a secure \dmpc{}, divided into two phases: detection and negotiation.
 \SetKwBlock{negotPhase}{ Negotiation Phase:}{}
 \SetKwBlock{detectPhase}{ Detection Phase:}{}
 \begin{algorithm2e}[h]
@@ -681,32 +635,115 @@ Once the estimates $\vec{\phi}_{z}^{\mathrm{new}}$ converge, we can reconstruct 
     Coordinator computes $d_{i}$ using~\eqref{eq:2}\;
   }
   \negotPhase{
-  Coordinator initializes $\vec{\theta}^{(0)}$ \;
-  $p:=0$\;
-
-  \Repeat{$\|\vec{\theta}^{(p)} -\vec{\theta}^{(p-1)}\|\leq\epsilon$}{
-  Subsystems solve~\eqref{eq:DOP_local}, and send $\vec{\lambda}^{\star}_{i}(\vec{\theta}\p)$\;
-
-  Coordinator updates allocation~\eqref{eq:thetaNegot} using adequate versions of $\vec{\lambda}_{i}\p$ for each agent:
-  $\tilde{\vec{\lambda}}_{i}\p$, if $d_{i}=0$ and ${\vec{\lambda}_{i}}_{\mathrm{rec}}$, if ${d_{i}=1}$\;
-  $p:=p+1$
- }}
+  Apply Algorithm~\ref{alg:quantityAlg} with adequate versions of $\vec{\lambda}_{i}\p$:\;
+  \quad$\tilde{\vec{\lambda}}_{i}\p$, if $d_{i}=0$ and ${\vec{\lambda}_{i}}_{\mathrm{rec}}$, if ${d_{i}=1}$~\eqref{eq:lambda_reconstruction}\;
+ }
  \caption{Secure DMPC.}\label{alg:safeDMPC}
 \end{algorithm2e}
 
-\section{Simulation}
+\section{Example: Temperature Control}\label{sec:App_dMPC}
+The system consists of $4$~distinct~rooms (I to IV), which we want to control the air temperatures inside each one of them.
+The systems are modeled as continuous-time linear \mbox{time-invariant} systems using the \mbox{3R-2C} model~\citep{NogueiraEtAl2021}, with parameters shown in Tables~\ref{tab:modelParamMeaning} and~\ref{tab:modelParam}, and state space matrices
+\begin{equation*}
+  \label{eq:room_system}
+  \begin{matrix}
+\resizebox{.98\columnwidth}{!}{$
+  A_{\mathrm{c}_{i}}=\left[
+    \begin{matrix}
+      -\frac{1}{C^{\text{walls}}_{i}R^{\text{oa/ia}}_{i}}-\frac{1}{C^{\text{walls}}_{i}R^{\text{iw/ia}}_{i}}& \frac{1}{C^{\text{walls}}_{i}R^{\text{iw/ia}}_{i}}\\
+      \frac{1}{C^{\text{air}}_{i}R^{\text{iw/ia}}_{i}} &-\frac{1}{C^{\text{air}}_{i}Ro_{i}}-\frac{1}{C^{\text{air}}_{i}R^{\text{iw/ia}}_{i}}
+    \end{matrix}\right]
+    $}
+  \\
+  \begin{matrix}
+    B_{\mathrm{c}_{i}}=\left[
+      \begin{matrix}  \frac{10}{C^{\text{walls}}_{i}}& 0\end{matrix}
+    \right]\T&C_{\mathrm{c}_{i}}=\left[\begin{matrix}1 & 0\end{matrix}\right]
+  \end{matrix}
+  \end{matrix},
+\end{equation*}
+where the states are ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$, which represent the mean temperatures of the air and walls inside room $i$, and the input of the system is $\vec{u}_{i}$, which is the heating power
+for the corresponding room.
+
+The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(k)\preceq 4\mathrm{kW}}$.
+
+
+\begin{table}[b]
+  \centering
+  \caption{Model Parameters}\label{tab:modelParamMeaning}
+  \begin{tabular}[b]{cl}
+    \toprule
+    Symbol&Meaning\\
+    \midrule
+    $C^{\text{air}}_{i}$&Heat Capacity of Inside Air\\
+    $C^{\text{walls}}_{i}$&Heat Capacity of External Walls\\
+    $R^{\text{oa/ia}}_{i}$&Resistance Between Inside and Outside Air (from windows)\\
+    $R^{\text{iw/ia}}_{i}$&Resistance Between Inside Air and Inside Walls\\
+    $R^{\text{ow/oa}}_{i}$&Resistance Between Outside Air and Outside Walls\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+  \begin{table}[b]
+  \centering
+  \caption{
+\todo{
+  change values
+}
+    Value of parameters for each agent}\label{tab:modelParam}
+  \begin{tabular}[t]{cccccc} \toprule
+    Symbol& I & II & III & IV &Unit\\
+    \midrule
+    $C^{\text{walls}}$    &$5$   & $4$ & $4.5$ &$4.7$ &$10^{4}\mathrm{J/K}$ \\
+    $C^{\text{air}}$               &$8$   & $7$ &$9$&$6$  &$10^{4}\mathrm{J/K}$  \\
+    $R^{\text{oa/ia}}$               &$5$   & $6$& $4$& $5$  &$10^{-3}\mathrm{K/W}$ \\
+    $R^{\text{iw/ia}}$               &$2.5$ & $2.3$&$2$&$2.2$ &$10^{-4}\mathrm{K/W}$\\
+    $R^{\text{ow/oa}}$               &$0.5$ & $1$ &$0.8$&$0.9$  & $10^{-4}\mathrm{K/W}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The subsystems are discretized using the zero-order hold discretization method with sampling time
+${T_{s}=0.25\mathrm{h}}$
+and the quantity decomposition-based DMPC is implemented using prediction horizon ${\predhorz=4}$.
+
+Three scenarios are simulated for a period of 12.5 hours:
+
+  \begin{enumerate}
+    \item Nominal behavior.
+    \item \mbox{Agent I presents non-cooperative behavior} ${T_{I}[k]}$ for ${k\geq25}$, without correction.
+    \item \mbox{Agent I presents non-cooperative behavior} ${T_{I}[k]}$ for ${k\geq25}$, with correction, ${\epsilon_{P}=10^{-4}}$.
+  \end{enumerate}
+
+In Fig.~\ref{fig:response3Scenarios}, first, we compare the air temperature in room I
+with its reference (${w_{I}=25.5^{\circ}}$C), and then the
+decision variable ${E_{I}(k)}$ with the threshold $\epsilon_{P}$.
+Observe that in the nominal behavior (in magenta), the reference $w_{I}$ is not reached
+due to power constraints the systems are under.
+
 \begin{figure}[h]
   \centering
  \includegraphics[width=\columnwidth]{airtemp_roomI/__ErrorWX_command_normErrH.pdf}
-  \caption{Air temperature in room I and the Frobenius norm of the decision variable $E_{I}[k]$ for different scenarios: nominal (N), selfish behavior without correction (S),
+  \caption{Air temperature in room I and the decision variable $E_{I}[k]$ for different scenarios: nominal (N), selfish behavior without correction (S),
 and selfish behavior with correction.}\label{fig:response3Scenarios}
 \end{figure}
-\begin{figure}[h]
-  \centering
- \includegraphics[width=\columnwidth]{airtemp_roomI/control.pdf}
-  \caption{Control applied in all rooms for the 3 different scenarios: nominal, selfish behavior without correction, and selfish behavior with correction (C).}\label{fig:response3Scenarios}
-\end{figure}
 
+As expected, the decision variable lies under the threshold $\epsilon_{P}=10^{-4}$ with values of order ${E_{I}^{N}(k)\approx10^{-10}}$.
+
+
+When the agent presents a selfish behavior (in orange), the tracking error
+${w_{I}-y_{I}}$ is reduced but insufficient to attain the reference.
+In this case, the detection variable surpasses $\epsilon_{P}$,
+${E_{I}^{S}\approx200}$, indicating the change of behavior.
+
+When the correction is activated in the system, we see that the temperatures approach their nominal value $y_{I}^{N}$.
+We can also illustrating the good
+performances of our proposition by comparing the inputs in Fig.~\ref{fig:control_3Scenarios}. When I is selfish its control increases while the other decreases, unless the correction is activated and it approaches the nominal.
+
+We can also evaluate the performance of the proposed mechanism by comparing the global objective function calculated using the total period of simulation ${N=50}$ for the 3 scenarios (Table~\ref{tab:costsGlobalLocal}).
+When agent I is selfish, we see the increase in the objective, degrading the overall performance.
+When the correction mechanism is activated, the difference between costs is minimal, $|\frac{J^{C}-J^{N}}{J^{N}}|\leq10^{-8}$.
+%%%%%
 % TODO(accacio): Verify
 \begin{table}[t]
   \centering
@@ -714,25 +751,34 @@ and selfish behavior with correction.}\label{fig:response3Scenarios}
   \begin{tabular}[t]{cccc} \toprule
     Agent  & Nominal & Selfish & Selfish + Correction\\
     \midrule
-    I & -11468 &  -9074 & -11468 \\
-    II & -6536 &  -7151 & -6536 \\
-    III & -3192 &  -4052 & -3192 \\
-    IV & -2849 &  -3694 & -2849 \\
-    Global & -24044 &  -23971 & -24044 \\
-
-
+    % I & -11468 &  -9074 & -11468 \\
+    % II & -6536 &  -7151 & -6536 \\
+    % III & -3192 &  -4052 & -3192 \\
+    % IV & -2849 &  -3694 & -2849 \\
+    % Global & -24044 &  -23971 & -24044 \\
+    Global & -24044.180111 &  -23971.164122 & -24044.180027\\
     \bottomrule
   \end{tabular}
 \end{table}
+% \enlargethispage{-.8cm}
 
-\section{Conclusion}
+\section{CONCLUSION AND FUTURE WORKS}\label{sec:CC}
+\todo{
+In this paper, an algorithm for monitoring and correcting exchanges between agents in a resource-sharing system has been proposed.
+The algorithm exploits the particular structure of exchanges, part of which must be constant over time.
+The first phase consists of identifying this constant part and checking if an attacker has modified it.
+From this identification, it is possible to reconstruct the original mechanism and find the centralized optimality.
+This principle should be generalized to other types of decomposition structures, and this is what we plan to do in the near future.
+}
 
-A conclusion section is not required. Although a conclusion may review
-the main points of the paper, do not replicate the abstract as the
-conclusion. A conclusion might elaborate on the importance of the work
-or suggest applications and extensions.
+\begin{figure}[h]
+  \centering
+ \includegraphics[width=\columnwidth]{airtemp_roomI/control.pdf}
+  \caption{Control applied in all rooms for the 3 scenarios.}\label{fig:control_3Scenarios}
+\end{figure}
 
 % \nocite{*}
 \bibliography{bibliography}
+% \bibliographystyle{ifacconf-harvard}
 % \todo[Change bibliography to the one used in the aux]{}
 \end{document}

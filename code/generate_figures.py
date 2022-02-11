@@ -89,6 +89,11 @@ print("II &", round(nominalII),"& ",round(selfishII),"&",round(correctedII),"\\\
 print("III &", round(nominalIII),"& ",round(selfishIII),"&",round(correctedIII),"\\\\")
 print("IV &", round(nominalIV),"& ",round(selfishIV),"&",round(correctedIV),"\\\\")
 print("Global &", round(nominal_global),"& ",round(selfish_global),"&",round(corrected_global),"\\\\")
+print("Global &", round(nominal_global)/round(nominal_global),"& ",round(selfish_global)/round(nominal_global),"&",round(corrected_global)/round(nominal_global),"\\\\")
+print("Global &", (nominal_global),"& ",(selfish_global),"&",(corrected_global),"\\\\")
+print((corrected_global-nominal_global)/nominal_global)
+print((selfish_global-nominal_global)/nominal_global)
+
 
 # print("Nominal")
 # print(np.sum((Wt[0:simK,0]-xt[0:simK,0])*(Wt[0:simK,0]-xt[0:simK,0])+uHist[0,-1,:,0]*uHist[0,-1,:,0])) # J1
@@ -124,36 +129,39 @@ print("Global &", round(nominal_global),"& ",round(selfish_global),"&",round(cor
 #       +np.sum((correctWt[0:simK,3]-correctxt[0:simK,3])*(correctWt[0:simK,3]-correctxt[0:simK,3])+correctuHist[0,-1,:,3]*correctuHist[0,-1,:,3])) # J4
 
 # NOTE(accacio): Detection
-# fig, axs = plt.subplots(2, 1)
+fig, axs = plt.subplots(2, 1)
 
-# axs[0].plot(np.arange(0,simK+1),np.matlib.repmat(nominal_Wt[0],simK+1,1),'-',drawstyle='steps-post')
-# axs[0].plot(np.arange(0,simK+1),nominal_xt[0,0:simK+1,0],'-',drawstyle='steps-post')
-# axs[0].plot(np.arange(0,simK+1),selfish_xt[0,0:simK+1,0],'-',drawstyle='steps-post')
-# axs[0].scatter(np.arange(0,simK+1),corrected_xt[0,0:simK+1,0],s=15,color='black')
+axs[0].plot(np.arange(0,simK+1),np.matlib.repmat(nominal_Wt[0],simK+1,1),'-',drawstyle='steps-post')
+axs[0].plot(np.arange(0,simK+1),nominal_xt[0,0:simK+1,0],'-',color='magenta',drawstyle='steps-post')
+axs[0].plot(np.arange(0,simK+1),selfish_xt[0,0:simK+1,0],'-',drawstyle='steps-post')
+axs[0].scatter(np.arange(0,simK+1),corrected_xt[0,0:simK+1,0],s=15,color='black')
 
-# axs[0].legend(( '$w_{\mathrm{I}}(k)$','$y_{\mathrm{I}}^N(k)$','$y_{\mathrm{I}}^S(k)$','$y_{\mathrm{I}}^C(k)$'),loc='bottom center',ncol=4,fontsize=13)
+axs[0].legend(( '$w_{\mathrm{I}}(k)$','$y_{\mathrm{I}}^N(k)$','$y_{\mathrm{I}}^S(k)$','$y_{\mathrm{I}}^C(k)$'),loc='bottom center',ncol=4,fontsize=13)
 
-# axs[0].set_xticks(np.arange(0,simK+1,2))
-# axs[0].set_xlim([1, simK])
-# axs[0].set_ylim([15, 27])
-# axs[0].set_title('Air temperature in room I ($^oC$)',fontsize=16)
+axs[0].set_xticks(np.arange(0,simK+1,2))
+axs[0].set_xlim([1, simK])
+axs[0].set_ylim([15, 27])
+axs[0].set_title('Air temperature in room I ($^oC$)',fontsize=16)
 
-# axs[1].plot(np.arange(1,simK+1),1e-4*np.ones([simK,1]),'-',drawstyle='steps-post') # error line
-# axs[1].plot(np.arange(1,simK+1),selfish_err[0:simK,0],'-',drawstyle='steps-post')
-# axs[1].scatter(np.arange(1,simK+1),nominal_err[0:simK,0],color='magenta',s=10)
-# axs[1].scatter(np.arange(1,simK+1),corrected_err[0:simK,0],color='black',s=10)
+axs[1].plot(np.arange(1,simK+1),1e-4*np.ones([simK,1]),'-',drawstyle='steps-post',label='$\epsilon_p$') # error line
+axs[1].scatter(np.arange(1,simK+1),nominal_err[0:simK,0],color='magenta',s=10,label='$E_{\mathrm{I}}^N(k)$')
+axs[1].plot(np.arange(1,simK+1),selfish_err[0:simK,0],'-',color='darkorange',drawstyle='steps-post',label='$E_{\mathrm{I}}^S(k)$')
+axs[1].scatter(np.arange(1,simK+1),corrected_err[0:simK,0],color='black',s=10,label='$E_{\mathrm{I}}^C(k)$')
 
-# axs[1].legend(( '$\epsilon_p$','$E_{\mathrm{I}}^N(k)$','$E_{\mathrm{I}}^S(k)$','$E_{\mathrm{I}}^C(k)$'),loc='center',ncol=4,fontsize=13)
+handles,labels=axs[1].get_legend_handles_labels();
+handles=[handles[0],handles[2],handles[1],handles[3]];
+labels=[labels[0],labels[2],labels[1],labels[3]];
+axs[1].legend(handles,labels,loc='center',ncol=4,fontsize=13)
 
-# axs[1].set_title("Norm of error $\| \widehat{\\tilde{P}^{1}_I}[k]-\\bar{P}^{1}_{I}\|_{F}$",fontsize=16)
+axs[1].set_title("Norm of error $\| \widehat{\\tilde{P}^{1}_I}[k]-\\bar{P}^{1}_{I}\|_{F}$",fontsize=16)
 
-# axs[1].set_xticks(np.arange(0,simK+1,2))
-# axs[1].set_xlim([1, simK])
-# axs[1].set_xlabel('Time (k)',usetex=True,fontsize=16)
+axs[1].set_xticks(np.arange(0,simK+1,2))
+axs[1].set_xlim([1, simK])
+axs[1].set_xlabel('Time (k)',usetex=True,fontsize=16)
 
-# fig.tight_layout()
-# plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".pdf",bbox_inches='tight')
-# plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".png",bbox_inches='tight')
+fig.tight_layout()
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".pdf",bbox_inches='tight')
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".png",bbox_inches='tight')
 
 # NOTE(accacio): control
 fig, axs = plt.subplots(3, 1)
@@ -205,7 +213,7 @@ plt.savefig("../img/airtemp_roomI" + "/control" +  ".png",bbox_inches='tight')
 # axs[3].plot(np.arange(1,simK+1),np.sum(corrected_J,axis=1),'-',drawstyle='steps-post') # error line
 # axs[3].legend(( 'N', 'S','C'),loc='bottom right',ncol=3,fontsize=13)
 
-plt.show()
+# plt.show()
 sys.exit()
 
 # plt.savefig("../img/airtemp_roomI" + "/control" +  ".pdf",bbox_inches='tight')

@@ -355,10 +355,12 @@ FUNCTION {bibinfo.warn}
   if$
 }
 FUNCTION {format.url}
-{ url empty$
-    { "" }
-    { "\urlprefix\url{" url * "}" * }
-  if$
+{
+  % url empty$
+  %   { "" }
+  %   { "\urlprefix\url{" url * "}" * }
+  % if$
+  ""
 }
 
 INTEGERS { nameptr namesleft numnames }
@@ -486,13 +488,15 @@ FUNCTION {format.editors}
   if$
 }
 FUNCTION {format.doi}
-{ doi "doi" bibinfo.check
-  duplicate$ empty$ 'skip$
-    {
-      new.block
-      "\doi{" swap$ * "}" *
-    }
-  if$
+{
+  % doi "doi" bibinfo.check
+  % duplicate$ empty$ 'skip$
+  %   {
+  %     new.block
+  %     "\doi{" swap$ * "}" *
+  %   }
+  % if$
+  ""
 }
 FUNCTION {format.note}
 {
