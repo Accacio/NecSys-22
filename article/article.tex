@@ -61,11 +61,11 @@
 % \pagestyle{empty}
 
 \begin{abstract}% Abstract of not more than 250 words.
-  \todo[write abstract]{
-  In distributed predictive control structures, communication among agents is required to achieve a consensus and approach an optimal global behavior. Such negotiation mechanisms are sensitive to attacks on these exchanges.
-  This paper proposes a monitoring scheme based on Expectation Maximization to detect and mitigate the effects of attacks in a resource allocation framework.
+  Controlling large scale systems sometimes requires decentralized computation.
+  Communication among agents is crucial to achieve consensus and optimal global behavior.
+  These negotiation mechanisms are sensitive to attacks on those exchanges.
+  This paper proposes an algorithm based on Expectation Maximization to mitigate the effects of attacks in a resource allocation based distributed model predictive control.
   The performance is assessed through academical example of the temperature control of multiple rooms under input power constraints.
-}
 \end{abstract}
 
 \begin{keyword}
@@ -80,12 +80,12 @@ Large scale optimization problems
 The information collected, processed, and transmitted within \cps{} impacts physical systems whose proper functioning is essential for society, like energy networks, industrial processes, water production plants, etc..
 Attacks in those critical infrastructures, such as Stuxnet, increased awareness for cyber-security of \cps{}.
 
-Given the complexity, scale and even geographic location of these structures, it is necessary to adopt control structures that are decentralized rather than \todo{monolithic}.
+Given the complexity, scale and even geographic location of these structures, it is necessary to adopt control structures that are decentralized rather than monolithic.
 For these systems, a set of controllers are designed to ensure the safe and efficient operation of the facilities collectively.
 
 This operation is done cooperatively, where the controllers exchange information with each other.
-This approach can be used, for example, for the voltage regulation of electrical networks, and the production-consumption balance in these same networks.
-Multi-agent systems~\citep{KantamneniEtAl2015} or \dmpc{}~\citep{MaestreEtAl2014} are standard tools to design these controllers.
+This approach can be used, i.e., for the voltage regulation of electrical networks, or the production-consumption balance in these same networks, water distribution and many other applications.
+Multi-agent systems~\citep{KantamneniEtAl2015} and \dmpc{}~\citep{MaestreEtAl2014} are standard approaches to design these controllers.
 
 A few articles have focused on safety in \dmpc{} frameworks, presenting vulnerabilities of different frameworks, such as Lagrange-based decomposition~\citep{VelardeEtAl2017}, Jacobi-Gauss decomposition~\citep{ChanfreutEtAl2018} and primal decomposition~\citep{NogueiraEtAl2021}.
 
@@ -97,7 +97,7 @@ Some strategies are presented to mitigate the effects of such event.
 For instance dismissing extreme values as in~\cite{VelardeEtAl2017}, or
 using secure scenarios based on reliable historical data~\cite{MaestreEtAl2021}.
 
-Our previous work~\citep{NogueiraEtAl2021} proposed a safe algorithm based on data reconstruction to mitigate the effects of a \fdi{} in the communication between a coordinator and local constraint-free agents, which were bound by global equality constraints.
+A previous work~\citep{NogueiraEtAl2021} proposed a safe algorithm based on data reconstruction to mitigate the effects of a \fdi{} in the communication between a coordinator and local constraint-free agents, which were bound by global equality constraints.
 
 In this paper, we propose an extension of our approach by including local constraints and changing the global constraints.
 This extension profoundly changes the complexity, as the exchanges between the
@@ -107,13 +107,11 @@ This leads not only to a combinatorial explosion but also to a parametric identi
 To overcome this problem, we propose using a learning method based on the \EM{} algorithm~\citep{DempsterEtAl1977}, which allows us to estimate the corruption
 mechanism and correct it if necessary.
 
-\todo{
 This paper is organized as follows.
-First, in Section~\ref{sec:PS}, we introduce the primal decomposition-based DMPC and its vulnerabilities.
+First, in Section~\ref{sec:PS}, we introduce the primal decomposition-based \dmpc{} and its vulnerabilities.
 Then in Section~\ref{sec:TSM} we study the local problems and propose a detection and mitigation mechanism based on the Expectation Maximization algorithm.
 Moreover, in Section~\ref{sec:App_dMPC}, we illustrate the algorithm with academic simulation and we assess its performance.
-Finally, in Section~\ref{sec:CC}, we conclude, and we give an outlook of future works.
-}
+Finally, in Section~\ref{sec:CC}, we conclude with an outlook of future works.
 
 \emph{Notation:}
 In this paper, $\norm{\cdot}$, $\norm{\cdot}_{F}$, and $\norm{\vec{v}}_{Y}$ represent the $\ell_{2}$ norm, the Frobenius norm and the weighted norm $\norm{Y^{\frac{1}{2}}\vec{v}}$.
@@ -283,20 +281,18 @@ Here we focus on the local problems in~\eqref{eq:DOP_local}, and study how their
 \subsection{Local Problems --- Formal Analysis}\label{ssec:FA}
 
 The \emph{local problems}~\eqref{eq:DOP_local} can be rewritten in a equivalent (same solution) constrained \qp{} form:
-\todo[Correct alignment maybe]{
   \begin{subequations}\label{eq:quadratic_case}
     \begin{align}
       \label{eq:4}
       \underset{\Uik}{\mathrm{minimize}}&& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
-      \mathrm{s.t.}&&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\label{eq:constraints}\\
+      \mathrm{subject~ to}&&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\label{eq:constraints}\\
                                         &&\Uik\succeq\0_{c},
     \end{align}
   \end{subequations}
-}
 where ${\Uik}$ stacks the input prediction sequences, and
 ${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
 The exact values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
-The approach depends only on the fact that $H_{i}:\semidefpos$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
+The approach depends only on the fact that ${H_{i}:\semidefpos}$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
 
 \no{
   We choose reference tracking just to illustrate the approach. With this objective, we have
@@ -643,7 +639,15 @@ Integrating the EM to our detection and mitigation mechanism we can propose in A
 
 \section{Example: Temperature Control}\label{sec:App_dMPC}
 The system consists of $4$~distinct~rooms (I to IV), which we want to control the air temperatures inside each one of them.
-The systems are modeled as continuous-time linear \mbox{time-invariant} systems using the \mbox{3R-2C} model~\citep{NogueiraEtAl2021}, with parameters shown in Tables~\ref{tab:modelParamMeaning} and~\ref{tab:modelParam}, and state space matrices
+The systems are modeled as continuous-time linear \mbox{time-invariant} systems using the \mbox{3R-2C} model~\citep{NogueiraEtAl2021}, with parameters shown in Tables~\ref{tab:modelParamMeaning} and~\ref{tab:modelParam}, and dynamics
+\begin{equation}
+\begin{matrix}
+  \label{eq:systems}
+\dot{\vec{x}}_{i}(t)&=&{A_{c}}_{i}\vec{x}_{i}(t) &+& {B_{c}}_{i}\vec{u}_{i}(t)\\
+\vec{y}_{i}(t)&=&{C_{c}}_{i}\vec{x}_{i}(t) &&
+\end{matrix},
+\end{equation}
+with
 \begin{equation*}
   \label{eq:room_system}
   \begin{matrix}
@@ -662,10 +666,8 @@ The systems are modeled as continuous-time linear \mbox{time-invariant} systems 
   \end{matrix}
   \end{matrix},
 \end{equation*}
-where the states are ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$, which represent the mean temperatures of the air and walls inside room $i$, and the input of the system is $\vec{u}_{i}$, which is the heating power
-for the corresponding room.
-
-The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(k)\preceq 4\mathrm{kW}}$.
+where ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$, which represents the mean temperatures of the air~(${x_A}_i$) and walls inside room~$i$~(${x_W}_i$), and $\vec{u}_{i}$ is the input (the heating power)
+for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(t)\preceq 4\mathrm{kW}}$.
 
 
 \begin{table}[b]
@@ -687,18 +689,15 @@ The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(k)\preceq 4\mathrm{kW}}
   \begin{table}[b]
   \centering
   \caption{
-\todo{
-  change values
-}
-    Value of parameters for each agent}\label{tab:modelParam}
+    Parameters for each agent}\label{tab:modelParam}
   \begin{tabular}[t]{cccccc} \toprule
     Symbol& I & II & III & IV &Unit\\
     \midrule
-    $C^{\text{walls}}$    &$5$   & $4$ & $4.5$ &$4.7$ &$10^{4}\mathrm{J/K}$ \\
-    $C^{\text{air}}$               &$8$   & $7$ &$9$&$6$  &$10^{4}\mathrm{J/K}$  \\
-    $R^{\text{oa/ia}}$               &$5$   & $6$& $4$& $5$  &$10^{-3}\mathrm{K/W}$ \\
-    $R^{\text{iw/ia}}$               &$2.5$ & $2.3$&$2$&$2.2$ &$10^{-4}\mathrm{K/W}$\\
-    $R^{\text{ow/oa}}$               &$0.5$ & $1$ &$0.8$&$0.9$  & $10^{-4}\mathrm{K/W}$ \\
+    $C^{\text{walls}}$    &$5.4$&$4.9$&$4.7$&$4.7$ &$10^{4}\mathrm{J/K}$ \\
+    $C^{\text{air}}$               &$7.5$ &$8.4 $&$8.2$ &$7.7$&$10^{4}\mathrm{J/K}$  \\
+    $R^{\text{oa/ia}}$               &$5.2$&$4.6$&$4.9$&$5.4$&$10^{-3}\mathrm{K/W}$ \\
+    $R^{\text{iw/ia}}$               &$2.3$&$2.4$&$2.3$&$2.9$&$10^{-4}\mathrm{K/W}$\\
+    $R^{\text{ow/oa}}$               &$1.5$&$0.6$&$0.7$&$0.7$& $10^{-4}\mathrm{K/W}$ \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -715,7 +714,7 @@ Three scenarios are simulated for a period of 12.5 hours:
     \item \mbox{Agent I presents non-cooperative behavior} ${T_{I}[k]}$ for ${k\geq25}$, with correction, ${\epsilon_{P}=10^{-4}}$.
   \end{enumerate}
 
-In Fig.~\ref{fig:response3Scenarios}, first, we compare the air temperature in room I
+In Fig.~\ref{fig:response3Scenarios}, first, we compare the air temperature in room~I
 with its reference (${w_{I}=25.5^{\circ}}$C), and then the
 decision variable ${E_{I}(k)}$ with the threshold $\epsilon_{P}$.
 Observe that in the nominal behavior (in magenta), the reference $w_{I}$ is not reached
@@ -732,20 +731,20 @@ As expected, the decision variable lies under the threshold $\epsilon_{P}=10^{-4
 
 
 When the agent presents a selfish behavior (in orange), the tracking error
-${w_{I}-y_{I}}$ is reduced but insufficient to attain the reference.
+${w_{I}-y_{I}}$ is reduced, almost attaining the reference.
 In this case, the detection variable surpasses $\epsilon_{P}$,
 ${E_{I}^{S}\approx200}$, indicating the change of behavior.
 
 When the correction is activated in the system, we see that the temperatures approach their nominal value $y_{I}^{N}$.
 We can also illustrating the good
-performances of our proposition by comparing the inputs in Fig.~\ref{fig:control_3Scenarios}. When I is selfish its control increases while the other decreases, unless the correction is activated and it approaches the nominal.
+performances of our proposition by comparing the inputs in Fig.~\ref{fig:control_3Scenarios}. When room~I is selfish, its control increases while the other decreases, unless the correction is activated and it approaches the nominal.
 
-We can also evaluate the performance of the proposed mechanism by comparing the global objective function calculated using the total period of simulation ${N=50}$ for the 3 scenarios (Table~\ref{tab:costsGlobalLocal}).
-When agent I is selfish, we see the increase in the objective, degrading the overall performance.
+We can also evaluate the performance of the proposed mechanism by comparing the global objective function calculated using the total period of simulation (${N=50}$) for the 3 scenarios (Table~\ref{tab:costsGlobalLocal}).
+When agent~I is selfish, we see the increase in the objective, degrading the overall performance.
 When the correction mechanism is activated, the difference between costs is minimal, $|\frac{J^{C}-J^{N}}{J^{N}}|\leq10^{-8}$.
 %%%%%
 % TODO(accacio): Verify
-\begin{table}[t]
+\begin{table}[h]
   \centering
   \caption{Comparison of costs $J_{i}$}\label{tab:costsGlobalLocal}
   \begin{tabular}[t]{cccc} \toprule
@@ -763,13 +762,11 @@ When the correction mechanism is activated, the difference between costs is mini
 % \enlargethispage{-.8cm}
 
 \section{CONCLUSION AND FUTURE WORKS}\label{sec:CC}
-\todo{
-In this paper, an algorithm for monitoring and correcting exchanges between agents in a resource-sharing system has been proposed.
-The algorithm exploits the particular structure of exchanges, part of which must be constant over time.
-The first phase consists of identifying this constant part and checking if an attacker has modified it.
-From this identification, it is possible to reconstruct the original mechanism and find the centralized optimality.
-This principle should be generalized to other types of decomposition structures, and this is what we plan to do in the near future.
-}
+In this paper, we proposed an algorithm for monitoring and correcting exchanges between agents in a resource-sharing framework.
+The first phase of the algorithm consists of identifying the attacker by exploiting the exchange structure.
+After this identification, if necessary, it is possible to reconstruct the original mechanism and recover nominal optimality by inverting the attack.
+This principle should be generalized to cases when the attack is not completely invertible, reconstructing by parts the original mechanism.
+Also, other types of decomposition structures and attack models need to be explored, and this is what we plan to do in the near future.
 
 \begin{figure}[h]
   \centering
