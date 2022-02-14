@@ -17,7 +17,7 @@
 
 
 \draft% show todos in red
-% \final% give error if there is todos
+\final% give error if there is todos
 % \comments% blank right column to make comments in pen & paper
 
 % \newcommand{\id}{}
@@ -61,82 +61,80 @@
 % \pagestyle{empty}
 
 \begin{abstract}% Abstract of not more than 250 words.
-  Controlling large scale systems sometimes requires decentralized computation.
-  Communication among agents is crucial to achieve consensus and optimal global behavior.
+  Controlling large-scale systems sometimes requires decentralized computation.
+  Communication among agents is crucial to achieving consensus and optimal global behavior.
   These negotiation mechanisms are sensitive to attacks on those exchanges.
   This paper proposes an algorithm based on Expectation Maximization to mitigate the effects of attacks in a resource allocation based distributed model predictive control.
-  The performance is assessed through academical example of the temperature control of multiple rooms under input power constraints.
+  The performance is assessed through an academic example of the temperature control of multiple rooms under input power constraints.
 \end{abstract}
 
 \begin{keyword}
-  Model predictive and optimization-based control,
-  Distributed control and estimation,
-Large scale optimization problems
+%   Model predictive and optimization-based control,
+%   Distributed control and estimation,
+% Large scale optimization problems
+Distributed constrained control and MPC;
+Cyber security in networked control systems;
+Decentralized Control and Large-Scale Systems
 \end{keyword}
 
 \end{frontmatter}
 
 \section{INTRODUCTION}
-The information collected, processed, and transmitted within \cps{} impacts physical systems whose proper functioning is essential for society, like energy networks, industrial processes, water production plants, etc..
+The information collected, processed, and transmitted within \cps{} impacts physical systems whose proper functioning is essential for society, like energy networks, industrial processes, water distribution, and others.
 Attacks in those critical infrastructures, such as Stuxnet, increased awareness for cyber-security of \cps{}.
 
-Given the complexity, scale and even geographic location of these structures, it is necessary to adopt control structures that are decentralized rather than monolithic.
-For these systems, a set of controllers are designed to ensure the safe and efficient operation of the facilities collectively.
+Given these structures' complexity, scale, and geographic distribution, it is necessary to adopt decentralized control structures rather than monolithic ones.
+For these systems, a set of controllers are designed to collectively ensure the safe and efficient operation of the facilities.
 
-This operation is done cooperatively, where the controllers exchange information with each other.
-This approach can be used, i.e., for the voltage regulation of electrical networks, or the production-consumption balance in these same networks, water distribution and many other applications.
+This operation is done cooperatively, where the controllers exchange information.
+This approach can be used, i.e., for the voltage regulation of electrical networks, the production-consumption balance in these same networks, water distribution, and many other applications.
 Multi-agent systems~\citep{KantamneniEtAl2015} and \dmpc{}~\citep{MaestreEtAl2014} are standard approaches to design these controllers.
 
-A few articles have focused on safety in \dmpc{} frameworks, presenting vulnerabilities of different frameworks, such as Lagrange-based decomposition~\citep{VelardeEtAl2017}, Jacobi-Gauss decomposition~\citep{ChanfreutEtAl2018} and primal decomposition~\citep{NogueiraEtAl2021}.
+A few articles have focused on safety in \dmpc{} frameworks, presenting vulnerabilities of different frameworks, such as Lagrange-based decomposition~\citep{VelardeEtAl2017}, Jacobi-Gauss decomposition~\citep{ChanfreutEtAl2018}, and primal decomposition~\citep{NogueiraEtAl2021}.
 
 The authors in these works highlight the complexity of the problems. A modification of a local goal, the hacking of communication, or the failure of one of the agents are events that disrupt global behavior.
-If one of these agents is attacked, it can result in the violent destruction of the corrupted element (perhaps the whole system), or more subtly, it can lead to deviant behavior that is more difficult to detect.
+If one of these agents is attacked, it can result in the violent destruction of the corrupted element (perhaps the whole system), or more subtly, it can lead to a deviant behavior that is more difficult to detect.
 % Usually the attacks aim to de-optimize the global operation by benefiting/prejudicing some specific group of controllers, or to lead the system towards a state of malfunction/instability~\todo[use other]{}.
 
-Some strategies are presented to mitigate the effects of such event.
-For instance dismissing extreme values as in~\cite{VelardeEtAl2017}, or
+Some strategies are presented to mitigate the effects of such an event.
+For instance, dismissing extreme values as in~\cite{VelardeEtAl2017} or
 using secure scenarios based on reliable historical data~\cite{MaestreEtAl2021}.
 
-A previous work~\citep{NogueiraEtAl2021} proposed a safe algorithm based on data reconstruction to mitigate the effects of a \fdi{} in the communication between a coordinator and local constraint-free agents, which were bound by global equality constraints.
+\cite{NogueiraEtAl2021} proposed a safe algorithm based on data reconstruction to mitigate the effects of a \fdi{} in the communication between a coordinator and local constraint-free agents, which were bound by global equality constraints.
 
-In this paper, we propose an extension of our approach by including local constraints and changing the global constraints.
-This extension profoundly changes the complexity, as the exchanges between the
-agents and the coordinator are no longer characterized by an affine functions
-but by \pwa{} functions.
-This leads not only to a combinatorial explosion but also to a parametric identification challenge.
-To overcome this problem, we propose using a learning method based on the \EM{} algorithm~\citep{DempsterEtAl1977}, which allows us to estimate the corruption
-mechanism and correct it if necessary.
+In this paper, we propose an extension of their approach by including local constraints and changing the global constraints.
+This extension profoundly changes the complexity, as the exchanges between the agents and the coordinator are no longer characterized by affine functions but by \pwa{} functions.
+This fact leads not only to a combinatorial explosion but also to a parametric identification challenge.
+To overcome this problem, we propose using a learning method based on the \EM{} algorithm~\citep{DempsterEtAl1977}, which allows us to estimate the corruption mechanism and correct it if necessary.
 
 This paper is organized as follows.
-First, in Section~\ref{sec:PS}, we introduce the primal decomposition-based \dmpc{} and its vulnerabilities.
-Then in Section~\ref{sec:TSM} we study the local problems and propose a detection and mitigation mechanism based on the Expectation Maximization algorithm.
-Moreover, in Section~\ref{sec:App_dMPC}, we illustrate the algorithm with academic simulation and we assess its performance.
+First, Section~\ref{sec:PS} introduces the primal decomposition-based \dmpc{} and its vulnerabilities.
+Then in Section~\ref{sec:TSM}, we study the local problems and propose a detection and mitigation mechanism based on the Expectation Maximization algorithm.
+Moreover, in Section~\ref{sec:App_dMPC}, we illustrate the algorithm with an academic simulation and assess its performance.
 Finally, in Section~\ref{sec:CC}, we conclude with an outlook of future works.
 
 \emph{Notation:}
-In this paper, $\norm{\cdot}$, $\norm{\cdot}_{F}$, and $\norm{\vec{v}}_{Y}$ represent the $\ell_{2}$ norm, the Frobenius norm and the weighted norm $\norm{Y^{\frac{1}{2}}\vec{v}}$.
+In this paper, $\norm{\cdot}$, $\norm{\cdot}_{F}$, and ${\norm{\vec{v}}_{Y}=\norm{Y^{\frac{1}{2}}\vec{v}}}$ represent the $\ell_{2}$, Frobenius and weighted norms.
 $\Proj^{\set{T}}(\cdot)$ is the Euclidean projection onto $\set{T}$.
 % $\card{x}$ is the number of elements in $x$.
 $\kron{}{}$ ($\hadamard{}{}$) is the Kronecker (Hadamard) product.
 $\vectorize{A}$ vectorizes matrix $A$.
-${n\mathbin{:}i\mathbin{:}j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\mathbin{:}j}$ is equal to ${n\mathbin{:}1\mathbin{:}j}$.
-$[A,B]$ ($[A;B]$) is horizontal (vertical) concatenation of matrices.
+${n\mathbin{:}i\mathbin{:}j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\mathbin{:}j}$ means ${i=1}$.
+% $[A,B]$ ($[A;B]$) is horizontal (vertical) concatenation of matrices.
 ${\0_{m}=0_{m\times 1}}$ (${\1_{m}=1_{m\times 1}}$), where
 $0_{m\times n}$ ($1_{m\times n}$) is a $0$ ($1$) filled \mbox{$m$-by-$n$} matrix.
 $\indicator{x}$ is the indicator function returning $1$ if $x$ is true and $0$ otherwise.
-$\preceq$ is the component-wise inequality for vectors and matrix inequality for matrices in ${\symmetric^{n}=\setbuild{X:\R^{n\times n}}{X\T=X}}$.
-${\defpos^{n}=\setbuild{X:\symmetric^{n}}{X\succ 0}}$, ${\semidefpos^{n}=\setbuild{X:\symmetric^{n}}{X\succeq 0}}$.
-$I_{c}$ is the identity matrix of size $c$.
-$A^{\dagger}={{(A^{T}A)}^{-1}A^{T}}$.
-$\determinant{A}$ is the determinant of $A$.
+$\symmetric^{n}$, and $\defpos^{n}$ ($\semidefpos^{n}$) are symmetric and positive (semi-)definite matrices of size $n$.
+${A^{\dagger}={{(A^{T}A)}^{-1}A^{T}}}$.
+% $\determinant{A}$ is the determinant of $A$.
 A vector $\vec{v}_{i}$, correspond to the $i$-th agent, and these vectors can be stacked in a vector $\vec{v}$.
-$\random{a},\random{A},\randomvec{a}$ are random variables, scalar, matrix and vector respectively.
-$\expectation{\random{x}}$ is the expected value of $\random{x}$, and $\probability{A \mid B}$ is the conditional probability of $A$ given condition $B$.
+% $\random{a},\random{A},\randomvec{a}$ are random variables, scalar, matrix and vector respectively.
+$\expectation{\random{x}}$ is the expected value of random variable $\random{x}$, and $\probability{A \mid B}$ is the conditional probability of $A$ given condition $B$.
 % $\pdf{\cdot}$ is a probability density function.
 ${\diag(A_{1},\dots,A_{N})}$ corresponds to a block diagonal matrix.
 
 \section{Problem Statement}\label{sec:PS}
-In this section we present an algorithm to decompose a \mpc{} problem based on the primal decomposition \citep{BoydEtAl2015}, and a vulnerability of the decomposition that can be exploited by a malicious agent.
+In this section, we present a \dmpc{} algorithm based on the primal decomposition \citep{BoydEtAl2015} and a vulnerability of the decomposition, which can be exploited.
 
 \subsection{Model Predictive Control}\label{ssec:MPC}
 Consider a system composed of discrete-time linear time-invariant agents ${i\in\set{M}=\{1\mathbin{:}\nsubsystems\}}$, modeled by
@@ -155,7 +153,7 @@ Each agent's input $\uik$ is constrained by
   \0_{n_{u}}\preceq\uik\preceq\vec{u}_{\max},
 \end{equation}
 with ${\umax:\R^{n_{u}}}$.
-The agents are coupled by global input constraints with weighting matrices \todo{${\Gamma_{i}:\semidefpos^{n_{u}}}$}:
+The agents are coupled by global input constraints with weighting matrices ${\Gamma_{i}:\semidefpos^{n_{u}}}$:
 \begin{equation}
   \label{eq:global_constraint}
   \sum_{i\in\set{M}}\Gamma_{i}\uik\preceq\umax.
@@ -179,17 +177,18 @@ computes the optimal input for a finite prediction horizon ${\set{H}=\{1\mathbin
 % \label{eq:dmpcModLOP}
 \end{equation}
 where ${Q_{i}:\semidefpos}$, ${R_{i}:\defpos}$, and $\vik$ is a control objective.
-$\optglobobj$ denotes the optimal value of the objective function for the the optimal control sequences ${\optuiseq}$.
+$\optglobobj$ denotes the optimal value of the objective function for the optimal control sequences ${\optuiseq}$.
 The problem in~\eqref{eq:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in their respective subsystem $i$, following a \rhs{}.
 
-Solving~\eqref{eq:GOP} at each time $k$ can be quite challenging, since the prediction horizon and the number of agents can be large making the process computationally intensive. Another issue that can arise is the fact that the complete information \todo[verify]{(${\set{I}_{i}=\{A_{i},B_{i},C_{i},\vec{v}_{i}[k],Q_{i},R_{i}\}}$)} from all the subsystems is needed to solve the problem,
-which can be viewed negatively in a confidentiality point of view.
+Since the prediction horizon and the number of agents can be large, solving~\eqref{eq:GOP} at each time $k$ can be rather challenging due to computational costs.
+Another issue that can arise is the fact that the complete information ${\set{I}_i=\{A_i,B_i,C_i,Q_i,R_i,\Gamma_i,\vec{v}_i\}}$ from all the subsystems is needed to solve the problem,
+which can be viewed negatively from a confidentiality point of view.
 
-So, we use the \emph{primal decomposition} method, sometimes called \emph{quantity decomposition} or \emph{resource allocation}, with wich we can profit from the parallelism, while avoiding the use of the complete information $\set{I}_{i}$.
+So, we use the \emph{primal decomposition} method, sometimes called \emph{quantity decomposition} or \emph{resource allocation}, with which we can profit from the parallelism, while avoiding the use of the complete information $\set{I}_{i}$.
 
 \subsection{Primal Decomposition based dMPC}\label{ssec:dMPC}
 
-The technique consists of decomposing the monolithic \mpc{} in~\eqref{eq:GOP} into $M$ modified \mpc{} problems~\eqref{eq:DOP_local}, called \emph{local problems}, which can be solved in parallel by each subsystem, and a \emph{master problem}~\eqref{eq:DOP_master}, which is equivalent to the global problem and is solved by a coordinator.
+The technique decomposes the monolithic \mpc{} in~\eqref{eq:GOP} into $M$ modified \mpc{} problems~\eqref{eq:DOP_local} (solvable in parallel by each subsystem) called \emph{local problems}, and a \emph{master problem}~\eqref{eq:DOP_master}, which is equivalent to the global problem and is solved by a coordinator.
 \begin{subequations}
   \begin{equation}
     \left.
@@ -230,7 +229,9 @@ The technique consists of decomposing the monolithic \mpc{} in~\eqref{eq:GOP} in
     \label{eq:DOP_master}
   \end{equation}
 \end{subequations}
-The modified \mpc{} problems in~\eqref{eq:DOP_local} are created by exchanging the $\vec{u}_{\max}$ in~\eqref{eq:global_constraint} by vectors $\qik$, where which one corresponds to the quantity of the total resource $\vec{u}_{\max}$ that is allocated to agent $i$ in time $k$ for each prediction $j$, thus the names \emph{resource allocation} and \emph{quatity decomposition}. This new set of constraints have associated dual variables ${\dik\succeq\0_{n_{u}}}$. The sequence of this variables ${\qiseq}$ and ${\diseq}$ can be aggregated in vectors ${\thetaik=\kron{\1_{\predhorz}}{\qik}}$, and ${\lambdaik=\kron{\1_{\predhorz}}{\dik}}$.
+The modified \mpc{} problems~\eqref{eq:DOP_local} are created by exchanging the $\vec{u}_{\max}$ in~\eqref{eq:global_constraint} by vectors $\qik$, which correspond to the quantity of the total resource $\vec{u}_{\max}$ allocated to agent $i$ in time $k$ for each prediction $j$, thus the names \emph{resource allocation} and \emph{quantity decomposition}.
+This new set of constraints have associated dual variables ${\dik\succeq\0_{n_{u}}}$.
+The sequences ${\qiseq}$ and ${\diseq}$ can be aggregated in vectors ${\thetaik=\kron{\1_{\predhorz}}{\qik}}$, and ${\lambdaik=\kron{\1_{\predhorz}}{\dik}}$.
 
 The \emph{master problem} finds the optimal allocation sequences $\optthetai$ by using a projected sub-gradient method:
 \begin{equation}
@@ -246,11 +247,81 @@ Plugging it in $\vec{g}[k]\p$ we have
 \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p),
 \end{equation}
 \newcommand{\negotiation}{\emph{negotiation}}
-which henceforth is referred as the \negotiation.
+which henceforth is referred to as the \negotiation.
 
 Once the \negotiation{} for a given time $k$ converges, the $\optuikk$ found in the last step of the \negotiation{} are applied in their corresponding agent and then the \rhs{} is followed.
 
-The algorithm to find the optimal $\optthetai[k]$ can be summarized in algorithm~\ref{alg:quantityAlg}, and the exchange between coordinator and agents can be seen in Fig.~\ref{fig:dmpc_graph}.
+The algorithm to find the optimal $\optthetai[k]$ can be summarized in Algorithm~\ref{alg:quantityAlg}, and the exchange between coordinator and agents can be seen in Fig.~\ref{fig:dmpc_graph}.
+
+\begin{figure}[h]
+  \centering
+    \resizebox{.47\columnwidth}{!}{
+          \begin{tikzpicture}[font=\small,thick,node distance=.0cm and .5cm,
+          mpcSmall/.style={
+            rectangle,
+            align=center,
+            fill=supelecRed!10,
+            minimum width=1.5cm,
+            minimum height=1cm},
+          coordinator/.style={
+            rectangle,
+            align=center,
+            fill=mpc_grey,
+            minimum height=3.4cm,
+            minimum width=1.5cm,
+          },
+          superv/.style={
+            rectangle,
+            minimum height=1.4cm,
+            minimum width=.3cm,
+            fill=mpc_yellow,
+          },
+          negotiation/.style={
+            rectangle,
+            minimum height=3.0cm,
+            minimum width=.45cm,
+            fill=mpc_green,
+          },
+          ]
+
+          \node[draw,
+          mpcSmall,
+          fill=mpc_blue,
+          ] (block1) {MPC 1};
+
+          \node[draw,
+          mpcSmall,
+          fill=none,
+          draw=white,
+          below=of block1,
+          ] (mult) {\vdots};
+
+          \node[draw,
+          mpcSmall,
+          fill=mpc_blue,
+          below=of mult,
+          ] (blockM) {MPC M};
+
+          \node[draw,
+          coordinator,
+          right=2cm of mult,
+          ] (coordinator) {};
+          \node at ($(coordinator)+(.25,0)$) {\rotatebox{90}{Coordinator}};
+
+          \node[draw,negotiation] (negot) at ({$(coordinator.center)+(0,0)$} -|{$(coordinator.west)+(0.25,)$}) {};
+          \node  at (negot) {\rotatebox{90}{Negotiation}};
+
+          \draw[latex-,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
+          \draw[-latex,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
+
+          \draw[latex-,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
+          \draw[-latex,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
+
+        \end{tikzpicture}
+        }
+  \caption{Exchange between coordinator and agents.}\label{fig:dmpc_graph}
+\end{figure}
+
 
 \begin{algorithm2e}[h]
   \DontPrintSemicolon%
@@ -261,12 +332,12 @@ The algorithm to find the optimal $\optthetai[k]$ can be summarized in algorithm
   Coordinator updates allocations~\eqref{eq:thetaNegot}\;
   $p:=p+1$
 }
- \caption{Quantity decomposition based \acrshort{dmpc}.}\label{alg:quantityAlg}
+ \caption{Quantity decomposition-based \acrshort{dmpc}.}\label{alg:quantityAlg}
 \end{algorithm2e}
 
-One can observe that instead of using $\mathcal{I}_{i}$, each agent only sends $\lambdaik$.
+One can observe that each agent only sends $\lambdaik$ instead of using $\mathcal{I}_{i}$.
 An interpretation of $\lambdaik$ is the dissatisfaction of agent $i$ with the resource $\thetaik$ allocated for it, where ${\lambdaik=\0_{c}}$ means total satisfaction.
-The coordinator trusts in the authenticity of the $\vec{\lambda}_{i}[k]$ received to update the allocations, but if false data is injected, the \negotiation{} can be driven by a malicious agent which can take advantage of this trust to favor itself, harm others or even destabilize the \negotiation{}, as shown in~\cite{NogueiraEtAl2021}.
+The coordinator trusts in the authenticity of the $\vec{\lambda}_{i}[k]$ received to update the allocations. However, if false data is injected, the \negotiation{} can be driven by a malicious agent, taking advantage of this trust to favor itself, harm others or even destabilize the \negotiation{}, as shown in~\cite{NogueiraEtAl2021}.
 
 
 Our main objective is to mitigate the effects of a given configuration where agents send untrustworthy
@@ -284,18 +355,18 @@ The \emph{local problems}~\eqref{eq:DOP_local} can be rewritten in a equivalent 
   \begin{subequations}\label{eq:quadratic_case}
     \begin{align}
       \label{eq:4}
-      \underset{\Uik}{\mathrm{minimize}}&& \overbrace{\frac{1}{2} \Uik^T H_i\Uik+{\fik}^T\Uik}^{\textstyle J_{i}(\vec{\theta}_{i})}\\
-      \mathrm{subject~ to}&&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\label{eq:constraints}\\
-                                        &&\Uik\succeq\0_{c},
+      \underset{\Uik}{\mathrm{minimize}}&&\small J_{i}(\vec{\theta}_{i})=&\frac{1}{2} \Uik^T H_i\Uik +{\fik}^T\Uik\\
+      \mathrm{subject~ to}&&&\bar{\Gamma}_{i}\Uik\preceq\vec{\theta}_{i}[k]:\vec{\lambda}_{i}[k]\label{eq:constraints}\\
+                                        &&&\Uik\succeq\0_{c},
     \end{align}
   \end{subequations}
 where ${\Uik}$ stacks the input prediction sequences, and
 ${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
-The exact values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
+The values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
 The approach depends only on the fact that ${H_{i}:\semidefpos}$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
 
 \no{
-  We choose reference tracking just to illustrate the approach. With this objective, we have
+  We choose reference tracking to illustrate the approach. With this objective, we have
 ${\vik=\wik-C_{i}\xik}$, where $\wik$ is the output reference in time $k$, which yields
 \begin{equation}
 \small\begin{matrix*}[l]
@@ -307,35 +378,6 @@ ${\vik=\wik-C_{i}\xik}$, where $\wik$ is the output reference in time $k$, which
 where $\Wik$ stacks the setpoint prediction sequence, which is supposed to be constant during the predicted horizon ${\Wik=\kron{\1_{\predhorz}}{\vec{w}_{i}[k]}}$ (no prior information).
 ${\mathcal{M}_{i}}$  and ${\mathcal{D}_{i}}$ are the prediction matrices of the \mpc{}.
 ${\bar{Q}_{i}=\kron{I_{\predhorz}}{Q_{i}}}$, and ${\bar{R}_{i}=\kron{I_{\predhorz}}{R_{i}}}$.
-}
-\todo[make a better figure if time permits]{
-\begin{figure}[t]
-  \centering
-  \begin{tikzpicture}[node distance=1.5cm]
-    \tikzset{
-      agent/.style={draw,circle,minimum width=1cm,},
-      coord/.style={draw,circle,minimum width=1cm,very thick}
-    }
-    % \draw[thick,blue,rounded corners=10pt] (-1.7,1.2) rectangle (1.7,-1.7);
-    % \node at (1.2,-1.3) {O};
-    % \node (pi) at (-2.5,.5) {$\pi$};
-    % \node (phi) at (2.5,-1.) {$\phi_{c}$};
-
-    \node[agent] (a1) {a$_{1}$};
-    \node (a2) [right of=a1]  {$\dots$};
-    \node[agent] (am) [right of=a2] {a$_{M}$};
-    \node[coord] (c) [above of=a2] {C};
-
-
-    \draw[-latex] (a1) to [out=60,in=210] node [sloped,above] {$\vec{\lambda_{1}}[k]$} (c) ;
-    \draw[-latex] (c) to [out=-120,in=30] node [sloped,below] {$\vec{\theta}_{1}[k]$} (a1);
-
-    \draw[-latex] (am) to [out=150,in=-60]node [sloped,below] {$\vec{\lambda}_{M}[k]$} (c);
-    \draw[-latex] (c) to [out=-30,in=120] node [sloped,above] {$\vec{\theta}_{M}[k]$} (am);
-
-  \end{tikzpicture}
-  \caption{Exchange between coordinator (C) and agents $a_{i}$.}\label{fig:dmpc_graph}
-\end{figure}
 }
 
 We can get an explicit solution for the dual variables $\vec{\lambda}_{i}[k]$, which are \acrfull{pwa} functions w.r.t. $\vec{\theta}_{i}[k]$:
@@ -364,11 +406,63 @@ We can get an explicit solution for the dual variables $\vec{\lambda}_{i}[k]$, w
 \end{equation}
 with $n\in\{1\mathbin{:}N\}$.
 
-The halfspaces defined by the set of pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
+The halfspaces defined by the pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
 
 The $P_{i}^{n}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$; and $\vec{s}_{i}^{j}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints in~\eqref{eq:constraints}.
 For example, if all constraints are active, we have ${P_{i}^{\text{ac}}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{\text{ac}}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
-And if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\times c}}$ and ${\vec{s}_{i}^{\text{in}}=\0_{c}}$.
+Futhermore, if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\times c}}$ and ${\vec{s}_{i}^{\text{in}}=\0_{c}}$.
+
+% \begin{figure}[t]
+%   \centering
+%           \begin{tikzpicture}[font=\small,thick,node distance=.0cm and .5cm,
+%           mpcSmall/.style={
+%             rectangle,
+%             align=center,
+%             fill=supelecRed!10,
+%             minimum width=2.cm,
+%             minimum height=1cm},
+%           coordinator/.style={
+%             rectangle,
+%             align=center,
+%             fill=mpc_grey,
+%             minimum width=1cm,
+%             minimum height=3.5cm
+%           } ]
+
+%           \node[draw,
+%           mpcSmall,
+%           fill=mpc_blue,
+%           ] (block1) {MPC 1};
+
+%           \node[draw,
+%           mpcSmall,
+%           fill=none,
+%           draw=white,
+%           below=of block1,
+%           ] (mult) {\vdots};
+
+%           \node[draw,
+%           mpcSmall,
+%           fill=mpc_blue,
+%           below=of mult,
+%           ] (blockM) {MPC M};
+
+%           \node[draw,
+%           coordinator,
+%           right=2cm of mult,
+%           ] (coordinator) {\rotatebox{90}{Coordinator}};
+
+%           \draw[latex-,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\vec{\lambda_{1}}[k]$};
+%           \draw[-latex,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{1}}[k]$};
+
+%           \draw[latex-,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\vec{\lambda_{M}}[k]$};
+%           \draw[-latex,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
+
+%         \end{tikzpicture}
+%   \caption{Exchange between coordinator and agents.}\label{fig:dmpc_graph}
+% \end{figure}
+
+
 
 \begin{remark}\label{rmk:P_constant}
 The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
@@ -385,7 +479,7 @@ The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
  As each constraint can be active or inactive, for a given group of $t$ constraints, we can have at most $N=2^{t}$ different combinations of active sets.
 
  \begin{assumption}
-   We assume that none of the combinations of active/inactive constraints are redundant (no linear dependency), nor make the optimization infeasible (no empty intersection).
+   We assume that none of the active/inactive constraints combinations are redundant (no linear dependency), nor make the optimization infeasible (no empty intersection).
    Thus we always have $N$ zones.
  \end{assumption}
 
@@ -402,7 +496,7 @@ We suppose the malicious agent chooses a function $\gamma_{i}(\cdot)$ to use thr
   \begin{equation}
 \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
 \end{equation}
-  where $\determinant{T}\neq 0$.
+  where $T$ is invertible.
 \end{assumption}
 
 Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
@@ -427,9 +521,9 @@ Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
     $}
 \end{equation}
 with $n\in\{1\mathbin{:}N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
-Observe that as the function is applied only in $\lambdaik$, it does not affect the hyperplanes generating the zones.
+Observe that as the function is applied only in $\lambdaik$, it does not affect the zones' hyperplanes.
 
-We fix the index for these zones where all constraints are active to $1$, and we can call them the $1$-zones.
+We fix the index for these zones where all constraints are active to $1$, now referenced to as the $1$-zones.
 
 \subsection{Detection and mitigation}\label{ssec:DM}
 Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the parameters for this zone with
@@ -457,9 +551,9 @@ If an attack is detected, we can estimate the inverse of $T_{i}(k)$ with
 \end{equation}
 if $\widehat{\tilde{P}_{i}^{j}}[k]$ is invertible, and $\widehat{\tilde{P}_{i}^{j}}[k]$ is only invertible when all constraints are active, that means, when ${j=1}$.
 \begin{assumption}
-  We suppose there exists a $1$-zone for each agent $i$ for every time $k$.
+  We suppose a $1$-zone exists for each agent $i$ for every time $k$.
 \end{assumption}
-And from~\eqref{eq:lambdafuntheta}, we can derive a method to reconstruct $\vec{\lambda}_{i}$:
+Moreover, from~\eqref{eq:lambdafuntheta}, we can reconstruct $\vec{\lambda}_{i}$:
 \begin{equation}
   \label{eq:lambda_reconstruction}
   {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
@@ -475,28 +569,26 @@ $\bar{\Gamma}_{i}\optuncUik\succeq\0_{c}$ for all $k$, that means, the points $\
 \end{assumption}
 
 \glsreset{EM}
-Unfortunately, since we don't know the hyperplanes that separates the different zones, we don't know how close of $\bar{\theta}_{i}=\0_{c}$ we need to generate our points.
-So we generate points arbitrarily close to $\bar{\theta}_{i}$ and we use the \EM{} algorithm which can potentially identify the parameters of all $N$ modes.
+Unfortunately, since we do not know the hyperplanes separating the different zones, we do not know how close of $\bar{\vec{\theta}}_{i}=\0_{c}$ we need to generate our points.
+So we generate points arbitrarily close to $\bar{\vec{\theta}}_{i}$ and use the \EM{} algorithm, which can potentially identify the parameters of all $N$ modes.
 \subsection{Expectation Maximization}
 As the method is the same for all agents and repeated each time $k$, we drop the subscript $i$ and the time dependency $[k]$ to simplify the notation.
 
 
-Given a set of parameters $\set{P}$, a set of observable data $\set{B}$ and a set of non-observable data $\set{U}$, the main objective of the \EM{} algorithm is to find estimators of $\set{P}$ which maximize the log marginal likelihood of the observed data ${\ln\probability{\set{B};\set{P}}}$, for models with latent variables in $\set{U}$.
+Given a set of parameters $\set{P}$, a set of observable data $\set{B}$ and a set of non-observable data $\set{U}$, the main objective of the \EM{} algorithm is to find estimators of $\set{P}$ that maximize the log marginal likelihood of the observed data ${\ln\probability{\set{B};\set{P}}}$, for models with latent variables in $\set{U}$.
 
-Since maximizing ${\ln\probability{\set{B};\set{P}}}$ does not have an analytical solution, the algorithm solves the optimization problem in a iterative manner.
+Since maximizing ${\ln\probability{\set{B};\set{P}}}$ does not have an analytical solution, the algorithm solves the optimization problem iteratively.
 So, rather than finding the $\set{P}$ that maximizes ${\ln\probability{\set{B};\set{P}}}$, we find the $\set{P}$ that maximizes the expectation of the complete data log-likelihood $\ln\probability{\set{B},\set{U};\set{P}}$ w.r.t.
 the posterior probabilities ${\probability{\set{U}|\set{B};\set{P}}}$
 calculated using a given set of parameter estimates $\set{P}_{\mathrm{cur}}$.
-This provides a convergence-guaranteed iterative algorithm ensuring at each iteration a monotonic increase of the log-marginal likelihood.
-
-The algorithm can be divided into 2 steps presented in algorithm~\ref{alg:em}.
+These steps provide a convergence-guaranteed iterative algorithm ensuring a monotonic increase of the log-marginal likelihood at each iteration (Algorithm~\ref{alg:em}).
 
 \SetKwBlock{Estep}{ E step:}{}
 \SetKwBlock{Mstep}{ M step:}{}
 \begin{algorithm2e}[h]
   \DontPrintSemicolon%
   Initialize parameters $\set{P}_{\mathrm{new}}$\;
-  \Repeat{$\set{P}_{\mathrm{cur}}$ converge}{
+  \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
     $\set{P}_{\mathrm{cur}}=\set{P}_{\mathrm{new}}$\;
     \Estep{
       Evaluate ${\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}$\;
@@ -506,7 +598,7 @@ The algorithm can be divided into 2 steps presented in algorithm~\ref{alg:em}.
       \begin{equation}
       \resizebox{.68\columnwidth}{!}{$
         \label{eq:m_step}
-        \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max}\ \expectation[{\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}]{\ln\probability{\set{B},\set{U};\set{P}}}
+        \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max\!.}\ \expectation[{\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}]{\ln\probability{\set{B},\set{U};\set{P}}}
         $}
       \end{equation}
     }
@@ -516,7 +608,7 @@ The algorithm can be divided into 2 steps presented in algorithm~\ref{alg:em}.
 
 For a group of $O$ exchanges between an agent and the coordinator, we observe the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$, ${o\in\set{O}=\{1\mathbin{:}O\}}$, which can be organized in ${\random{\Theta},\random{\Lambda}\in\R^{c\times O}}$. ${(\random{\Theta},\random{\Lambda})}$ is our set of observable data $\set{B}$.
 
-As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose to use a multidimensional expansion of the model referred as \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010} to map the relation between $\random{\Theta}$ and $\random{\Lambda}$. We will call the model \emph{mixture of affine regressions}, since our regressors have linear and constant terms:
+As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose using a multidimensional expansion of the model referred to as \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010} to map the relation between $\random{\Theta}$ and $\random{\Lambda}$. We will call the model \emph{mixture of affine regressions}, since our regressors have linear and constant terms:
 % TODO(accacio): change subscript n
 % \begin{equation}\label{eq:linear_cheating_random}
 %   \randomvec{\lambda}_{o}=
@@ -576,11 +668,11 @@ and then calculate the expectation of ${\ln\probability{\random{\Theta},\random{
 where ${\alpha_{zo}=\ln{\pi_{z}}+\ln{\mathcal{N}(\randomvec{\lambda}_{o};f(\randomvec{\theta}_{o};\set{P}^{z}),{\Sigma^{z}})}}$.
 
 \begin{remark}
-The $\Sigma^{z}$ used in~\eqref{eq:responsibilities} are updated using a technique called \emph{Simulated annealing}~\citep{OzerovFevotte2010}, where they are initialized with arbitrarily big values indicating the uncertainty of the parameters and it is reduced as the estimations converge.
+The $\Sigma^{z}$ used in~\eqref{eq:responsibilities} are updated using a technique called \emph{Simulated annealing}~\citep{OzerovFevotte2010}, where they are initialized with arbitrarily significant values indicating the uncertainty of the parameters and it is reduced as the estimations converge.
 \end{remark}
 
 Here we introduce a variable ${\vec{\phi}^{z}={[\vectorize{\tilde{P}^{z}}^{T}\ {(\tilde{\vec{s}}^{z})}^{T} ]}^{T}}$.
-Using the KKT conditions, we can find an optimal solution for the problem in~\eqref{eq:m_step}, by
+We can find an optimal $\vec{\phi}^{z}$ for the problem in~\eqref{eq:m_step}, by
 taking the gradients of~\eqref{eq:completedataLogLikelihood_expectation} with respect to vectors $\vec{\phi}^{z}$ and making them vanish.
 Because of the multidimensional nature of the problem, some matrix operations are needed to synthesize the results.
 After those operations, we have a matricial solution that yields the optimal estimates $\vec{\phi}^{z}_{\mathrm{new}}$:
@@ -598,28 +690,29 @@ ${G=\kron{\1_{O}^{T}}{I_{c}}}$,
 and
 \[{\Xi^{z}={\diag(\sqrt{{\zeta(z_{z1};\set{P}_{\mathrm{cur}})}}I_{c},\cdots,\sqrt{{\zeta(z_{zO};\set{P}_{\mathrm{cur}})}}I_{c})}}.\]
 Doing the same for $\pi^{z}$ we get
-\begin{equation}
+\begin{equation*}
   \label{eq:3}
   \pi^{z}=\sum\limits_{o\in\set{O}}\tfrac{\zeta_{zo}(\set{P}_{\mathrm{cur}})}{O}.
-\end{equation}
+\end{equation*}
 
-As we can see,~\eqref{eq:mstepestimation} is the solution of a weighted Least-Squares, having the responsibilities as weights, adjusting the contribution of all observations to the regression model of index $z$.
+As we can see,~\eqref{eq:mstepestimation} is the solution of a weighted Least-Squares, with responsibilities as weights, which adjust the contribution of all observations to the regression models.
 We can see some similarities to the K-planes algorithm (see~\cite{BradleyMangasarian2000}), but \EM{} is more compromising.
-Instead of affecting the observed data to a zone with 100\% of certainty (\emph{hard assignment}), \EM{} uses the responsibilities (\emph{soft assignment}) for each zone.
+Instead of affecting the observed data to a zone with 100\% of certainty (\emph{hard assignment}), \EM{} uses each zone's responsibilities (\emph{soft assignment}).
 
-Once the estimates $\vec{\phi}_{z}^{\mathrm{new}}$ converge, we can reconstruct the estimates $\tilde{P}^{z}$ and $\tilde{\vec{s}}^{z}$, and use in our mitigation scheme proposed in \S\ref{ssec:DM}.
-Observe that not necessarily the $z$ indices correspond to the indices $n$ in~\eqref{eq:lambdafuntheta}.
-So, to find the $z$ that corresponds to ${n=1}$, we take the observation $o$ for $\bar{\theta}=\0_{c}$, which we know belongs to the $1$-zone, and we find the most probable $z$ with
-\begin{equation}\label{eq:argmaxz}
-\arg\underset{z}{\max}\ {\zeta_{zo}(\set{P})}.
-\end{equation}
+Once the estimates $\vec{\phi}_{z}^{\mathrm{new}}$ converge, we can reconstruct the estimates $\tilde{P}^{z}$ and $\tilde{\vec{s}}^{z}$, and use them in our mitigation scheme proposed in \S\ref{ssec:DM}.
+Since the $z$ indices do not necessarily correspond to the indices $n$ in~\eqref{eq:lambdafuntheta} (due to initialization of $\set{P}$),
+to find the $z$ that corresponds to ${n=1}$, we take the observation $o$ for $\bar{\vec{\theta}}=\0_{c}$, which we know belongs to the $1$-zone, and we find the most probable $z$ with
+\begin{equation*}\label{eq:argmaxz}
+\arg\underset{z}{\max\!.}\ {\zeta_{zo}(\set{P})}.
+\end{equation*}
 
 \begin{remark}
-A discussion about the initialization and update of other parameters is beyond the scope of this article, so we refer the reader to~\cite{Bishop2006}, and~\cite{DempsterEtAl1977}.
+A discussion about the initialization and update of other parameters is beyond the scope of this article, so we refer the reader to~\cite{Bishop2006}.
 \end{remark}
 
 \subsection{Safe dMPC Algorithm}\label{ssec:safe_algo}
 Integrating the EM to our detection and mitigation mechanism we can propose in Algorithm~\ref{alg:safeDMPC} a secure \dmpc{}, divided into two phases: detection and negotiation.
+The new algorithm corresponds to adding a supervision layer for each agent as in Fig.~\ref{fig:safe_dmpc_graph}
 \SetKwBlock{negotPhase}{ Negotiation Phase:}{}
 \SetKwBlock{detectPhase}{ Detection Phase:}{}
 \begin{algorithm2e}[h]
@@ -639,10 +732,10 @@ Integrating the EM to our detection and mitigation mechanism we can propose in A
 
 \section{Example: Temperature Control}\label{sec:App_dMPC}
 The system consists of $4$~distinct~rooms (I to IV), which we want to control the air temperatures inside each one of them.
-The systems are modeled as continuous-time linear \mbox{time-invariant} systems using the \mbox{3R-2C} model~\citep{NogueiraEtAl2021}, with parameters shown in Tables~\ref{tab:modelParamMeaning} and~\ref{tab:modelParam}, and dynamics
+The systems are modeled as continuous-time linear \mbox{time-invariant} systems using the \mbox{3R-2C} model, with parameters in Tables~\ref{tab:modelParamMeaning} and~\ref{tab:modelParam}, and dynamics
 \begin{equation}
 \begin{matrix}
-  \label{eq:systems}
+  \label{eq:systems_cont}
 \dot{\vec{x}}_{i}(t)&=&{A_{c}}_{i}\vec{x}_{i}(t) &+& {B_{c}}_{i}\vec{u}_{i}(t)\\
 \vec{y}_{i}(t)&=&{C_{c}}_{i}\vec{x}_{i}(t) &&
 \end{matrix},
@@ -666,9 +759,86 @@ with
   \end{matrix}
   \end{matrix},
 \end{equation*}
-where ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$, which represents the mean temperatures of the air~(${x_A}_i$) and walls inside room~$i$~(${x_W}_i$), and $\vec{u}_{i}$ is the input (the heating power)
+where ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$. ${x_A}_i$ and ${x_W}_i$ are the mean temperatures of the air and walls inside room~$i$. $\vec{u}_{i}$ is the input (the heating power)
 for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(t)\preceq 4\mathrm{kW}}$.
 
+\begin{figure}[t]
+  \centering
+  \resizebox{.6\columnwidth}{!}{
+          \begin{tikzpicture}[font=\small,thick,node distance=.0cm and .5cm,
+          mpcSmall/.style={
+            rectangle,
+            align=center,
+            fill=supelecRed!10,
+            minimum width=1.5cm,
+            minimum height=1cm},
+          coordinator/.style={
+            rectangle,
+            align=center,
+            fill=mpc_grey,
+            minimum width=2.5cm,
+            minimum height=4cm
+          },
+          superv/.style={
+            rectangle,
+            minimum height=1.5cm,
+            minimum width=.35cm,
+            fill=mpc_yellow,
+          },
+          negotiation/.style={
+            rectangle,
+            minimum height=3.5cm,
+            minimum width=.5cm,
+            fill=mpc_green,
+          },
+          ]
+
+          \node[draw,
+          mpcSmall,
+          fill=mpc_blue,
+          ] (block1) {MPC 1};
+
+          \node[draw,
+          mpcSmall,
+          fill=none,
+          draw=white,
+          below=of block1,
+          ] (mult) {\vdots};
+
+          \node[draw,
+          mpcSmall,
+          fill=mpc_blue,
+          below=of mult,
+          ] (blockM) {MPC M};
+
+          \node[draw,
+          coordinator,
+          right=2cm of mult,
+          ] (coordinator) {};
+          \node at ($(coordinator)+(.8,0)$) {\rotatebox{90}{Coordinator}};
+
+          \node[draw,superv] (superv1) at ({$(block1)+(0,0)$} -|{$(coordinator.west)+(.2,)$}) {};
+          \node  at (superv1) {\rotatebox{90}{Superv. 1}};
+
+          \node[draw,superv] (supervM) at ({$(blockM)+(0,0)$} -|{$(coordinator.west)+(.2,)$}) {};
+          \node  at (supervM) {\rotatebox{90}{Superv. M}};
+
+          \node[draw,negotiation] (negot) at ({$(coordinator.center)+(0,0)$} -|{$(superv1.east)+(1.0,)$}) {};
+          \node  at (negot) {\rotatebox{90}{Negotiation}};
+
+          \draw[latex-,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
+          \draw[-latex,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
+
+          \draw[latex-latex,very thick] (supervM.east) -- ( {$(supervM.east)$} -| negot.west) node [above,midway] {};
+          \draw[latex-latex,very thick] (superv1.east) -- ( {$(superv1.east)$} -| negot.west) node [above,midway] {};
+
+          \draw[latex-,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
+          \draw[-latex,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
+
+        \end{tikzpicture}
+        }
+  \caption{Exchange between agents in secure \dmpc{}.}\label{fig:safe_dmpc_graph}
+\end{figure}
 
 \begin{table}[b]
   \centering
@@ -679,9 +849,9 @@ for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}
     \midrule
     $C^{\text{air}}_{i}$&Heat Capacity of Inside Air\\
     $C^{\text{walls}}_{i}$&Heat Capacity of External Walls\\
-    $R^{\text{oa/ia}}_{i}$&Resistance Between Inside and Outside Air (from windows)\\
-    $R^{\text{iw/ia}}_{i}$&Resistance Between Inside Air and Inside Walls\\
-    $R^{\text{ow/oa}}_{i}$&Resistance Between Outside Air and Outside Walls\\
+    $R^{\text{iw/ia}}_{i}$&Resist. Between Inside Air and Inside Walls\\
+    $R^{\text{ow/oa}}_{i}$&Resist. Between Outside Air and Outside Walls\\
+    $R^{\text{oa/ia}}_{i}$&Resist. Between Inside and Out.\ Air (from windows)\\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -702,75 +872,68 @@ for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}
   \end{tabular}
 \end{table}
 
-The subsystems are discretized using the zero-order hold discretization method with sampling time
-${T_{s}=0.25\mathrm{h}}$
-and the quantity decomposition-based DMPC is implemented using prediction horizon ${\predhorz=4}$.
+The subsystems are discretized using zero-order hold discretization method with sampling time
+${T_{s}=\input{sampling.tex}\mathrm{h}}$
+and the quantity decomposition-based \dmpc{} is implemented using prediction horizon ${\predhorz=\input{prediction_horizon.tex}}$.
 
-Three scenarios are simulated for a period of 12.5 hours:
+Three scenarios are simulated for a period of $\input{simulation_time.tex}\mathrm{h}$:
 
   \begin{enumerate}
     \item Nominal behavior.
-    \item \mbox{Agent I presents non-cooperative behavior} ${T_{I}[k]}$ for ${k\geq25}$, without correction.
-    \item \mbox{Agent I presents non-cooperative behavior} ${T_{I}[k]}$ for ${k\geq25}$, with correction, ${\epsilon_{P}=10^{-4}}$.
+    \item \mbox{Agent I presents non-cooperative behavior} for ${k\geq25}$.
+    \item \mbox{Agent I presents non-cooperative behavior} for ${k\geq25}$, with correction.
   \end{enumerate}
 
 In Fig.~\ref{fig:response3Scenarios}, first, we compare the air temperature in room~I
-with its reference (${w_{I}=25.5^{\circ}}$C), and then the
+with its reference (${w_{I}=\input{reference}^{\circ}}$C), and then the
 decision variable ${E_{I}(k)}$ with the threshold $\epsilon_{P}$.
-Observe that in the nominal behavior (in magenta), the reference $w_{I}$ is not reached
-due to power constraints the systems are under.
-
+Observe that the reference $w_{I}$ is not reached in the nominal behavior (in magenta),
+due to power constraints by which the systems are influenced.
+As expected, the decision variable lies under the threshold ${\epsilon_{P}=10^{-4}}$ with values of order ${E_{I}^{N}(k)\approx10^{-10}}$.
 \begin{figure}[h]
   \centering
- \includegraphics[width=\columnwidth]{airtemp_roomI/__ErrorWX_command_normErrH.pdf}
-  \caption{Air temperature in room I and the decision variable $E_{I}[k]$ for different scenarios: nominal (N), selfish behavior without correction (S),
+ \includegraphics[width=.90\columnwidth,trim=0 .3cm 0 .2cm,clip]{airtemp_roomI/__ErrorWX_command_normErrH.pdf}
+  \caption{Air temperature in room I and the decision variable $E_{I}[k]$ for three scenarios: nominal (N), selfish behavior (S),
 and selfish behavior with correction.}\label{fig:response3Scenarios}
 \end{figure}
-
-As expected, the decision variable lies under the threshold $\epsilon_{P}=10^{-4}$ with values of order ${E_{I}^{N}(k)\approx10^{-10}}$.
-
 
 When the agent presents a selfish behavior (in orange), the tracking error
 ${w_{I}-y_{I}}$ is reduced, almost attaining the reference.
 In this case, the detection variable surpasses $\epsilon_{P}$,
 ${E_{I}^{S}\approx200}$, indicating the change of behavior.
 
-When the correction is activated in the system, we see that the temperatures approach their nominal value $y_{I}^{N}$.
-We can also illustrating the good
-performances of our proposition by comparing the inputs in Fig.~\ref{fig:control_3Scenarios}. When room~I is selfish, its control increases while the other decreases, unless the correction is activated and it approaches the nominal.
+When the correction is activated in the system, the temperatures approach their nominal value $y_{I}^{N}$.
+We can also illustrate the good performances of our proposition by comparing the inputs in Fig.~\ref{fig:control_3Scenarios}.
+When room~I is selfish, its control increases while other rooms' decrease. When the correction is activated, it approaches the nominal.
 
-We can also evaluate the performance of the proposed mechanism by comparing the global objective function calculated using the total period of simulation (${N=50}$) for the 3 scenarios (Table~\ref{tab:costsGlobalLocal}).
-When agent~I is selfish, we see the increase in the objective, degrading the overall performance.
-When the correction mechanism is activated, the difference between costs is minimal, $|\frac{J^{C}-J^{N}}{J^{N}}|\leq10^{-8}$.
+We can also evaluate the performance of the proposed mechanism by comparing the objective functions calculated using the period of simulation ${N=50}$ for the three scenarios (Table~\ref{tab:costsGlobalLocal}).
+When agent~I is selfish, we see the decrease in its objective ($\approx\!-40\%$), degrading the overall performance ($\approx\!+10\%$).
+When the correction mechanism is activated, the absolute percentual error is ${|\frac{J^{C}-J^{N}}{J^{N}}|\leq10^{-8}}$.
 %%%%%
 % TODO(accacio): Verify
 \begin{table}[h]
   \centering
-  \caption{Comparison of costs $J_{i}$}\label{tab:costsGlobalLocal}
-  \begin{tabular}[t]{cccc} \toprule
-    Agent  & Nominal & Selfish & Selfish + Correction\\
+  \caption{Objective functions $J_{i}$ (\% error)}\label{tab:costsGlobalLocal}
+  \begin{tabular}[t]{cccc}
+    \toprule
+    Agent  & Nominal & Selfish & + Correction\\
     \midrule
-    % I & -11468 &  -9074 & -11468 \\
-    % II & -6536 &  -7151 & -6536 \\
-    % III & -3192 &  -4052 & -3192 \\
-    % IV & -2849 &  -3694 & -2849 \\
-    % Global & -24044 &  -23971 & -24044 \\
-    Global & -24044.180111 &  -23971.164122 & -24044.180027\\
+    \input{table_costs_all_rooms_error.tex}\\
+    % \input{table_costs_only_global.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
-% \enlargethispage{-.8cm}
 
 \section{CONCLUSION AND FUTURE WORKS}\label{sec:CC}
 In this paper, we proposed an algorithm for monitoring and correcting exchanges between agents in a resource-sharing framework.
-The first phase of the algorithm consists of identifying the attacker by exploiting the exchange structure.
+The first phase of the algorithm identifies the attacker by exploiting the exchange structure.
 After this identification, if necessary, it is possible to reconstruct the original mechanism and recover nominal optimality by inverting the attack.
-This principle should be generalized to cases when the attack is not completely invertible, reconstructing by parts the original mechanism.
-Also, other types of decomposition structures and attack models need to be explored, and this is what we plan to do in the near future.
+This principle should be generalized to cases when the attack is not entirely invertible, reconstructing by parts the original mechanism.
+Also, other decomposition structures and attack models need to be explored, which we plan to do shortly.
 
 \begin{figure}[h]
   \centering
- \includegraphics[width=\columnwidth]{airtemp_roomI/control.pdf}
+ \includegraphics[width=.90\columnwidth,trim=0 .1cm 0 .3cm,clip]{airtemp_roomI/control.pdf}
   \caption{Control applied in all rooms for the 3 scenarios.}\label{fig:control_3Scenarios}
 \end{figure}
 

@@ -41,6 +41,10 @@ $(OBJ).bbl: $(OBJ).cites bibliography.bib
 view: $(OBJ).pdf
 	zathura $(OBJ).pdf&
 
+detex: $(OBJ)_detexed.tex
+$(OBJ)_detexed.tex: $(OBJ).tex
+	detex -n -r -e "array,eqnarray,equation,longtable,table,picture,tabular,verbatim,usetikzlibrary" $(OBJ) > $@
+
 clean:
 	@rm -rf  $(OBJ).aux.1 $(OBJ).aux $(OBJ).out $(OBJ).log
 	@rm -rf  $(OBJ).synctex.gz $(OBJ).upa $(OBJ).upb

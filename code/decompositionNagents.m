@@ -10,6 +10,7 @@ curly = @(x, varargin) x{varargin{:}}; %
 
 %= Optimization settings
 options = optimset('Display', 'off');
+warning off
 % options = [];
 rand('seed',2);
 
@@ -19,8 +20,8 @@ Te=.25; %= Sampling
 Np=4;   %= Prediction horizon
 
 simK = 50;    %= Simulation horizon
-negotP = 100; %= max # of iteration for each negotiation
-err_theta=1e-2; %= err to test theta convergence in each negotiation
+negotP = 200; %= max # of iteration for each negotiation
+err_theta=1e-3; %= err to test theta convergence in each negotiation
 
 % TODO(accacio): change name of these variables
 chSetpoint_list = 0; %= Change setpoint?
@@ -82,6 +83,7 @@ Cmat_fun=@(sys, n) ...
 %= H and f, such $\frac{1}{2}\vec{U}^TH\vec{U}+f^T\vec{U}$
 H_fun=@(Cmat,Q,R) round(Cmat'*Q*Cmat+R*eye(size(Q)),10);
 f_fun=@(Cmat,Mmat,Q,xt,Wt) Cmat'*Q*(Mmat*xt-Wt);
+c_fun=@(Mmat,Q,Xt,Wt) Xt'*Mmat'*Q*Mmat*Xt-2*Wt'*Q*Mmat*Xt+Wt'*Q*Wt;
 
 %= Gains Q and R for $\sum_{j=1}^n \|v\|^2_{Q}+\|u\|^2_{R}$
 for i=M:-1:1 % make it backward to "preallocate"
@@ -112,10 +114,10 @@ X0(:,1,3) = [15 3.1]';
 X0(:,1,4) = [17. 5.7]';
 
 %= Setpoint
-Wt = [X0(1,1)*1.5;
-      X0(1,2)*1.05;
-      X0(1,3)*1.05;
-      X0(1,4)*1.05;
+Wt = [X0(1,1)*1.50;
+      X0(1,2)*1.20;
+      X0(1,3)*1.20;
+      X0(1,4)*1.20;
      ];
 Wt_final = [Wt(1)*1.05;
             Wt(2)*1.05;
@@ -183,8 +185,9 @@ for k=1:simK
 
     %= Get value of f[k]
     for i=M:-1:1
-        f(:,i)=f_fun(Cmat(:,:,i),Mmat(:,:,i),Qbar(:,:,1),xt(:,k,i),Wt(i));
+        f(:,i)=f_fun(Cmat(:,:,i),Mmat(:,:,i),Qbar(:,:,i),xt(:,k,i),Wt(i));
         fHist(:,k,i)=f(:,i);
+        cHist(k,i)=c_fun(Mmat(:,:,i),Qbar(:,:,i),xt(:,k,i),kron(ones(Np,1),Wt(i)));
     end
 
     % %= EM

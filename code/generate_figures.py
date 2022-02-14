@@ -54,47 +54,75 @@ corrected_err=corrected['norm_err']
 corrected_u=corrected['uHist'][0]
 
 # ktotal=mat['ktotal'][0][0].astype(int)
-nominal_J=nominal['J']
+nominal_J=2*nominal['J']+nominal['cHist']
 nominal_sumJ=np.sum(nominal_J,axis=0)
 
-selfish_J=selfish['J']
+selfish_J=2*selfish['J']+selfish['cHist']
 selfish_sumJ=np.sum(selfish_J,axis=0)
 
-corrected_J=corrected['J']
+corrected_J=2*corrected['J']+corrected['cHist']
 corrected_sumJ=np.sum(corrected_J,axis=0)
 
-# print(nominal_sumJ)
-nominalI=nominal_sumJ[0]
-nominalII=nominal_sumJ[1]
-nominalIII=nominal_sumJ[2]
-nominalIV=nominal_sumJ[3]
+nominal_I=nominal_sumJ[0]
+nominal_II=nominal_sumJ[1]
+nominal_III=nominal_sumJ[2]
+nominal_IV=nominal_sumJ[3]
 nominal_global=np.sum(nominal_sumJ)
 
-selfishI=selfish_sumJ[0]
-selfishII=selfish_sumJ[1]
-selfishIII=selfish_sumJ[2]
-selfishIV=selfish_sumJ[3]
+selfish_I=selfish_sumJ[0]
+selfish_II=selfish_sumJ[1]
+selfish_III=selfish_sumJ[2]
+selfish_IV=selfish_sumJ[3]
 selfish_global=np.sum(selfish_sumJ)
 
 
-correctedI=corrected_sumJ[0]
-correctedII=corrected_sumJ[1]
-correctedIII=corrected_sumJ[2]
-correctedIV=corrected_sumJ[3]
+corrected_I=corrected_sumJ[0]
+corrected_II=corrected_sumJ[1]
+corrected_III=corrected_sumJ[2]
+corrected_IV=corrected_sumJ[3]
 corrected_global=np.sum(corrected_sumJ)
+with open('../article/reference.tex','w') as f:
+    print(nominal_Wt[0][0],file=f)
+with open('../article/sampling.tex','w') as f:
+    print(nominal['Te'][0][0],file=f)
+with open('../article/simulation_time.tex','w') as f:
+    print(nominal['Te'][0][0]*nominal['simK'][0][0],file=f)
+with open('../article/prediction_horizon.tex','w') as f:
+    print(nominal['Np'][0][0],file=f)
 
-# Latex Total Cost Table
-print("I &", round(nominalI),"& ",round(selfishI),"&",round(correctedI),"\\\\")
-print("II &", round(nominalII),"& ",round(selfishII),"&",round(correctedII),"\\\\")
-print("III &", round(nominalIII),"& ",round(selfishIII),"&",round(correctedIII),"\\\\")
-print("IV &", round(nominalIV),"& ",round(selfishIV),"&",round(correctedIV),"\\\\")
-print("Global &", round(nominal_global),"& ",round(selfish_global),"&",round(corrected_global),"\\\\")
-print("Global &", round(nominal_global)/round(nominal_global),"& ",round(selfish_global)/round(nominal_global),"&",round(corrected_global)/round(nominal_global),"\\\\")
-print("Global &", (nominal_global),"& ",(selfish_global),"&",(corrected_global),"\\\\")
+
+with open('../article/table_costs_all_rooms_error.tex', 'w') as f:
+    print("I & $", round(nominal_I,1),"$ ($",100*round((nominal_I-nominal_I)/nominal_I,1), "$)& $",round(selfish_I,1),"$ ($", 100*round((selfish_I-nominal_I)/nominal_I,1),"$)& $",round(corrected_I,1),"$ ($",100*round((corrected_I-nominal_I)/nominal_I,1) ,"$)\\\\",file=f)
+    print("II & $", round(nominal_II,1),"$ ($",100*round((nominal_II-nominal_II)/nominal_II,1), "$)& $",round(selfish_II,1),"$ ($", 100*round((selfish_II-nominal_II)/nominal_II,1),"$)& $",round(corrected_II,1),"$ ($",100*round((corrected_II-nominal_II)/nominal_II,1) ,"$)\\\\",file=f)
+    print("III & $", round(nominal_III,1),"$ ($",100*round((nominal_III-nominal_III)/nominal_III,1), "$)& $",round(selfish_III,1),"$ ($", 100*round((selfish_III-nominal_III)/nominal_III,1),"$)& $",round(corrected_III,1),"$ ($",100*round((corrected_III-nominal_III)/nominal_III,1) ,"$)\\\\",file=f)
+    print("IV & $", round(nominal_IV,1),"$ ($",100*round((nominal_IV-nominal_IV)/nominal_IV,1), "$)& $",round(selfish_IV,1),"$ ($", 100*round((selfish_IV-nominal_IV)/nominal_IV,1),"$)& $",round(corrected_IV,1),"$ ($",100*round((corrected_IV-nominal_IV)/nominal_IV,1) ,"$)\\\\",file=f)
+    print("Global & $", round(nominal_global,1),"$ ($",100*round((nominal_global-nominal_global)/nominal_global,1), "$)& $",round(selfish_global,1),"$ ($", 100*round((selfish_global-nominal_global)/nominal_global,1),"$)& $",round(corrected_global,1),"$ ($",100*round((corrected_global-nominal_global)/nominal_global,1) ,"$)",file=f)
+
+
+with open('../article/table_costs_only_global.tex', 'w') as f:
+    print("Global & $", round(nominal_global,1),"$ ($",100*round((nominal_global-nominal_global)/nominal_global,1), "$)& $",round(selfish_global,1),"$ ($", 100*round((selfish_global-nominal_global)/nominal_global,1),"$)& $",round(corrected_global,1),"$ ($",100*round((corrected_global-nominal_global)/nominal_global,1) ,"$)",file=f)
+
+
+
+print("===")
+print("I &", round(nominal_I,2),"(",nominal_I/nominal_I, ")& ",round(selfish_I,2),"(", round((selfish_I-nominal_I)/nominal_I,2),")&",round(corrected_I,2)," (",round(corrected_I/nominal_I,2) ,")\\\\")
+print("II &", round(nominal_II,2),"(",nominal_II/nominal_II, ")& ",round(selfish_II,2),"(", round((selfish_II-nominal_II)/nominal_II,2),")&",round(corrected_II,2)," (",round(corrected_II/nominal_II,2) ,")\\\\")
+print("III &", round(nominal_III,2),"(",nominal_III/nominal_III, ")& ",round(selfish_III,2),"(", round((selfish_III-nominal_III)/nominal_III,2),")&",round(corrected_III,2)," (",round(corrected_III/nominal_III,2) ,")\\\\")
+print("IV &", round(nominal_IV,2),"(",nominal_IV/nominal_IV, ")& ",round(selfish_IV,2),"(", round((selfish_IV-nominal_IV)/nominal_IV,2),")&",round(corrected_IV,2)," (",round(corrected_IV/nominal_IV,2) ,")\\\\")
+print("Global &", round(nominal_global,2),"(",nominal_global/nominal_global, ")& ",round(selfish_global,2),"(", round((selfish_global-nominal_global)/nominal_global,2),")&",round(corrected_global,2)," (",round(corrected_global/nominal_global,2) ,")\\\\")
+print("===")
+print("I &", round(nominal_I,2),"(",nominal_I/nominal_I, ")& ",round(selfish_I,2),"(", round(selfish_I/nominal_I,2),")&",(corrected_I)," (",round(corrected_I/nominal_I,2) ,")\\\\")
+print("II &", round(nominal_II,2),"(",nominal_II/nominal_II, ")& ",round(selfish_II,2),"(", round(selfish_II/nominal_II,2),")&",(corrected_II)," (",round(corrected_II/nominal_II,2) ,")\\\\")
+print("III &", round(nominal_III,2),"(",nominal_III/nominal_III, ")& ",round(selfish_III,2),"(", round(selfish_III/nominal_III,2),")&",(corrected_III)," (",round(corrected_III/nominal_III,2) ,")\\\\")
+print("IV &", round(nominal_IV,2),"(",nominal_IV/nominal_IV, ")& ",round(selfish_IV,2),"(", round(selfish_IV/nominal_IV,2),")&",(corrected_IV)," (",round(corrected_IV/nominal_IV,2) ,")\\\\")
+print("Global &", round(nominal_global,2),"(",nominal_global/nominal_global, ")& ",round(selfish_global,2),"(", round(selfish_global/nominal_global,2),")&",(corrected_global)," (",round(corrected_global/nominal_global,2) ,")\\\\")
+
+
+
 print((corrected_global-nominal_global)/nominal_global)
 print((selfish_global-nominal_global)/nominal_global)
 
-
+# sys.exit()
 # print("Nominal")
 # print(np.sum((Wt[0:simK,0]-xt[0:simK,0])*(Wt[0:simK,0]-xt[0:simK,0])+uHist[0,-1,:,0]*uHist[0,-1,:,0])) # J1
 # print(np.sum((Wt[0:simK,1]-xt[0:simK,1])*(Wt[0:simK,1]-xt[0:simK,1])+uHist[0,-1,:,1]*uHist[0,-1,:,1])) # J2
