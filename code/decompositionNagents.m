@@ -229,12 +229,12 @@ for k=1:simK
         Phi_init=20*rand(modes,n^2+n);
 
         %= Estimate normal behavior
-        % [Phi,Responsabilities,~, ~] = emgm_Nestimate (X,Y,[],modes,emMaxIter,maxErr);
-        [Phi,Responsabilities,~, ~] = emgm_estimate (X,Y,Phi_init,modes,emMaxIter,maxErr);
+        % [Phi,Responsibilities,~, ~] = emgm_Nestimate (X,Y,[],modes,emMaxIter,maxErr);
+        [Phi,Responsibilities,~, ~] = emgm_estimate (X,Y,Phi_init,modes,emMaxIter,maxErr);
         % NOTE(accacio): only if values have zero
         index_of_zero=find(sum(em_theta==zeros(size(em_theta)))==n);
         % index_of_zero=1;
-        [~, z_hat_zero]=max(Responsabilities(:,index_of_zero)); %#ok
+        [~, z_hat_zero]=max(Responsibilities(:,index_of_zero)); %#ok
         zero_params=Phi(z_hat_zero,:);
         H_est(:,:,k,i)=reshape(zero_params(1:n^2),n,n)';
         f_est(:,k,i)=zero_params(n^2+1:end)';

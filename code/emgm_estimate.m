@@ -1,4 +1,4 @@
-function [Phi,Responsabilities,pi_new,Sigma] = emgm_estimate(X,Y,phi_init,modes,emMaxIter,maxErr)
+function [Phi,Responsibilities,pi_new,Sigma] = emgm_estimate(X,Y,phi_init,modes,emMaxIter,maxErr)
 % EMGM_NESTIMATE - ESTIMATE N DIMENSIONAL
 
     Pi=repmat(1/modes,1,modes);
@@ -35,11 +35,11 @@ function [Phi,Responsabilities,pi_new,Sigma] = emgm_estimate(X,Y,phi_init,modes,
 
     for emInd=1:emMaxIter
 
-        Responsabilities=calculate_responsabilities(X,Y,Phi,Sigma,Pi);
+        Responsibilities=calculate_responsibilities(X,Y,Phi,Sigma,Pi);
 
-        [Phi, pi_new] = update_parameters(X, Y, Responsabilities);
+        [Phi, pi_new] = update_parameters(X, Y, Responsibilities);
 
-        [~,z_hat]=max(Responsabilities,[],1);
+        [~,z_hat]=max(Responsibilities,[],1);
         for i=1:modes
             z_i=find(z_hat==i);
             clusterSize(i)=size(z_i,2);

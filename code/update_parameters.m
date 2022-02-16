@@ -1,6 +1,6 @@
-function [Phi, pi_new] = update_parameters(Theta, Lambda, Responsabilities)
+function [Phi, pi_new] = update_parameters(Theta, Lambda, Responsibilities)
 % UPDATE_PARAMETERS -
-    modes=size(Responsabilities,1);
+    modes=size(Responsibilities,1);
     [c O]=size(Theta);
 
     Upsilon=kron(ones(c,1),eye(c));
@@ -9,10 +9,10 @@ function [Phi, pi_new] = update_parameters(Theta, Lambda, Responsabilities)
     Y=kron(G,ones(c,1));
     Omega=sparse([(Upsilon*Theta*Delta).*Y; G]');
 
-    pi_new(:)=sum(Responsabilities,2)/O;
+    pi_new(:)=sum(Responsibilities,2)/O;
     for i=1:modes
-        responsabilities=Responsabilities(i,:);
-        resp2=cellfun(@(x) x*eye(c),mat2cell(responsabilities',ones(1,O)),'UniformOutput',0);
+        responsibilities=Responsibilities(i,:);
+        resp2=cellfun(@(x) x*eye(c),mat2cell(responsibilities',ones(1,O)),'UniformOutput',0);
         Gamma=sqrt(sparse(blkdiag(resp2{:})));
 
         Phi(i,:)=-((Gamma*Omega)\(Gamma*Lambda(:)));
