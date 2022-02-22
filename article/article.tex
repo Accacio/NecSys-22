@@ -311,11 +311,11 @@ The algorithm to find the optimal $\optthetai[k]$ can be summarized in Algorithm
           \node[draw,negotiation] (negot) at ({$(coordinator.center)+(0,0)$} -|{$(coordinator.west)+(0.25,)$}) {};
           \node  at (negot) {\rotatebox{90}{Negotiation}};
 
-          \draw[latex-,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
-          \draw[-latex,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
+          \draw[-latex,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
+          \draw[latex-,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
 
-          \draw[latex-,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
-          \draw[-latex,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
+          \draw[-latex,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
+          \draw[latex-,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
 
         \end{tikzpicture}
         }
@@ -826,14 +826,14 @@ for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}
           \node[draw,negotiation] (negot) at ({$(coordinator.center)+(0,0)$} -|{$(superv1.east)+(1.0,)$}) {};
           \node  at (negot) {\rotatebox{90}{Negotiation}};
 
-          \draw[latex-,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
-          \draw[-latex,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
+          \draw[-latex,thick] (block1.east)+(0,.3) -- ( {$(block1.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
+          \draw[latex-,thick] (block1.east)+(0,-.3) -- ( {$(block1.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta}_{1}[k]$};
 
           \draw[latex-latex,very thick] (supervM.east) -- ( {$(supervM.east)$} -| negot.west) node [above,midway] {};
           \draw[latex-latex,very thick] (superv1.east) -- ( {$(superv1.east)$} -| negot.west) node [above,midway] {};
 
-          \draw[latex-,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
-          \draw[-latex,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
+          \draw[-latex,thick] (blockM.east)+(0,.3) -- ( {$(blockM.east)+(0,.3)$} -| coordinator.west) node [above,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
+          \draw[latex-,thick] (blockM.east)+(0,-.3) -- ( {$(blockM.east)+(0,-.3)$} -| coordinator.west) node [below,midway] {$\vec{\theta_{M}}[k]$};
 
         \end{tikzpicture}
         }
