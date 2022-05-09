@@ -119,7 +119,7 @@ $\Proj^{\set{T}}(\cdot)$ is the Euclidean projection onto $\set{T}$.
 % $\card{x}$ is the number of elements in $x$.
 $\kron{}{}$ ($\hadamard{}{}$) is the Kronecker (Hadamard) product.
 $\vectorize{A}$ vectorizes matrix $A$.
-${n\mathbin{:}i\mathbin{:}j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\mathbin{:}j}$ means ${i=1}$.
+${n\until i\until j}$ is a row vector builder with elements $\{n,n+i,\dots,n+mi\}$, where ${m=\mathrm{truncate}(\frac{j-n}{i})}$, and ${n\until j}$ means ${i=1}$.
 % $[A,B]$ ($[A;B]$) is horizontal (vertical) concatenation of matrices.
 ${\0_{m}=0_{m\times 1}}$ (${\1_{m}=1_{m\times 1}}$), where
 $0_{m\times n}$ ($1_{m\times n}$) is a $0$ ($1$) filled \mbox{$m$-by-$n$} matrix.
@@ -137,7 +137,7 @@ ${\diag(A_{1},\dots,A_{N})}$ corresponds to a block diagonal matrix.
 In this section, we present a \dmpc{} algorithm based on the primal decomposition \citep{BoydEtAl2015} and a vulnerability of the decomposition, which can be exploited.
 
 \subsection{Model Predictive Control}\label{ssec:MPC}
-Consider a system composed of discrete-time linear time-invariant agents ${i\in\set{M}=\{1\mathbin{:}\nsubsystems\}}$, modeled by
+Consider a system composed of discrete-time linear time-invariant agents ${i\in\set{M}=\{1\until \nsubsystems\}}$, modeled by
 \begin{equation}
 \begin{matrix}
   \label{eq:systems}
@@ -160,7 +160,7 @@ The agents are coupled by global input constraints with weighting matrices ${\Ga
 \end{equation}
 
 The overall system is controlled by a \mpc{}, which
-computes the optimal input for a finite prediction horizon ${\set{H}=\{1\mathbin{:}\predhorz\}}$ by solving the following problem:
+computes the optimal input for a finite prediction horizon ${\set{H}=\{1\until \predhorz\}}$ by solving the following problem:
 \begin{equation}\label{eq:GOP}
 \resizebox{.88\columnwidth}{!}{$
 \begin{matrix}
@@ -404,7 +404,7 @@ We can get an explicit solution for the dual variables $\vec{\lambda}_{i}[k]$, w
   \end{aligned}
   $}
 \end{equation}
-with $n\in\{1\mathbin{:}N\}$.
+with $n\in\{1\until N\}$.
 
 The halfspaces defined by the pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
 
@@ -520,7 +520,7 @@ Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
     % \end{cases}
     $}
 \end{equation}
-with $n\in\{1\mathbin{:}N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
+with $n\in\{1\until N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
 Observe that as the function is applied only in $\lambdaik$, it does not affect the zones' hyperplanes.
 
 We fix the index for these zones where all constraints are active to $1$, now referenced to as the $1$-zones.
@@ -606,7 +606,7 @@ These steps provide a convergence-guaranteed iterative algorithm ensuring a mono
  \caption{Expectation Maximization}\label{alg:em}
 \end{algorithm2e}
 
-For a group of $O$ exchanges between an agent and the coordinator, we observe the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$, ${o\in\set{O}=\{1\mathbin{:}O\}}$, which can be organized in ${\random{\Theta},\random{\Lambda}\in\R^{c\times O}}$. ${(\random{\Theta},\random{\Lambda})}$ is our set of observable data $\set{B}$.
+For a group of $O$ exchanges between an agent and the coordinator, we observe the input and response variables, identified as  ${\random{\vec{\theta}}_{o}}$ and ${\random{\vec{\lambda}}_{o}}$, ${o\in\set{O}=\{1\until O\}}$, which can be organized in ${\random{\Theta},\random{\Lambda}\in\R^{c\times O}}$. ${(\random{\Theta},\random{\Lambda})}$ is our set of observable data $\set{B}$.
 
 As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we propose using a multidimensional expansion of the model referred to as \emph{mixture of linear regressions} in~\cite{FariaSoromenho2010} to map the relation between $\random{\Theta}$ and $\random{\Lambda}$. We will call the model \emph{mixture of affine regressions}, since our regressors have linear and constant terms:
 % TODO(accacio): change subscript n
@@ -622,7 +622,7 @@ As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we pr
   \randomvec{\lambda}_{o}=
     -\tilde{P}^{z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{z}\text{, if in zone } z,\\
 \end{equation}
-with  ${z\in\set{Z}=\{1\mathbin{:}Z\}}$.
+with  ${z\in\set{Z}=\{1\until Z\}}$.
 
 As \eqref{eq:linear_cheating_random} is a \pwa{} function whose modes depend on the unknown zone ${z\in\set{Z}}$,
 we associate to each couple $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ a latent unobserved random variable ${\random{z}_{o}}$ that indicates in which zone in $\set{Z}$ the observable variables were obtained.
