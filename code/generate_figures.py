@@ -13,6 +13,20 @@ import matplotlib.font_manager as font_manager
 from matplotlib import rc
 from matplotlib import rcParams
 
+# shamelessly copied from https://stackoverflow.com/a/17131750/9781176 and modified
+def smallmatrix(a):
+    """Returns a LaTeX smallmatrix
+
+    :a: numpy array
+    :returns: LaTeX bmatrix as a string
+    """
+    if len(a.shape) > 2:
+        raise ValueError('bmatrix can at most display two dimensions')
+    lines = str(a).replace('[', '').replace(']', '').splitlines()
+    rv = [r'\begin{smallmatrix}']
+    rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
+    rv +=  [r'\end{smallmatrix}']
+    return '\n'.join(rv)
 
 # plt.rcParams['text.usetex'] = True
 # plt.rcParams['font.family'] = 'serif'
@@ -52,6 +66,9 @@ corrected_Wt=corrected['Wt']
 corrected_xt=corrected['xt']
 corrected_err=corrected['norm_err']
 corrected_u=corrected['uHist'][0]
+
+with open('../article/triche_matrix.tex', 'w') as f:
+    print(smallmatrix(corrected['T'][:,:,0]),file=f)
 
 # ktotal=mat['ktotal'][0][0].astype(int)
 nominal_J=2*nominal['J']+nominal['cHist']
