@@ -362,8 +362,9 @@ The \emph{local problems}~\eqref{eq:DOP_local} can be rewritten in a equivalent 
   \end{subequations}
 where ${\Uik}$ stacks the input prediction sequences, and
 ${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
-The values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
-The approach depends only on the fact that ${H_{i}\in\semidefpos}$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
+The values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$.
+The approach presented in this paper works for linear control objectives such as ${\vec{v}_{i}[k]=\vec{y}_{i}[k]}$ and ${\vec{v}_{i}[k]=\vec{y}_{i}[k]-\vec{w}_{i}[k]}$.
+The approach depends only on the fact that ${H_{i}\in\semidefpos}$ does not vary w.r.t. $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
 
 \no{
   We choose reference tracking to illustrate the approach. With this objective, we have
