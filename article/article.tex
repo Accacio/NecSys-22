@@ -145,15 +145,15 @@ Consider a system composed of discrete-time linear time-invariant agents ${i\in\
 \vec{y}_{i}[k+1]&=&C_{i}\xik &&
 \end{matrix},
 \end{equation}
-with $\vec{x}_{i}[k]:\R^{n_{x}}$, $\vec{u}_{i}[k]:\R^{n_{u}}$ and $\vec{y}_{i}[k]:\R^{n_{y}}$.
+with ${\vec{x}_{i}[k]\in R^{n_{x}}}$, ${\vec{u}_{i}[k]\in R^{n_{u}}}$ and ${\vec{y}_{i}[k]\in R^{n_{y}}}$.
 
 Each agent's input $\uik$ is constrained by
 \begin{equation}
   \label{eq:u_local_constraints}
   \0_{n_{u}}\preceq\uik\preceq\vec{u}_{\max},
 \end{equation}
-with ${\umax:\R^{n_{u}}}$.
-The agents are coupled by global input constraints with weighting matrices ${\Gamma_{i}:\semidefpos^{n_{u}}}$:
+with ${\umax\in R^{n_{u}}}$.
+The agents are coupled by global input constraints with weighting matrices ${\Gamma_{i}\in\semidefpos^{n_{u}}}$:
 \begin{equation}
   \label{eq:global_constraint}
   \sum_{i\in\set{M}}\Gamma_{i}\uik\preceq\umax.
@@ -176,7 +176,7 @@ computes the optimal input for a finite prediction horizon ${\set{H}=\{1\mathbin
   $}
 % \label{eq:dmpcModLOP}
 \end{equation}
-where ${Q_{i}:\semidefpos}$, ${R_{i}:\defpos}$, and $\vik$ is a control objective.
+where ${Q_{i}\in\semidefpos}$, ${R_{i}\in\defpos}$, and $\vik$ is a control objective.
 $\optglobobj$ denotes the optimal value of the objective function for the optimal control sequences ${\optuiseq}$.
 The problem in~\eqref{eq:GOP} is solved at each time $k$, and the ${\optuikk}$ are applied in their respective subsystem $i$, following a \rhs{}.
 
@@ -363,7 +363,7 @@ The \emph{local problems}~\eqref{eq:DOP_local} can be rewritten in a equivalent 
 where ${\Uik}$ stacks the input prediction sequences, and
 ${\bar{\Gamma}_{i}=\kron{I_{\predhorz}}{\Gamma_{i}}}$.
 The values for $H_{i}$ and $\vec{f}_{i}[k]$ vary depending on the control objective $\vec{v}_{i}[k]$. The approach presented in this paper does not depend on the choice of the control objective.
-The approach depends only on the fact that ${H_{i}:\semidefpos}$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
+The approach depends only on the fact that ${H_{i}\in\semidefpos}$ does not depend on $k$, while $\fik$ does. Those facts are instrumental for the results in the following sections.
 
 \no{
   We choose reference tracking to illustrate the approach. With this objective, we have
@@ -476,7 +476,7 @@ The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
  For the same reason, the values of $\vec{s}_{i}[k]$ are also unknown.
 \end{challenge}
 
- As each constraint can be active or inactive, for a given group of $t$ constraints, we can have at most $N=2^{t}$ different combinations of active sets.
+ As each constraint can be active or inactive, for a given group of $t$ constraints, we can have at most ${N=2^{t}}$ different combinations of active sets.
 
  \begin{assumption}
    We assume that none of the active/inactive constraints combinations are redundant (no linear dependency), nor make the optimization infeasible (no empty intersection).
@@ -626,7 +626,7 @@ with  ${z\in\set{Z}=\{1\mathbin{:}Z\}}$.
 
 As \eqref{eq:linear_cheating_random} is a \pwa{} function whose modes depend on the unknown zone ${z\in\set{Z}}$,
 we associate to each couple $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ a latent unobserved random variable ${\random{z}_{o}}$ that indicates in which zone in $\set{Z}$ the observable variables were obtained.
-These variables are organized in ${\random{Z}:\R^{1\times O}}$ which is our set of latent variables $\set{U}$.
+These variables are organized in ${\random{Z}\in\R^{1\times O}}$ which is our set of latent variables $\set{U}$.
 
 The latent variable $\random{z}_{o}$ follows a categorical prior distribution, with associated probabilities ${\Pi=\{\pi^{z}|z\in\set{Z}\}}$ such
 \[\probability{\random{z}_{o}=z}=\pi^{z} \in [0,1], \qquad \sum_{z\in\set{Z}} \pi^{z} = 1.
