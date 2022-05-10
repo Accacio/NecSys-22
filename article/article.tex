@@ -127,7 +127,7 @@ $\indicator{x}$ is the indicator function returning $1$ if $x$ is true and $0$ o
 $\symmetric^{n}$, and $\defpos^{n}$ ($\semidefpos^{n}$) are symmetric and positive (semi-)definite matrices of size $n$.
 ${A^{\dagger}={{(A^{T}A)}^{-1}A^{T}}}$.
 % $\determinant{A}$ is the determinant of $A$.
-A vector $\vec{v}_{i}$, correspond to the $i$-th agent, and these vectors can be stacked in a vector $\vec{v}$.
+A vector $\vec{v}_{i}$, corresponds to the $i$-th agent, and these vectors can be stacked in a vector $\vec{v}$.
 % $\random{a},\random{A},\randomvec{a}$ are random variables, scalar, matrix and vector respectively.
 $\expectation{\random{x}}$ is the expected value of random variable $\random{x}$, and $\probability{A \mid B}$ is the conditional probability of $A$ given condition $B$.
 % $\pdf{\cdot}$ is a probability density function.
@@ -409,7 +409,7 @@ with $n\in\{1\until N\}$.
 
 The halfspaces defined by the pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
 
-The $P_{i}^{n}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$; and $\vec{s}_{i}^{j}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints in~\eqref{eq:constraints}.
+The $P_{i}^{n}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$; and $\vec{s}_{i}^{n}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints in~\eqref{eq:constraints}.
 For example, if all constraints are active, we have ${P_{i}^{\text{ac}}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{\text{ac}}[k]=P_{i}^{\text{ac}}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
 Futhermore, if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\times c}}$ and ${\vec{s}_{i}^{\text{in}}=\0_{c}}$.
 
@@ -466,12 +466,12 @@ Futhermore, if all constraints are inactive, we have ${P_{i}^{\text{in}}=0_{c\ti
 
 
 \begin{remark}\label{rmk:P_constant}
-The $\vec{s}_{i}^{j}[k]$ depend on time $k$, while $P_{i}^{j}$ do not.
+The $\vec{s}_{i}^{n}[k]$ depend on time $k$, while $P_{i}^{n}$ do not.
 \end{remark}
 
 
 \begin{challenge}\label{ch:zone_unknown}
-  It is important to note that since $\vec{v}_{i}$ is unknown by the coordinator, it cannot anticipate the partition of the space for each agent.
+  It is important to note that since $\vec{v}_{i}[k]$ is unknown by the coordinator, it cannot anticipate the partition of the space for each agent.
 \end{challenge}
 \begin{challenge}\label{ch:s_unknown}
  For the same reason, the values of $\vec{s}_{i}[k]$ are also unknown.
@@ -524,7 +524,7 @@ Such attack function results in a \pwa{} solution for $\lambdaicheat[k]$:
 with $n\in\{1\until N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
 Observe that as the function is applied only in $\lambdaik$, it does not affect the zones' hyperplanes.
 
-We fix the index for these zones where all constraints are active to $1$, now referenced to as the $1$-zones.
+We fix the index for the zones where all constraints are active to $1$, now referenced to as zones $1$ or the $1$-zones.
 
 \subsection{Detection and mitigation}\label{ssec:DM}
 Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the parameters for this zone with
@@ -534,14 +534,14 @@ Supposing we have a sequence of $\thetaik$ in a zone $j$, we can estimate the pa
 \end{equation}
 
 \begin{assumption}\label{ass:Pnominal}
-  The nominal value of $P_{i}^{j}$ for this given zone $j$, denoted $\bar{P}_{i}^{j}$, is available from reliable attack-free historical data.
+  The nominal value of $P_{i}^{j}$ for this given $j$-zone, denoted $\bar{P}_{i}^{j}$, is available from reliable attack-free historical data.
 \end{assumption}
 
-Since $P_{i}^{n}$ do not change w.r.t.\ time, we can detect a deviation from nominal behavior using ${E_{i}[k] =\|\widehat{\tilde{P}_{i}^{j}}[k]-\bar{P}_{i}^{j}\|_{F}}$.
-Let ${d_{i}}$ be an indicator
+Since $P_{i}^{j}$ do not change w.r.t.\ time, we can detect a deviation from nominal behavior using ${E_{i}[k] =\|\widehat{\tilde{P}_{i}^{j}}[k]-\bar{P}_{i}^{j}\|_{F}}$.
+Let ${\mathfrak{D}_{i}}$ be an indicator
 \begin{equation}
   \label{eq:2}
-  d_{i}=\indicator{E_{i}[k]\geq\epsilon_{P}},
+  \mathfrak{D}_{i}=\indicator{E_{i}[k]\geq\epsilon_{P}},
 \end{equation}
 which detects the attack in agent $i$
 if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
@@ -552,7 +552,7 @@ If an attack is detected, we can estimate the inverse of $T_{i}(k)$ with
 \end{equation}
 if $\widehat{\tilde{P}_{i}^{j}}[k]$ is invertible, and $\widehat{\tilde{P}_{i}^{j}}[k]$ is only invertible when all constraints are active, that means, when ${j=1}$.
 \begin{assumption}
-  We suppose a $1$-zone exists for each agent $i$ for every time $k$.
+  For each agent $i$, at every time $k$, there is a corresponding $1$-zone.
 \end{assumption}
 Moreover, from~\eqref{eq:lambdafuntheta}, we can reconstruct $\vec{\lambda}_{i}$:
 \begin{equation}
@@ -590,7 +590,7 @@ These steps provide a convergence-guaranteed iterative algorithm ensuring a mono
   \DontPrintSemicolon%
   Initialize parameters $\set{P}_{\mathrm{new}}$\;
   \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
-    $\set{P}_{\mathrm{cur}}=\set{P}_{\mathrm{new}}$\;
+    $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
     \Estep{
       Evaluate ${\probability{\set{U}|\set{B};\set{P}_{\mathrm{cur}}}}$\;
     }
@@ -624,6 +624,7 @@ As~\eqref{eq:linear_cheating} gives us a multidimensional \pwa{} function, we pr
     -\tilde{P}^{z}\randomvec{\theta}_{o}-\tilde{\vec{s}}^{z}\text{, if in zone } z,\\
 \end{equation}
 with  ${z\in\set{Z}=\{1\until Z\}}$.
+\remark{Observe that the indices $z$, do not necessarily correspond to the original indices $n$.}
 
 As \eqref{eq:linear_cheating_random} is a \pwa{} function whose modes depend on the unknown zone ${z\in\set{Z}}$,
 we associate to each couple $(    \randomvec{\lambda}_{o}, \randomvec{\theta}_{o})$ a latent unobserved random variable ${\random{z}_{o}}$ that indicates in which zone in $\set{Z}$ the observable variables were obtained.
@@ -722,11 +723,11 @@ The new algorithm corresponds to adding a supervision layer for each agent as in
     Coordinator sends sequence of $\vec{\theta}_{i}^{o}$, $o\in\set{O}$ \;
     Subsystems solve~\eqref{eq:DOP_local}, and send $\tilde{\vec{\lambda}}^{o}_{i}$, $o\in\set{O}$\;
     Coordinator estimates $\widehat{\tilde{P}_{i}^{1}}[k]$ and $\widehat{\tilde{\vec{s}}_{i}^{1}}[k]$ with \EM{}\;
-    Coordinator computes $d_{i}$ using~\eqref{eq:2}\;
+    Coordinator computes $\mathfrak{D}_{i}$ using~\eqref{eq:2}\;
   }
   \negotPhase{
   Apply Algorithm~\ref{alg:quantityAlg} with adequate versions of $\vec{\lambda}_{i}\p$:\;
-  \quad$\tilde{\vec{\lambda}}_{i}\p$, if $d_{i}=0$ and ${\vec{\lambda}_{i}}_{\mathrm{rec}}$, if ${d_{i}=1}$~\eqref{eq:lambda_reconstruction}\;
+  \quad$\tilde{\vec{\lambda}}_{i}\p$, if $\mathfrak{D}_{i}=0$ and ${\vec{\lambda}_{i}}_{\mathrm{rec}}$, if ${\mathfrak{D}_{i}=1}$~\eqref{eq:lambda_reconstruction}\;
  }
  \caption{Secure DMPC.}\label{alg:safeDMPC}
 \end{algorithm2e}
@@ -761,7 +762,7 @@ with
   \end{matrix},
 \end{equation*}
 where ${\vec{x}_{i}=[{{x}_{A}}_{i}\T\ {{x}_{W}}_{i}\T]\T}$. ${x_A}_i$ and ${x_W}_i$ are the mean temperatures of the air and walls inside room~$i$. $\vec{u}_{i}$ is the input (the heating power)
-for the corresponding room. The inputs are constraint by ${\sum_{i=1}^{4}\vec{u}_{i}(t)\preceq 4\mathrm{kW}}$.
+for the corresponding room. The inputs are constrained by ${\sum_{i=1}^{4}\vec{u}_{i}(t)\preceq 4\mathrm{kW}}$.
 
 \begin{figure}[t]
   \centering
