@@ -332,7 +332,7 @@ The algorithm to find the optimal $\optthetai[k]$ can be summarized in Algorithm
   Coordinator updates allocations~\eqref{eq:thetaNegot}\;
   $p:=p+1$
 }
- \caption{Quantity decomposition-based \acrshort{dmpc}.}\label{alg:quantityAlg}
+ \caption{Quantity decomposition negotiation.}\label{alg:quantityAlg}
 \end{algorithm2e}
 
 One can observe that each agent only sends $\lambdaik$ instead of using $\mathcal{I}_{i}$.
@@ -400,14 +400,14 @@ We can get an explicit solution for the dual variables $\vec{\lambda}_{i}[k]$, w
   \begin{aligned}\label{eq:lambdafuntheta}
     \lambdaik=
     % \begin{cases}
-      -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G^{n}[k]\thetaik \preceq b^{n}[k],
+      -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G^{n}[k]\thetaik \preceq \vec{b}^{n}[k],
     % \end{cases}
   \end{aligned}
   $}
 \end{equation}
 with $n\in\{1\until N\}$.
 
-The halfspaces defined by the pairs $(G^{n}[k],b^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
+The halfspaces defined by the pairs $(G^{n}[k],\vec{b}^{n}[k])$ represent the combinations of active constraints~\eqref{eq:constraints} for a given time $k$, which vary w.r.t. $\vec{v}_{i}[k]$.
 
 The $P_{i}^{n}$ are constructed using $H_{i}$ and $\bar{\Gamma}_{i}$; and $\vec{s}_{i}^{n}$ are constructed using $H_{i}$, $\fik$ and $\bar{\Gamma}_{i}$. The specific construction depends on the active constraints in~\eqref{eq:constraints}.
 For example, if all constraints are active, we have ${P_{i}^{\text{ac}}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{\text{ac}}[k]=P_{i}^{\text{ac}}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
@@ -899,7 +899,7 @@ As expected, the decision variable lies under the threshold ${\epsilon_{P}=10^{-
   \centering
  \includegraphics[width=.90\columnwidth,trim=0 .3cm 0 .2cm,clip]{airtemp_roomI/__ErrorWX_command_normErrH.pdf}
   \caption{Air temperature in room I and the decision variable $E_{I}[k]$ for three scenarios: nominal (N), selfish behavior (S),
-and selfish behavior with correction.}\label{fig:response3Scenarios}
+and selfish behavior with correction (C).}\label{fig:response3Scenarios}
 \end{figure}
 
 When the agent presents a selfish behavior (in orange), the tracking error
