@@ -1,0 +1,226 @@
+\ProvidesPackage{beamerthemeIETR}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mode<presentation>
+
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+\RequirePackage{pgffor}
+\usetikzlibrary{shadings,calc}
+
+\RequirePackage{anyfontsize}
+\RequirePackage{times}
+
+ % \RequirePackage{shading}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% custom colors
+\definecolor{ietr_darkblue}{RGB}{9, 40, 94}
+\definecolor{ietr_medianblue}{RGB}{9.7896 66.686 125.06}
+\definecolor{ietr_brightblue}{RGB}{54, 91, 161}
+\definecolor{ietr_brighterblue}{RGB}{180, 217, 243}
+\definecolor{i6blue}{cmyk}{1,0.305,0,0.06}
+\definecolor{i6bluedark}{rgb}{0.0156,0.2578,0.5625}
+\definecolor{i6colorscheme1}{HTML}{FF6518}  % e.g. for block title
+\definecolor{i6colorblockbg}{HTML}{0033cc}
+\definecolor{i6colorblockfg}{HTML}{FFFFFF}
+\definecolor{i6colorscheme2}{HTML}{000000}  % e.g. title in headline
+\definecolor{i6colorscheme3}{HTML}{FFFFFF}  % e.g. for poster background
+\definecolor{i6colorscheme4}{HTML}{000000}
+\definecolor{i6colorschemeHeadline}{HTML}{0033cc}  % for headline bg
+\definecolor{i6colorschemeFootline}{HTML}{100D09}  % for headline bg
+
+
+% headline colors and fonts
+\setbeamercolor{headline}{fg=white,bg=i6colorschemeHeadline}
+\setbeamercolor{title in headline}{fg=white}
+\setbeamercolor{author in headline}{fg=lightgray}
+\setbeamercolor{institute in headline}{fg=lightgray}
+\setbeamercolor{logo in headline}{fg=black,bg=lightgray}
+\setbeamercolor{separation line}{bg=i6colorscheme1}
+
+% footline colors and fonts
+\setbeamercolor{footline}{fg=white,bg=i6colorschemeHeadline}
+\setbeamerfont{footline}{size=\normalsize}
+\setbeamerfont{title}{size=\VERYHuge}
+
+% body colors and fonts
+\setbeamercolor*{normal text}{fg=black,bg=i6colorscheme3}
+
+% block environment
+\setbeamercolor*{block body}{bg=ietr_brightblue!10,fg=black}
+\setbeamercolor*{block title}{fg=white,bg=ietr_medianblue}
+\setbeamerfont{block title}{size=\large,series=\bfseries}
+
+\setbeamertemplate{theorem begin}
+{%
+% \begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\inserttheoremnumber
+\ifx\inserttheoremaddition\@empty\else\ (\inserttheoremaddition)\fi%
+% \inserttheorempunctuation
+\
+}%
+
+}
+\setbeamertemplate{theorem end}{
+% \end{\inserttheoremblockenv}
+}
+
+
+% example environment
+\setbeamercolor*{example title}{fg=white,bg=i6colorscheme1}
+\setbeamerfont{example title}{size=\large,series=\bfseries}
+
+\setbeamercolor{alerted text}{fg=i6colorscheme1}
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamercolor*{item}{fg=ietr_brightblue}
+\setbeamercolor*{caption name}{fg=ietr_darkblue}
+\setbeamertemplate{navigation symbols}{}  % no navigation on a poster
+\usefonttheme[onlymath]{serif}
+
+\newcommand{\insertemail}{}
+\newcommand{\email}[1]{%
+\renewcommand{\insertemail}{#1}
+}
+
+\renewcommand{\tiny}{\fontsize{17.28}{22}\selectfont}
+\renewcommand{\scriptsize}{\fontsize{20.74}{25}\selectfont}
+\renewcommand{\footnotesize}{\fontsize{24.88}{30}\selectfont}
+\renewcommand{\small}{\fontsize{29.86}{37}\selectfont}
+\renewcommand{\normalsize}{\fontsize{35.83}{40}\selectfont}
+\renewcommand{\large}{\fontsize{43}{54}\selectfont}
+\renewcommand{\Large}{\fontsize{51.6}{64}\selectfont}
+\renewcommand{\LARGE}{\fontsize{61.92}{77}\selectfont}
+\renewcommand{\huge}{\fontsize{74.3}{93}\selectfont}
+\renewcommand{\Huge}{\fontsize{89.16}{112}\selectfont}
+\renewcommand{\veryHuge}{\fontsize{107}{134}\selectfont}
+\renewcommand{\VeryHuge}{\fontsize{107}{134}\selectfont}
+\renewcommand{\VERYHuge}{\fontsize{107}{134}\selectfont}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setbeamertemplate{block begin}{
+  \vskip.75ex
+  \begin{beamercolorbox}[shadow=true,rounded=true,leftskip=1cm,colsep*=.75ex]{block title}%
+    \usebeamerfont*{block title}\insertblocktitle
+  \end{beamercolorbox}%
+  
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[rounded=true,colsep*=.75ex,sep=.75ex,vmode]{block body}%
+    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+  }
+  
+  \setbeamertemplate{block end}{
+  \end{beamercolorbox}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pgfdeclareverticalshading{rainbow}{100bp}
+{color(0bp)=(violet); color(25bp)=(blue); color(35bp)=(cyan);
+color(45bp)=(green); color(55bp)=(yellow); color(65bp)=(orange);
+color(75bp)=(red); color(100bp)=(red)}
+
+\setbeamertemplate{headline}{
+  \vspace{.1\paperheight}
+}
+\setbeamertemplate{frametitle}{
+ \inserttitle % oi
+  % \hspace*{.10\textwidth}
+}
+  %
+\setbeamertemplate{background}{
+    \begin{tikzpicture}
+      \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+
+      \draw[draw=none,fill=ietr_darkblue] (0,\paperheight) rectangle (\paperwidth,\paperheight-.075\paperheight) coordinate (endblueblock) {};
+
+    % \draw[draw=none,fill=white] (0,0) rectangle (17cm,6cm){};
+    \path [fill=white]
+    (0,\paperheight-.075\paperheight) -- (0,\paperheight-.02\textwidth) --
+    (.15\textwidth,\paperheight-.02\textwidth) arc [radius=.02\textwidth, start angle=90, end angle=0]
+    --  (.17\textwidth,\paperheight-.075\paperheight+.02\textwidth) arc [radius=.02\textwidth, start angle=-180, end angle=-90]
+    -- cycle;
+    \node at (.08\textwidth,\paperheight-.06\textwidth) {
+      \includegraphics[width=0.13\textwidth]{logos/logo_IETR.png}
+    };
+
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.02\paperheight) { \color{white} \LARGE\textbf{\inserttitle}\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.05\paperheight) {\color{white} \Large\bf\insertauthor\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.08\paperheight) {\normalsize\insertinstitute\par};
+    \ifthenelse{\equal{\insertemail}{}}{%nothing
+    }{%
+      \node[align=center,text width=.7\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.11\paperheight) {\color{black} \tt \normalsize\insertemail\par};
+    }
+    \ifthenelse{\equal{\insertemail}{}}{%nothing
+    }{%
+      \node[align=center,text width=.7\paperwidth,anchor=center] at (.075\paperwidth,\paperheight-.11\paperheight) {\includegraphics[width=0.13\textwidth]{../img/qrRepo.png}};
+    }
+
+    \shade[shading=rainbow,shading angle=270] (0,0) rectangle
+    (2/4*\paperwidth,1/25*\textwidth);
+    \path [draw=black, fill=white, line width=0.001\paperwidth]
+    (2/4*\paperwidth,0) -- (2/4*\paperwidth,1/25*\paperwidth) arc [radius=(1/100)*\paperwidth, start angle=180, end angle=90]
+    --  (\paperwidth,1/20*\paperwidth) -- (\paperwidth,0cm)
+    -- cycle;
+    \node[opacity=.3] at (.54\paperwidth,.025\paperwidth) {\includegraphics[width=.04\paperwidth]{logos/cnrs.png}};
+    \node[opacity=1] at (.62\paperwidth,.025\paperwidth) {\includegraphics[width=.07\paperwidth]{logos/supelec.jpeg}};
+    \node[opacity=.3] at (.72\paperwidth,.025\paperwidth) {\includegraphics[width=.08\paperwidth]{logos/insa.png}};
+    \begin{scope}[blend mode=difference]
+      % \fill [fill=\c] circle [radius=1.875];
+      \node[opacity=.3] at (.82\paperwidth,.025\paperwidth) {\includegraphics[width=.07\paperwidth]{logos/nantes.png}};
+    \end{scope}
+    \node[opacity=.3] at (.92\paperwidth,.025\paperwidth) {\includegraphics[width=.09\paperwidth]{logos/rennes1.png}};
+  \end{tikzpicture}
+}
+% POSTER
+\setbeamertemplate{title page}
+{
+  \begin{tikzpicture}[remember picture,overlay]
+    % \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,0.39\paperheight) { \color{white} \LARGE\textbf{\inserttitle}\par};
+    % \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,0.36\paperheight) {\color{white} \Large\bf\insertauthor\par};
+    % \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,0.33\paperheight) {\normalsize\insertinstitute\par};
+    %    \ifthenelse{\equal{\insertemail}{}}{%nothing
+    %      }{%
+    % \node[align=center,text width=.7\paperwidth,anchor=north] at (.575\paperwidth,.30\paperheight) {\color{black} \tt \normalsize\insertemail\par};
+    %      }
+    % \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,0.33\paperheight) {\normalsize\insertinstitute\par};
+    %    \ifthenelse{\equal{\insertemail}{}}{%nothing
+    %      }{%
+
+    % \node[align=center,text width=.7\paperwidth,anchor=center] at (.075\paperwidth,.30\paperheight) {\includegraphics[width=0.13\textwidth]{../img/qrRepo.png}};
+    %      }
+  \end{tikzpicture}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \setbeamertemplate{footline}{
+%   \begin{tikzpicture}[overlay]
+%     \shade[shading=rainbow,shading angle=270] (0,0) rectangle (2/4*\textwidth,1/25*\textwidth);
+%     \path [draw=black, fill=white, line width=0.001\textwidth]
+%     (2/4*\textwidth,0) -- (2/4*\textwidth,1/25*\textwidth) arc [radius=(1/100)*\textwidth, start angle=180, end angle=90]
+%     --  (\textwidth,1/20*\textwidth) -- (\textwidth,0cm)
+%     -- cycle;
+
+%     \node at (.54\textwidth,.025\textwidth) {\includegraphics[width=.04\textwidth]{logos/cnrs.png}};
+%     \node at (.62\textwidth,.025\textwidth) {\includegraphics[width=.07\textwidth]{logos/supelec.jpeg}};
+%     \node at (.72\textwidth,.025\textwidth) {\includegraphics[width=.08\textwidth]{logos/insa.png}};
+%     \node at (.82\textwidth,.025\textwidth) {\includegraphics[width=.07\textwidth]{logos/nantes.png}};
+%     \node at (.92\textwidth,.025\textwidth) {\includegraphics[width=.09\textwidth]{logos/rennes1.png}};
+%   \end{tikzpicture}
+% }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \setbeamertemplate{title page}
+% {\vspace*{.2\paperheight}
+%   \begin{centering}
+%     \LARGE\inserttitle\\~\\~\\
+%     \Large\insertsubtitle\\~\\~\\
+%     \Large\insertauthor\\
+%     \normalsize\insertdate
+%   \end{centering}}
+\mode<all>
+\def\insertfooter{}
+\def\footer#1{\def\insertfooter{#1}}
