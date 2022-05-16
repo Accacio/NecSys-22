@@ -31,8 +31,9 @@ def smallmatrix(a):
 # plt.rcParams['text.usetex'] = True
 # plt.rcParams['font.family'] = 'serif'
 # plt.rcParams['font.sans-serif'] = 'cm'
-
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+serif_font = {'family': 'serif', 'serif': ['Computer Modern']};
+arial_font = {'family': 'sans-serif'};
+rc('font', **serif_font)
 rc('text', usetex=True)
 import tikzplotlib
 
@@ -205,8 +206,15 @@ axs[1].set_xlim([1, simK])
 axs[1].set_xlabel('Time (k)',usetex=True,fontsize=16)
 
 fig.tight_layout()
-plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".pdf",bbox_inches='tight')
-plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".png",bbox_inches='tight')
+rc('font', **serif_font)
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".pdf",bbox_inches='tight',transparent=True)
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".png",bbox_inches='tight',transparent=True)
+
+# plt.rcParams.update({'font.size': 50})
+# fig.tight_layout()
+rc('font', **arial_font)
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH_poster" +  ".pdf",bbox_inches='tight',transparent=True)
+plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH_poster" +  ".png",bbox_inches='tight',transparent=True)
 
 # NOTE(accacio): control
 fig, axs = plt.subplots(3, 1)
@@ -236,8 +244,12 @@ axs[2].legend(( 'I', 'II','III','IV'),loc='upper right',ncol=4,fontsize=13)
 axs[2].set_xlabel('Time (k)',usetex=True,fontsize=16)
 
 fig.tight_layout()
-plt.savefig("../img/airtemp_roomI" + "/control" +  ".pdf",bbox_inches='tight')
-plt.savefig("../img/airtemp_roomI" + "/control" +  ".png",bbox_inches='tight')
+rc('font', **serif_font)
+plt.savefig("../img/airtemp_roomI" + "/control" +  ".pdf",bbox_inches='tight',transparent=True)
+plt.savefig("../img/airtemp_roomI" + "/control" +  ".png",bbox_inches='tight',transparent=True)
+rc('font', **arial_font)
+plt.savefig("../img/airtemp_roomI" + "/control_poster" +  ".pdf",bbox_inches='tight',transparent=True)
+plt.savefig("../img/airtemp_roomI" + "/control_poster" +  ".png",bbox_inches='tight',transparent=True)
 
 # NOTE(accacio): Costs
 # fig, axs = plt.subplots(4, 1)
