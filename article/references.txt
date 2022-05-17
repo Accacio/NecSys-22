@@ -1,0 +1,57 @@
+Bishop, C.M. (2006). Pattern Recognition and Machine
+Learning. Springer Science and Business Media LLC.
+
+Boyd, S., Xiao, L., Mutapcic, A., and Mattingley, J.
+(2015). Notes on decomposition methods. In S. Uni-
+versity (ed.), Notes for EE364B.
+
+Bradley, P. and Mangasarian, O. (2000). K-plane cluster-
+ing. Journal of Global Optimization, 16(1), 23–32.
+
+Chanfreut, P., Maestre, J.M., and Ishii, H. (2018). Vulner-
+abilities in distributed model predictive control based on
+Jacobi-Gauss decomposition. In 2018 European Control
+Conference (ECC), 2587–2592.
+
+Christensen, R., Johnson, W., Branscum, A., and Hanson,
+T.E. (2010). Bayesian ideas and data analysis: an
+introduction for scientists and statisticians. CRC press.
+
+Dempster, A.P., Laird, N.M., and Rubin, D.B. (1977).
+Maximum likelihood from incomplete data via the em
+algorithm. Journal of the Royal Statistical Society:
+Series B (Methodological), 39(1), 1–22.
+
+Faria, S. and Soromenho, G. (2010). Fitting mixtures of
+linear regressions. Journal of Statistical Computation
+and Simulation, 80(2), 201–225.
+
+Kantamneni, A., Brown, L.E., Parker, G., and Weaver,
+W.W. (2015). Survey of multi-agent systems for mi-
+crogrid control. Engineering Applications of Artificial
+Intelligence, 45, 192–203.
+
+Maestre, J.M., Negenborn, R.R., et al. (2014). Dis-
+tributed Model Predictive Control made easy, volume 69.
+Springer.
+
+Maestre, J.M., Velarde, P., Ishii, H., and Negenborn, R.R.
+(2021). Scenario-based defense mechanism against vul-
+nerabilities in lagrange-based dmpc. Control Engineer-
+ing Practice, 114, 104879.
+
+Nogueira, R.A., Bourdais, R., and Guéguen, H. (2021).
+Detection and mitigation of corrupted information in
+distributed model predictive control based on resource
+allocation. In 2021 5th Conference on Control and Fault-
+Tolerant Systems (SysTol), 329–334.
+
+Ozerov, A. and Fevotte, C. (2010). Multichannel nonneg-
+ative matrix factorization in convolutive mixtures for
+audio source separation. IEEE Transactions on Audio,
+Speech, and Language Processing, 18(3), 550–563.
+
+Velarde, P., Maestre, J.M., Ishii, H., and Negenborn, R.R.
+(2017). Vulnerabilities in lagrange-based distributed
+model predictive control. Optimal Control Applications
+and Methods, 39(2), 601–621.
