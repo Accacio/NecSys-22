@@ -26,7 +26,7 @@
 \usepackage{tikz}
 \usepackage{circuitikz}
 \usetikzlibrary{arrows.meta,calc}
-\usetikzlibrary{calc,shapes,positioning}
+\usetikzlibrary{calc,shapes,positioning,shapes.misc}
 
 % \usepackage[french]{babel}
 \usepackage[english]{babel}
@@ -53,7 +53,8 @@
 
 \usepackage{hyperref}
 \usepackage{natbib}
-\usepackage{cancel}
+\usepackage[thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{red}}
 \usepackage{ulem}
 
 \usetheme{default}
@@ -72,9 +73,9 @@
 \usepackage{appendixnumberbeamer}
 \usepackage{ amssymb }
 
-\definecolor{mpc_blue}{RGB}{39,154,216}
+\definecolor{mpc_agent}{RGB}{39,154,216}
 \definecolor{mpc_green}{RGB}{98, 160, 98}
-\definecolor{mpc_grey}{RGB}{235, 235, 235}
+\definecolor{mpc_coordinator}{RGB}{235, 235, 235}
 \definecolor{mpc_orange}{RGB}{247, 153, 68}
 \definecolor{mpc_yellow}{RGB}{245, 235, 103}
 % \input{../article/preamble}
@@ -84,257 +85,9 @@
 
 \begin{document}
 
-% \begin{frame}
-%   \begin{columns}[t]
-
-%     \begin{column}{.32\linewidth}
-
-%       \begin{block}{1. Context}
-%         qdsf
-%       \end{block}
-
-%       \begin{block}{First figure}
-%         Some text describing figure
-%         \begin{center}
-%           \begin{figure}
-%             \includegraphics[scale=0.7]{example-image-a}
-%             \caption{First figure caption}
-%           \end{figure}
-
-%         \end{center}
-
-
-%       \end{block}
-
-
-%       \begin{block}{First list}
-%         \begin{itemize}
-                  %             \item Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi.
-                  %             \item Morbi auctor lorem non justo.
-                  %             \item Nam lacus libero, pretium at, lobortis vitae, ultricies et, tellus.
-                  %             \item Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna, vitae ornare odio metus a mi.
-                  %             \item Morbi ac orci et nisl hendrerit mollis.
-                  %             \item Suspendisse ut massa.
-                  %             \item Cras nec ante.
-                  %             \item Pellentesque a nulla.
-                  %             \item Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                  %             \item Aliquam tincidunt urna.
-                  %             \item Nulla ullamcorper vestibulum turpis.
-                  %             \item Pellentesque cursus luctus mauris.
-                  %           \end{itemize}
-
-                  %                   \end{block}
-
-
-                  %                   \end{column}
-                  %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                  %                   \begin{column}{.32\linewidth}
-
-                  %                   \begin{block}{Second list}
-                  %                   \begin{enumerate}
-                  %             \item Nulla malesuada porttitor diam.
-                  %             \item Donec felis erat, congue non, volutpat at, tincidunt tristique, libero.
-                  %             \item Vivamus viverra fermentum felis.
-                  %             \item Donec nonummy pellentesque ante.
-                  %             \item Phasellus adipiscing semper elit.
-                  %             \item Proin fermentum massa ac quam.
-                  %             \item Sed diam turpis, molestie vitae, placerat a, molestie nec, leo.
-                  %             \item Maecenas lacinia.
-                  %             \item Nam ipsum ligula, eleifend at, accumsan nec, suscipit a, ipsum.
-                  %           \end{enumerate}
-
-                  %                   \end{block}
-
-                  %                   \begin{block}{First split block}
-                  %                   \begin{columns}
-                  %                   \begin{column}{0.5\linewidth}
-
-                  %                   \begin{center}
-                  %                   \begin{figure}
-                  %                   \includegraphics[width=0.55\linewidth]{example-image-b}
-                  %                   \caption{Second figure caption}
-                  %                   \end{figure}
-                  %                   \end{center}
-                  %                   \begin{center}
-                  %                   \begin{figure}
-                  %                   \includegraphics[width=0.55\linewidth]{example-image-c}
-                  %                   \caption{Third figure caption}
-                  %                   \end{figure}
-                  %                   \end{center}
-
-                  %                   \end{column}
-
-                  %                   \begin{column}{0.5\linewidth}
-
-                  %                   Morbi blandit ligula feugiat magna.
-                  %                   \begin{itemize}
-                  %             \item Nunc eleifend consequat lorem.
-                  %             \item Sed lacinia nulla vitae enim.
-                  %             \item Pellentesque tincidunt purus vel magna.
-                  %             \item Integer non enim.
-                  %             \item Praesent euismod nunc eu purus.
-                  %             \item Donec bibendum quam in tellus.
-                  %             \item Nullam cursus pulvinar lectus.
-                  %             \item Donec et mi.
-                  %             \item Nam vulputate metus eu enim.
-                  %             \item Vestibulum pellentesque felis eu massa.
-                  %           \end{itemize}
-
-                  %                   \end{column}
-                  %                   \end{columns}
-
-                  %                   \end{block}
-
-
-                  %                   \begin{block}{First tikz picture}
-                  %                   Morbi blandit ligula feugiat magna. Nunc eleifend consequat lorem. Sed lacinia nulla vitae enim. Pellentesque
-                  %                   tincidunt purus vel magna.
-
-                  %                   \begin{center}
-                  %                   \begin{figure}
-
-                  %                   \begin{tikzpicture}
-
-                  %               %                     Definitions
-                  %                   \pgfmathsetmacro{\b}{75}
-                  %                   \pgfmathsetmacro{\a}{15}
-                  %                   \pgfmathsetmacro{\R}{2}
-                  %                   \pgfmathsetmacro{\r}{1}
-                  %                   \pgfmathsetmacro{\P}{\R*tan(\b)}
-                  %                   \pgfmathsetmacro{\Q}{\R/cos(\b)}
-                  %                   \pgfmathsetmacro{\p}{\r/tan(\a)}
-                  %                   \pgfmathsetmacro{\q}{\r/sin(\a)}
-
-                  %               %                   Pulleys
-
-                  %               %                   big pulley
-                  %                   \draw (0,0) circle (\R) ;
-                  %                   \fill[left color=gray!80, right color=gray!60, middle
-                  %                   color=white] (0,0) circle (\R) ;
-                  %                   \draw[thick, white] (0,0) circle (.8*\R);
-                  %                   \shade[ball color=white] (0,0) circle (.3) node[left,xshift=-5] {$P$};
-
-                  %               %                   small pulley
-                  %                   \draw (\Q+\q-.3, 0) circle (\r);
-                  %                   \fill[left color=gray!80, right color=gray!60, middle
-                  %                   color=white] (\Q+\q-.3, 0) circle (\r) ;
-                  %                   \draw[thick, white] (\Q+\q-.3,0) circle (.8*\r);
-                  %                   \shade[ball color=white] (\Q+\q-.3,0) circle (.15)
-                  %                   node[right, xshift=2] {$Q$};
-
-                  %               %                   belt and point labels
-                  %                   \begin{scope}[ultra thick]
-                  %                   \draw (\b:\R) arc (\b:360-\b:\R) ;
-                  %                   \draw (\b:\R) -- ( \P, 0 );
-                  %                   \draw (-\b:\R) -- ( \P, 0 );
-                  %                   \draw (\Q-.3,0) -- + (\a:\p)  arc (105:-105:\r) ;
-                  %                   \draw (\Q-.3,0) -- + (-\a:\p);
-                  %                 %                   \draw (\b:\R) arc (\b:360-\b:\r) ;
-                  %                   \end{scope}
-
-                  %                   \draw (0,0) -- (\b:\R) node[midway, above,sloped] {$R$} node[above] {$A$};
-                  %                   \draw (-\b:\R)--(0,0) ;
-                  %                   \draw (\Q+\q-.3,0) -- +(105:\r) node[midway,above, sloped] {$r$}
-                  %                   node[above] {$E$};
-                  %                   \draw (\Q+\q-.3,0) -- +(-105:\r) node[below] {$D$};
-                  %                   \node[below] at (-\b:\R) {$B$};
-                  %                   \node[below] at (\Q-.3,0) {$C$};
-
-                  %               %                   center line
-                  %                   \draw[dash pattern=on5pt off3pt] (0,0) -- (\Q+\q-.3,0);
-
-                  %               %                   angle label
-                  %                   \node[fill=white] at (0.73*\Q, 0) {$\theta$} ;
-                  %                   \draw (\Q-1.8,0) arc (180:195:1.5);
-                  %                   \draw (\Q-1.8,0) arc (180:165:1.5);
-
-                  %                   \end{tikzpicture}
-                  %                   \caption{First tikz picture caption}
-                  %                   \end{figure}
-                  %                   \end{center}
-
-                  %                   Donec bibendum quam in tellus. Nullam cursus pulvinar lectus. Donec et mi. Nam vulputate metus eu enim. Vestibulum pellentesque felis eu massa.
-                  %                   \end{block}
-
-                  %                   \end{column}
-
-
-                  %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                  %                   \begin{column}{.32\linewidth}
-
-                  %                   \begin{block}{Second paragraph}
-                  %                   Fusce mauris. Vestibulum luctus nibh at lectus. Sed bibendum, nulla a faucibus semper, leo velit ultricies tellus, ac venenatis arcu wisi vel nisl. Vestibulum diam. Aliquam pellentesque, augue quis sagittis posuere, turpis lacus congue quam, in hendrerit risus eros eget felis. Maecenas eget erat in sapien mattis porttitor. Vestibulum porttitor. Nulla facilisi. Sed a turpis eu lacus commodo facilisis. Morbi fringilla, wisi in dignissim interdum, justo lectus sagittis dui, et vehicula libero dui cursus dui.
-                  %                   \end{block}
-
-                  %                   \begin{block}{First table}
-                  %                   \begin{center}
-                  %                   \begin{tabular}{lrrrrrr}
-                  %                   \hline
-                  %                   & AAA & BBB & CCC & DDD & EEE & FFF\\ \hline
-                  %                   XXX & 1 & 2 & 3 & 4 & 5 & 6 \\
-                  %                   YYY & 1 & 2 & 3 & 4 & 5 & 6 \\
-                  %                   ZZZ & 1 & 2 & 3 & 4 & 5 & 6 \\
-
-                  %                   \hline
-                  %                   \end{tabular}
-
-                  %                   \end{center}
-                  %                   \end{block}
-
-                  %                   \begin{block}{First plot}
-                  %                   \begin{center}
-                  %                   \begin{figure}
-
-                  %                   \begin{tikzpicture}
-                  %                   \begin{axis}[
-                  %                   width=0.7\linewidth,
-                  %                   max space between ticks=50,
-                  %                   minor x tick num=2,
-                  %                   minor y tick num=1,
-                  %                   tick style={semithick,color=black},
-                  %                   xlabel=Value,
-                  %                   ylabel=Time (sec),
-                  %                   xtick={0, 50, 100, 150},
-                  %                   ytick={0, 2, 4, 6, 8}]
-
-                  %                   \addplot[smooth, blue, mark=*] coordinates { (1,1.48) (2,1.48) (4,1.48) (8,1.48) (16,1.49) (32,1.49) (64,1.49) (128,1.85) (136,5.87) (138,6.84) (139,7.46)};
-                  %                   \end{axis}
-                  %                   \end{tikzpicture}
-
-
-                  %                   \caption{First plot caption}
-                  %                   \end{figure}
-                  %                   \end{center}
-                  %                   \end{block}
-
-                  %                   \begin{block}{Third paragraph}
-                  %                   Mauris tempor ligula sed lacus. Duis cursus enim ut augue. Cras ac magna. Cras nulla. Nulla egestas. Curabitur a leo. Quisque egestas wisi eget nunc.
-                  %                   \end{block}
-
-                  %                   \begin{block}{Third list}
-                  %                   \begin{enumerate}
-                  %             \item Nam feugiat lacus vel est.
-                  %             \item Curabitur consectetuer.
-                  %           \end{enumerate}
-                  %                   $$X^{2}$$
-                  %                   \end{block}
-                  %                   \end{column}
-                  %                   \end{columns}
-                  %                   \begin{textblock}{5}(1,2)
-                  %     %                     \begin{block}{Third list}
-                  %                   $X^{2}$
-                  %                   \begin{enumerate}
-                  %             \item Nam feugiat lacus vel est.
-                  %             \item Curabitur consectetuer.
-                  %           \end{enumerate}
-                  %     %         \end{block}
-                  %                   \end{textblock}
-
 \begin{frame}
   \begin{textblock}{15.6}(.0,-5.1)
-    \begin{block}{1. Context}
+    \begin{block}{1. Context - False Data injection in dMPC exchange}
       \begin{minipage}[c]{17.5cm}
         \begin{itemize}
           \item Large Systems
@@ -369,13 +122,13 @@
             mpcSmall/.style={
               rectangle,
               align=center,
-              fill=mpc_blue,
+              fill=mpc_agent,
               minimum width=20cm,
               minimum height=4cm},
             coordinator/.style={
               rectangle,
               align=center,
-              fill=mpc_grey,
+              fill=mpc_coordinator,
               minimum height=4.cm,
               minimum width=33cm,
             },
@@ -416,7 +169,7 @@
 
             \node[draw,
             mpcSmall,
-            fill=mpc_blue,
+            fill=mpc_agent,
             right=of mult,
             ] (blockM) {
               \small
@@ -435,7 +188,7 @@
             coordinator,
             below=of mult,
             ] (coordinator) {};
-            \node[align=center] at ($(coordinator)+(.75,0)$) {Coordinator\\
+            \node[align=center] at ($(coordinator)+(.75,0)$) {
               \centering
               \begin{minipage}{25cm}
                 \begin{equation} \label{eq:negotiation}
@@ -462,82 +215,129 @@
   \end{textblock}
 
 \def\secrow{-2.8}
-  \begin{textblock}{5.1}(0.,\secrow)
-    \begin{block}{2. Local Problems}
-      \begin{center}
-          \centering
-        \begin{minipage}[c]{.95\textwidth}
-      \eqref{eq:local_problem} are {\bf QP}  $\to$ {\bf PWA Explicit Solutions} for $\vec{\lambda}_{i}$:
-        \begin{equation}
-          \centering
-            \begin{aligned}\label{eq:lambdafuntheta}
-              \lambdaik=
-              -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
-            \end{aligned}
-          \end{equation}
-        with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
-        \begin{remark}\label{rmk:p_constant}
-        {\color{ietr_brightblue} $P^{n}_{i}$ are \textbf{square} and \underline{\textbf{do not depend on} $k$}.}
-        \end{remark}
-        \vspace{1.cm}
-      \begin{assumption}
-        There exists regions where \textbf{all constraints} are \textbf{active}:
-          \begin{equation}
-            \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
-          \end{equation}
-          with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$, and
-          \textbf{the coordinator knows nominal $\bar{P}_{i}^{1}$}.
-      \end{assumption}
-        \vspace{1.cm}
-      \begin{assumption}
-        $\theta_{i}=\0$ are in this zone:
-          \begin{equation}
-            G_{i}^{1}[k]\0 \preceq b_{i}^{1}[k]
-          \end{equation}
-      \end{assumption}
-      \vspace{-2cm}
-      \end{minipage}
-      \end{center}
-    \end{block}
-  \end{textblock}
+\def\seccol{5.25}
+\def\thirdcol{10.5}
 
-  \begin{textblock}{5.1}(5.25,\secrow)
-    \begin{block}{3. Attack and consequences}
-        \begin{center}
-        \begin{minipage}[c]{.95\textwidth}
-      Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
-      \begin{assumption}\label{ass:linear_cheating}
-        The agent chooses a linear function
+\begin{textblock}{5.1}(0,\secrow)
+  \begin{block}{2. Attack and consequences}
+    \begin{center}
+      \begin{minipage}[c]{.95\textwidth}
+        \begin{itemize}
+          \item $\vec{\lambda}_{i}$ is the dissatisfaction of $i$ to allocation $\vec{\theta}_{i}$
+          \item Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
+          \item $\uparrow$ dissatisfaction == $\uparrow$ allocation
+        \end{itemize}
+        \begin{assumption}\label{ass:linear_cheating}
+          The agent chooses a linear function
           \begin{equation}\label{eq:cheating}
             \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
           \end{equation}
-          where $T$ is invertible.
-      \end{assumption}
-
-      Ass.~\ref{ass:linear_cheating} $\to$ Alter $P_{i}$ and $\vec{s}_{i}[k]$:
-      \begin{equation}
-        \tilde{\lambdai}=
-        -\tilde{P}_{i}^{n}\thetaik-\tilde{\vec{s}}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
-      \end{equation}
-      with $n\in\{1\until N\}$, $\tilde{P}_{i}^{n}[k]=\Tik P_{i}^{n}$ and $\tilde{\vec{s}}_{i}^{n}[k]=\Tik\vec{s}_{i}^{n}[k]$.
+          $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
+        \end{assumption}
+        \\~\\
+        \centering
+        \begin{tikzpicture}
+          \node (effects) at (0,0) {
+            \begin{minipage}{\textwidth}
+              \begin{itemize}
+                \item Effects
+              \begin{itemize}
+                \item Increase on global objective
+                \item Destabilization
+              \end{itemize}
+              \end{itemize}
+            \end{minipage}
+          };
+          \node[below=of effects] (figure) {
+            \begin{minipage}{\textwidth}
+              \begin{figure}[h]
+                \centering
+                \includegraphics[width=.8\textwidth]{../img/changeOfJ.pdf}
+                \caption{Unidimensional example}
+              \end{figure}
+            \end{minipage}
+          };
+          \draw[line width=.5cm,red,latex-] (9,-10) -- (8,-2) node[above] {Unstable};
+          \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-7,-11) {};
+          \draw[line width=.2cm,blue,latex-] (circle) -- (-1,-12) node[below] {Optimal objective};
+        \end{tikzpicture}
+         \\[.8ex]
+         {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
+         \\[1ex]
+         {What if we estimate $T_{i}[k]$ and invert it?}
+         \\[1ex]
+         {Problem: How to estimate it?}
       \end{minipage}
-      \end{center}
-    \end{block}
-  \end{textblock}
+    \end{center}
+  \end{block}
+\end{textblock}
 
+  \begin{textblock}{5.1}(\seccol,\secrow)
+    \begin{block}{3. Estimating $T_{i}[k]$}
+      \begin{center}
+          \centering
+          \begin{minipage}[c]{.95\textwidth}
+            \eqref{eq:local_problem} are {\bf QP}  $\to$ {\bf PWA Explicit Solutions} for $\vec{\lambda}_{i}$:
+            \begin{equation}
+              \centering
+              \begin{aligned}\label{eq:lambdafuntheta}
+                \lambdaik=
+                -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
+              \end{aligned}
+            \end{equation}
+            with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
+            \begin{remark}\label{rmk:p_constant}
+              {\color{ietr_brightblue} $P^{n}_{i}$ are \textbf{square} and \underline{\textbf{do not depend on} $k$}.}
+            \end{remark}
+            \vspace{1.cm}
+            \begin{assumption}
+              There exists regions where \textbf{all constraints} are \textbf{active}:
+              \begin{equation}
+                \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
+              \end{equation}
+              with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.
+              \textbf{Coordinator knows nominal $\bar{P}_{i}^{1}$}.
+            \end{assumption}
+            \\[1ex]
+            When attacker is in this region:
+            \begin{equation}
+              \tilde{\vec{\lambda}}=-T_{i}[k]\bar{P}_{i}^{1}\thetaik-T_{i}[k]\bar{\vec{s}}_{i}^{1}[k]
+            \end{equation}
+            \vspace{1ex}
+            Estimating ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$, we can find ${T_{i}[k]}^{-1}$:
+            \begin{equation}
+              \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
+            \end{equation}
+            {\color{ietr_brightblue} But {\large \textbf{how do we estimate $\tilde{P}_{i}^{1}[k]$?}}}
+            \\[.5ex]
+            Enter Expectation Maximization
+            \begin{itemize}
+              \item Separates regions
+              \item Estimates parameters
+            \end{itemize}
+            \vspace{1ex}
+            Assuming ${\theta_{i}=\0}$ belongs to region $1$, EM estimates $\tilde{P}_{i}^{1}[k]$ if we provide minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
+          \end{minipage}
+          \begin{itemize}
+            \item Minimally excited inputs
+                  \begin{itemize}
+                    \item \raisebox{-.5ex}{\tikz \node[anchor=north,cross out,draw=red,line width=1.5pt, inner sep=0pt, outer sep=0pt] {Estimation negotiation};} (time dependence)
+                    \item Solution: 2 phases Detection and Negotiation
+                  \end{itemize}
+          \end{itemize}
+      \vspace{1ex}
+        \end{center}
+      \end{block}
+    \end{textblock}
 
-  \begin{textblock}{5.1}(10.5,\secrow)
-    \begin{block}{4. Detection }
+    \begin{textblock}{5.1}(10.5,\secrow)
+      \begin{block}{4. Detection }
       \begin{center}
         \begin{minipage}[c]{.95\textwidth}
-          Estimate $\tilde{P}_{i}^{1}[k]$ and $\tilde{\vec{s}}_{i}^{1}[k]$ $\to$ Clustering Algorithm\\[.5cm]
-          Chosen $\to$ \EM{}
-          \begin{itemize}
-            \item ``Soft'' K-planes (probabilities as weights)
-          \end{itemize}
-
-Once estimated, calculate \underline{${E_{i}[k] =\|\widehat{\tilde{P}_{i}^{j}}[k]-\bar{P}_{i}^{j}\|_{F}}$}
-
+          Once $\tilde{P}_{i}^{1}[k]$ estimated, calculate
+          \begin{equation}
+            E_{i}[k] =\|\widehat{\tilde{P}_{i}^{1}}[k]-\bar{P}_{i}^{1}\|_{F}
+          \end{equation}
 Let ${\mathfrak{D}_{i}}$ be an indicator
 \begin{equation}
   \label{eq:2}
@@ -550,35 +350,34 @@ if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
     \end{block}
   \end{textblock}
 
-  \begin{textblock}{5.1}(0.,1.075)
-    \begin{block}{5. Mitigation}
-      Invert $T_{i}$ (Remark~\ref{rmk:p_constant} and~\eqref{eq:cheating})\\~\\
-      \begin{center}
-        \begin{minipage}[c]{.95\textwidth}
-          If $\mathfrak{D}_{i}=0$, no attack:
-          \begin{itemize}
-            \item we can use the $\vec{\lambda}_{i}$ received
-          \end{itemize}
-          If $\mathfrak{D}_{i}=1$, $\vec{\lambda}_{i}$ received is \textbf{corrupted} $\to$ \textbf{\color{red} attack}
-          \begin{itemize}
-            \item Estimate $T_{i}^{-1}$:
-                  \begin{equation}
-                    \widehat{{T_{i}(k)}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}}[k]}^{-1}
-                  \end{equation}
-            \item Reconstruct $\vec{\lambda}_{i}$:
-                  \begin{equation}
-                    \label{eq:lambda_reconstruction}
-                    {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
-                  \end{equation}
-          \end{itemize}
-      \end{minipage}
-      \end{center}
-    \end{block}
-  \end{textblock}
-\def\seccol{5.25}
-\def\thirdcol{10.5}
-  \begin{textblock}{5.1}(\seccol,-0.075)
-    \begin{block}{6. Secure dMPC}
+  % \begin{textblock}{5.1}(0.,1.075)
+  %   \begin{block}{5. Mitigation}
+  %     Invert $T_{i}$ (Remark~\ref{rmk:p_constant} and~\eqref{eq:cheating})\\~\\
+  %     \begin{center}
+  %       \begin{minipage}[c]{.95\textwidth}
+  %         If $\mathfrak{D}_{i}=0$, no attack:
+  %         \begin{itemize}
+  %           \item we can use the $\vec{\lambda}_{i}$ received
+  %         \end{itemize}
+  %         If $\mathfrak{D}_{i}=1$, $\vec{\lambda}_{i}$ received is \textbf{corrupted} $\to$ \textbf{\color{red} attack}
+  %         \begin{itemize}
+  %           \item Estimate $T_{i}^{-1}$:
+  %                 \begin{equation}
+  %                   \widehat{{T_{i}(k)}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}}[k]}^{-1}
+  %                 \end{equation}
+  %           \item Reconstruct $\vec{\lambda}_{i}$:
+  %                 \begin{equation}
+  %                   \label{eq:lambda_reconstruction}
+  %                   {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
+  %                 \end{equation}
+  %         \end{itemize}
+  %       \end{minipage}
+  %     \end{center}
+  %   \end{block}
+  % \end{textblock}
+
+  \begin{textblock}{5.1}(\thirdcol,-.65)
+    \begin{block}{5. Secure dMPC}
       \begin{center}
         \begin{minipage}[c]{.965\textwidth}
           Modified negotiation (some additional steps):
@@ -587,6 +386,10 @@ if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
             \item detect attack
             \item reconstruct $\vec{\lambda}_{i}$ as needed before using~\eqref{eq:negotiation}
           \end{enumerate}
+          \begin{equation}
+            \label{eq:lambda_reconstruction}
+            {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
+          \end{equation}
           \vspace{1cm}
       \SetKwBlock{negotPhase}{ Negotiation Phase:}{}
       \SetKwBlock{detectPhase}{ Detection Phase:}{}
@@ -605,68 +408,69 @@ if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
           Apply first control in all agents
           \caption{Modified negotiation.}\label{alg:safeDMPC}
         \end{algorithm2e}
-        \vspace{1cm}
+        \vspace{.5cm}
       \end{minipage}
       \end{center}
     \end{block}
   \end{textblock}
 
-  \begin{textblock}{5.1}(\thirdcol,-.075)
-    \begin{block}{7. Expectation Maximization}
-      \begin{center}
-        \begin{minipage}[c]{0.95\linewidth}
-          \begin{itemize}
-            \item Each zone has a different ${z\in\set{Z}=\{1\until Z\}}$
-            \item Gaussian mixture (mean~\eqref{eq:lambdafuntheta} and ${\Sigma\to0}$)
-            \item Parameters ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
-            \item Generate $O$ observations close to $\0$
-          \end{itemize}
-          \vspace{1.cm}
-          \SetKwBlock{Estep}{ E step:}{}
-          \SetKwBlock{Mstep}{ M step:}{}
-          \begin{algorithm2e}[h]
-            \DontPrintSemicolon%
-            Initialize parameters $\set{P}_{\mathrm{new}}$\;
-            \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
-              $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
-              \Estep{
-                Evaluate $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$\;
-              }
-              \Mstep{
-                Reestimate parameters using:
-                \begin{equation*}
-                  \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max\!.}\
-                  \expectation[{\zeta_{zo}(\set{P}_{\mathrm{cur}})}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}
-                \end{equation*}
-              }
-            }
-            \caption{Expectation Maximization}\label{alg:em}
-          \end{algorithm2e}
-        \end{minipage}
-      \end{center}
-    \end{block}
-  \end{textblock}
+  % \begin{textblock}{5.1}(\thirdcol,-.075)
+  %   \begin{block}{7. Expectation Maximization}
+  %     \begin{center}
+  %       \begin{minipage}[c]{0.95\linewidth}
+  %         \begin{itemize}
+  %           \item Each zone has a different ${z\in\set{Z}=\{1\until Z\}}$
+  %           \item Gaussian mixture (mean~\eqref{eq:lambdafuntheta} and ${\Sigma\to0}$)
+  %           \item Parameters ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
+  %           \item Generate $O$ observations close to $\0$
+  %         \end{itemize}
+  %         \vspace{1.cm}
+  %         \SetKwBlock{Estep}{ E step:}{}
+  %         \SetKwBlock{Mstep}{ M step:}{}
+  %         \begin{algorithm2e}[h]
+  %           \DontPrintSemicolon%
+  %           Initialize parameters $\set{P}_{\mathrm{new}}$\;
+  %           \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
+  %             $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
+  %             \Estep{
+  %               Evaluate $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$\;
+  %             }
+  %             \Mstep{
+  %               Reestimate parameters using:
+  %               \begin{equation*}
+  %                 \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max\!.}\
+  %                 \expectation[{\zeta_{zo}(\set{P}_{\mathrm{cur}})}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}
+  %               \end{equation*}
+  %             }
+  %           }
+  %           \caption{Expectation Maximization}\label{alg:em}
+  %         \end{algorithm2e}
+  %       \end{minipage}
+  %     \end{center}
+  %   \end{block}
+  % \end{textblock}
 
 
   \begin{textblock}{15.6}(.0,3.9)
-    \begin{block}{8. Example | 4 distinct rooms | 3 scenarios (Nominal, Selfish, Selfish + Correction ) }
+    \begin{block}{6. Example | 4 distinct rooms | 3 scenarios (Nominal, Selfish, Selfish + Correction) }
       \small
       \begin{minipage}[c]{27cm}
         \centering
         \begin{figure}[h]
           \tiny
           \begin{tikzpicture}[european]
-            \node (house1) at (0,0) {\scalebox{3}{\faHome}};
-            \node[below=of house1] (medium) {\scalebox{2}{$\bullet$}};
-            \node[right=of medium] (house2)  {\scalebox{3}{\faHome}};
-            \node[below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
-            \node[left=of medium] (house4)  {\scalebox{4}{\faHome}};
-            \node[] at (house4.south) {\color{red}\scalebox{1.2}{\faUserSecret}};
+            \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
+            \node[minimum height=1cm,below=of house1] (medium) {};
+            \node[color=mpc_agent,right=of medium] (house2)  {\scalebox{3}{\faHome}};
+            \node[color=mpc_agent,below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
+            \node[color=mpc_agent,left=of medium] (house4)  {\scalebox{4}{\faHome}};
+            \node[] at (house4.south) {\color{red}\scalebox{2.5}{\faUserSecret}};
 
             \draw[-,line width=3pt] (house1) -- (medium.center);
             \draw[-,line width=3pt] (house2) -- (medium.center);
             \draw[-,line width=3pt] (house3) -- (medium.center);
             \draw[-,line width=3pt] (house4) -- (medium.center);
+            \draw[color=black,fill=mpc_coordinator,] (medium) circle [radius=.5cm];
 
 
             \begin{scope}[xshift=8cm,yshift=-2cm]
@@ -723,6 +527,10 @@ if the disturbance $E_{i}[k]$ disrespects an arbitrary bound $\epsilon_{P}$.
     \end{block}
   \end{textblock}
 
+  \begin{tikzpicture}[overlay]
+    \node[] (conf_logo) at (.15\paperwidth,-.515\paperheight) {\includegraphics[width=.25\textwidth]{../img/logo_NecSys.png}};
+    \node[right=of conf_logo,align=right]  {\bf Zurich, Switzerland \\5-7 July 2022};
+  \end{tikzpicture}
 \end{frame}
 
 \end{document}
