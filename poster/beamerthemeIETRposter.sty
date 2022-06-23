@@ -128,9 +128,12 @@ color(75bp)=(red); color(100bp)=(red)}
   \vspace{.1\paperheight}
 }
 \setbeamertemplate{frametitle}{
- \inserttitle % oi
+ \inserttitle
   % \hspace*{.10\textwidth}
 }
+\setbeamertemplate{itemize/enumerate subbody begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subsubbody begin}{\normalsize}
+
   %
 \setbeamertemplate{background}{
     \begin{tikzpicture}
@@ -148,12 +151,12 @@ color(75bp)=(red); color(100bp)=(red)}
       \includegraphics[width=0.13\textwidth]{logos/logo_IETR.png}
     };
 
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.02\paperheight) { \color{white} \LARGE\textbf{\inserttitle}\par};
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.05\paperheight) {\color{white} \Large\bf\insertauthor\par};
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.08\paperheight) {\normalsize\insertinstitute\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.02\paperheight) { \color{white} \huge\textbf{\inserttitle}\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.08\paperheight) {\color{black} \Large\bf\insertauthor\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.095\paperheight) {\normalsize\insertinstitute\par};
     \ifthenelse{\equal{\insertemail}{}}{%nothing
     }{%
-      \node[align=center,text width=.7\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.11\paperheight) {\color{black} \tt \normalsize\insertemail\par};
+      \node[align=center,text width=.7\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.12\paperheight) {\color{black} \tt \normalsize\insertemail\par};
     }
     \ifthenelse{\equal{\insertemail}{}}{%nothing
     }{%
