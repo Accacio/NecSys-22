@@ -151,12 +151,12 @@ color(75bp)=(red); color(100bp)=(red)}
       \includegraphics[width=0.13\textwidth]{logos/logo_IETR.png}
     };
 
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.02\paperheight) { \color{white} \huge\textbf{\inserttitle}\par};
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.08\paperheight) {\color{black} \Large\bf\insertauthor\par};
-    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.095\paperheight) {\normalsize\insertinstitute\par};
+    \node[align=center,text width=\paperwidth] at (.575\paperwidth,\paperheight-.04\paperheight) { \color{white} \huge\textbf{\inserttitle}\par};
+    \node[align=center,text width=\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.08\paperheight) {\color{black} \insertauthor\par};
+    \node[align=center,text width=\paperwidth] at (.575\paperwidth,\paperheight-.105\paperheight) {\normalsize\insertinstitute\par};
     \ifthenelse{\equal{\insertemail}{}}{%nothing
     }{%
-      \node[align=center,text width=.7\paperwidth,anchor=north] at (.575\paperwidth,\paperheight-.12\paperheight) {\color{black} \tt \normalsize\insertemail\par};
+      \node[align=center,text width=.7\paperwidth] at (.575\paperwidth,\paperheight-.125\paperheight) {\color{black} \tt \normalsize\insertemail\par};
     }
     \ifthenelse{\equal{\insertemail}{}}{%nothing
     }{%

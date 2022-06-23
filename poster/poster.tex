@@ -6,6 +6,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
+\usepackage{alphalph}
+\def\theequation{\AlphAlph{\value{equation}}}
+
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
 
 \newtheorem{assumption}{Assumption}%[numberby]
 \newtheorem{remark}{Remark}%[numberby]
@@ -80,22 +84,28 @@
 \usepackage{ulem}
 
 \usetheme{default}
-\author{Rafael Accácio Nogueira, Romain Bourdais, Simon Leglaive, Hervé Guéguen}
+\author{{\bfseries Rafael Accácio Nogueira}, Romain Bourdais, Simon Leglaive, Hervé Guéguen}
 
 
 \date{\today}
 \title{Expectation-Maximization Based Defense Mechanism  \\for Distributed Model Predictive Control}
-\institute{IETR-CentraleSupélec\\ 35510 Cesson-Sévigné, Ille-et-Vilaine, France}
+\institute{IETR-CentraleSupélec, Rennes, France}
 \subtitle{The Subtitle}
 \usepackage{beamerthemeIETRposter}
 
 
-\email{\{rafael-accacio.nogueira, romain.bourdais, simon.leglaive, herve.gueguen\}\\@centralesupelec.fr}
+\email{rafael-accacio.nogueira\\@centralesupelec.fr}
 
 \usepackage{appendixnumberbeamer}
 \usepackage{ amssymb }
 
 \definecolor{mpc_agent}{RGB}{39,154,216}
+\definecolor{mpc_agent_foreground}{RGB}{39,154,216}
+\colorlet{mpc_agent_foreground}{black}
+\definecolor{mpc_agent}{RGB}{243, 146, 0} % logo necsys
+% \definecolor{mpc_agent}{RGB}{169, 195, 124} % verde Eve
+% \definecolor{mpc_agent}{RGB}{128, 149, 117} %
+% \definecolor{mpc_agent}{RGB}{46, 182, 255} % original with more V in HSV
 \definecolor{mpc_green}{RGB}{98, 160, 98}
 \definecolor{mpc_coordinator}{RGB}{235, 235, 235}
 \definecolor{mpc_orange}{RGB}{247, 153, 68}
@@ -109,53 +119,48 @@
 
 \begin{frame}
   \begin{textblock}{15.6}(.0,-5.)
-    \begin{block}{1. Context - False Data injection in dMPC exchange}
-      \begin{minipage}[c]{17.5cm}
+    \begin{block}{1. Challenge - False Data injection in dMPC exchange}
+      \begin{minipage}[c]{0.35\paperwidth}
+        \centering
         \begin{itemize}
-          \item Cyber-Physical Systems
-          \item Large Scale
+          \item Global decomposable quadratic objective $\sum_{i=1}^{M}J_{i}$
+          \item Global coupling constraint $ \sum_{i=1}^{M}\Gamma_{i}\vec{U}_{i}\leq\vec{U}_{\max}$
         \end{itemize}
         \vspace{.5cm}
-        \begin{center}
-          MPC
-        \end{center}
-        \begin{itemize}
-          \item Linear Model
-          \item Linear Control Objective \\(e.g. $(\vec{w}[k]-\vec{y}[k]) \to 0$)
-          \item Linear Input Constraints
-        \end{itemize}
+        \resizebox{!}{8cm}{
+        \begin{tikzpicture}[node distance=2cm and 2cm]
+          \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
+          \node[minimum height=1cm,below=of house1] (medium) {};
+          \node[color=mpc_agent,right=of medium] (house2)  {\scalebox{3}{\faHome}};
+          \node[color=mpc_agent,below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
+          \node[color=mpc_agent,left=12cm of medium] (house4)  {\scalebox{10}{\faHome}};
+
+          \draw[latex-,line width=5pt] (house1) -- (medium.center);
+          \draw[latex-,line width=5pt] (house2) -- (medium.center);
+          \draw[latex-,line width=5pt] (house3) -- (medium.center);
+          \draw[latex-,line width=5pt] (house4) -- (medium.center) node[above,midway] {\LARGE $\Gamma_{i}\vec{U}_{i}$};
+          \draw[color=black,fill=mpc_coordinator,] (medium) circle [radius=.5cm];
+
+          \node[latex-,line width=7pt] at ($(house4) +(-5,3)$) {\huge $J_{i}$};
+          % \node[latex-,line width=7pt] at ($(house4) +(0,0)$) {\LARGE $J_{i}$};
+
+        \end{tikzpicture}
+        }
       \end{minipage}
-      \begin{minipage}[c]{3cm}
-        \tikz \draw [line width=7pt, arrows = {-Latex}] (0,0) -- (2,0);
-      \end{minipage}
-      \begin{minipage}[c]{18cm}
+      % \begin{minipage}[c]{2cm}
+      %   \centering
+      %   \tikz \draw [line width=7pt, arrows = {-Latex}] (0,0) -- (\textwidth,0);
+      % \end{minipage}
+      \begin{minipage}[c]{0.32\textwidth}
         \centering
-        MPC\\ Quadratic Program (QP)
-        \begin{equation*}
-          \begin{matrix}
-            \underset{\Uik}{\mathrm{minimize}}&&\small &\frac{1}{2} \norm{\vec{U}[k]}_{H}+{f[k]}^T\vec{U}[k]\\
-            \mathrm{subject~ to}&&&  \bar{\Gamma}\vec{U}[k]\preceq\vec{U}_{\max}\\
-            &&&\vec{U}[k]\succeq\0
-          \end{matrix}
-        \end{equation*}
-        \vskip 1cm
-      % {\color{ietr_brightblue} \bfseries HARD TO COMPUTE}
-      {\color{ietr_brightblue} \bfseries HARD TO COMPUTE}
-      \end{minipage}
-      \begin{minipage}[c]{3cm}
-        \tikz \draw [line width=7pt, arrows = {-Latex}] (0,0) -- (2,0);
-      \end{minipage}
-      \begin{minipage}[c]{35cm}
-        % \centering Primal decomposition dMPC
-        % \vskip -1cm
-        \begin{figure}[h]
-          \resizebox{35cm}{!}{
+          \resizebox{!}{12cm}{
           \begin{tikzpicture}[thick,node distance=5.cm and 1cm,
             mpcSmall/.style={
               rectangle,
               align=center,
-              fill=mpc_agent,
-              minimum width=22cm,
+              fill=mpc_agent!90!white!50,
+              % fill=green!50!black!70,
+              minimum width=26cm,
               minimum height=4cm},
             coordinator/.style={
               rectangle,
@@ -164,24 +169,12 @@
               minimum height=4.cm,
               minimum width=33cm,
             },
-            superv/.style={
-              rectangle,
-              minimum height=1.4cm,
-              minimum width=.3cm,
-              fill=mpc_yellow,
-            },
-            negotiation/.style={
-              rectangle,
-              minimum height=8.5cm,
-              minimum width=1.5cm,
-              fill=mpc_green,
-            },
             ]
 
             \node[draw,
             mpcSmall,
             ] (block1) {
-              \color{white}
+              \color{mpc_agent_foreground}
               % \small
                 \large
               \begin{minipage}{22cm}
@@ -196,6 +189,14 @@
             };
 
             \node[
+            anchor=north east,
+            fill=white,
+            draw=rectangle,
+            minimum width=2cm,
+            minimum height=2cm
+            ] at ($(block1.north east)$) {\bf Agent \large 1};
+
+            \node[
             fill=none,
             draw=none,
             right=of block1,
@@ -203,12 +204,14 @@
 
             \node[draw,
             mpcSmall,
-            fill=mpc_agent,
-            right=of mult,
-            minimum width=10cm,
-            minimum height=7cm,
+            right=0.5cm of mult,
+            text align=center,
+            minimum width=12cm,
+            minimum height=8.cm,
             ] (blockM) {
-              \color{white}
+              \color{mpc_agent_foreground}
+\eqref{eq:local_problem}
+
               % \small
               % \begin{minipage}{23cm}
               %   \begin{equation}
@@ -222,12 +225,32 @@
               % \end{minipage}
             };
 
+            \node[
+            anchor=north east,
+            fill=white,
+            draw=rectangle,
+            minimum width=2cm,
+            minimum height=2cm
+            ] at ($(blockM.north east)$) {\bf Agent \large M};
+
             \node[draw,
             coordinator,
-            ] (coordinator) at ($(mult) + (-4,-8)$) {};
-            \node[align=center] at ($(coordinator)+(.75,0)$) {
+            anchor=north west,
+            minimum width=44cm
+            ] (coordinator) at ($(block1.north west) + (-0,-10)$) {};
+
+            \node[
+            anchor=north east,
+            fill=white,
+            draw=rectangle,
+            minimum width=2cm,
+            minimum height=2cm
+            ] at ($(coordinator.north east)$) {\bf \large Coordinator};
+
+            \node[align=center] at ($(coordinator)+(-3.0,0)$) {
               \centering
-              \begin{minipage}{25cm}
+              \large
+              \begin{minipage}{30cm}
                 \begin{equation} \label{eq:negotiation}
                   \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p)
                 \end{equation}
@@ -236,15 +259,19 @@
             % \node at ($(coordinator)+(.75,0)$) {};
             % \node[align=center,above=3.cm of mult] { Primal decomposition dMPC};
 
-            \draw[-latex,line width=9pt,red] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$ \faUserSecret};
+            % \draw[-latex,line width=9pt,red] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$ \faUserSecret};
+            \draw[-latex,line width=9pt] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
             \draw[latex-,line width=9pt] (block1.south)+(-1,0) -- (  coordinator.north -| {$(block1.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{1}[k]$};
 
             \draw[-latex,line width=9pt] (blockM.south)+(1,.0) -- ( coordinator.north -| {$(blockM.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
             \draw[latex-,line width=9pt] (blockM.south)+(-1,0) -- (  coordinator.north -| {$(blockM.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{M}[k]$};
           \end{tikzpicture}
           }
-        \end{figure}
-
+      \end{minipage}
+      \hfill
+      \begin{minipage}[c]{0.15\textwidth}
+        \centering
+        {\color{ietr_brightblue} \Large What happens if an agent lies? }\\[1cm]{\color{red}\scalebox{2.5}{\faUserSecret}}
       \end{minipage}
 
 
@@ -266,9 +293,9 @@
         \end{itemize}
         \begin{assumption}\label{ass:linear_cheating}
           The attacker chooses a linear function
-          \begin{equation}\label{eq:cheating}
+          \begin{equation*}\label{eq:cheating}
             \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
-          \end{equation}
+          \end{equation*}
           $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
         \end{assumption}
         \\~\\
@@ -299,98 +326,99 @@
               \end{figure}
             \end{minipage}
           };
-          \draw[line width=.5cm,red,latex-] (10.5,-10) -- (9,-5.5) node[above] {Unstable};
-          \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-12.) {};
+          \draw[line width=.5cm,red,latex-] (10.5,-10) -- (10,-5.5) node[above] {Unstable};
+          \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-11.5) {};
           \draw[line width=.2cm,blue,latex-] (circle) -- (-8,-19.5) node[below] {Optimal objective};
         \end{tikzpicture}
          \\[.8ex]
          {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
          \\[1ex]
-         {What if we estimate $T_{i}[k]$ and invert it?}
+         {YES! If we estimate $T_{i}[k]$ and invert it}
          \\[1ex]
-         {Problem: How to estimate it?}
+         {But how??}
       \end{minipage}
     \end{center}
   \end{block}
 \end{textblock}
 
-  \begin{textblock}{5.1}(\seccol,\secrow)
-    \begin{block}{3. Estimating cheating matrix $T_{i}[k]$}
-      \begin{center}
+\begin{textblock}{5.1}(\seccol,\secrow)
+  \begin{block}{3. Estimating cheating matrix $T_{i}[k]$}
+    \begin{center}
+      \centering
+      \begin{minipage}[c]{.95\textwidth}
+        Local problems~\eqref{eq:local_problem} are {\bf QP}
+        \\{\bf Explicit Solution} with {\bf PWA form w.r.t $\vec{\theta}_{i}$}:
+        \begin{equation}
           \centering
-          \begin{minipage}[c]{.95\textwidth}
-            Local pbs.~\eqref{eq:local_problem} are {\bf QP} $\to$ {\bf Explicit Solution}
-            \\{\bf PWA form w.r.t $\vec{\theta}_{i}$}:
-            \begin{equation}
-              \centering
-              \begin{aligned}\label{eq:lambdafuntheta}
-                \lambdaik=
-                -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
-              \end{aligned}
-            \end{equation}
-            with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
-            \begin{remark}\label{rmk:p_constant}
-              {\color{ietr_brightblue} Sensibilities $P^{n}_{i}$  are \underline{\textbf{time invariant}}.}
-            \end{remark}
-            \vspace{1.cm}
-            \begin{assumption}
-              In Region 1 \textbf{local constraints are active}:
-              \begin{equation}
-                \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
-              \end{equation}
-              % \mbox{with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.}
-            \end{assumption}
-            \begin{assumption}
-              ${\theta_{i}=\0}$ belongs to Region $1$
-            \end{assumption}
-              \vskip 1cm
-              Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$
-              \vskip .5cm
-              If we can know {\bf nominal} $\bar{P}_{i}^{1}$, estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
-            \begin{equation}
-              \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
-            \end{equation}
-            \vskip .5cm
-            {\color{ietr_brightblue} But {\large \textbf{how do we estimate $\tilde{P}_{i}^{1}[k]$?}}}
-            \\[1ex]
-            Enter Expectation Maximization
-            \begin{itemize}
-              \item Classify data in regions
-              \item Estimates parameters using weights
-            \end{itemize}
-            \vspace{1ex}
-            EM estimates $\tilde{P}_{i}^{1}[k]$ if we provide minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
-          \end{minipage}
-          \begin{itemize}
-            \item Minimally excited inputs
-                  % \todo{artificial scarcity sampling}
-                  \begin{itemize}
-                    \item \raisebox{-.5ex}{\tikz \node[anchor=north,cross out,draw=red,line width=1.5pt, inner sep=0pt, outer sep=0pt] {Estimation negotiation};} (time dependence)
-                    \item Solution: 2 phases Detection and Negotiation
-                  \end{itemize}
-          \end{itemize}
-      \vspace{1ex}
-        \end{center}
-      \end{block}
-    \end{textblock}
+          \begin{aligned}\label{eq:lambdafuntheta}
+            \lambdaik=
+            -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
+          \end{aligned}
+        \end{equation}
+        with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
+        \begin{remark}\label{rmk:p_constant}
+          {\color{ietr_brightblue} Sensibilities $P^{n}_{i}$  are \underline{\textbf{time invariant}}.}
+        \end{remark}
+        \vspace{1.cm}
+        \begin{assumption}
+          In Region 1 \textbf{local constraints are active}:
+          \begin{equation}
+            \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
+          \end{equation}
+          % \mbox{with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.}
+        \end{assumption}
+        \begin{assumption}
+          ${\vec{\theta}_{i}=\0}$ belongs to Region $1$
+        \end{assumption}
+        \vskip 1cm
+        Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$
+        \vskip 1cm
+        If we can know {\bf nominal} $\bar{P}_{i}^{1}$, estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
+        \begin{equation}
+          \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
+        \end{equation}
+        \vskip 1cm
+        {\color{ietr_brightblue} {\large \textbf{But how do we estimate $\tilde{P}_{i}^{1}[k]$?}}}
+        \vskip 1cm
+        Enter Expectation Maximization
+        \begin{itemize}
+          \item Classify data in regions (latent variables)
+          \item Estimates parameters using weighted LS
+        \end{itemize}
+        \vskip 1.2cm
+        EM needs minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
+      \end{minipage}
+      \begin{itemize}
+        \item \raisebox{-.5ex}{\tikz \node[anchor=north,cross out,draw=red,line width=1.5pt, inner sep=0pt, outer sep=0pt] {Estimation negotiation};} (time dependence)
+        \item Solution: estimate in a separate phase
+              \begin{itemize}
+                \item Generate independent points near $\vec{\theta}_{i}=\0$
+                      \begin{itemize}
+                        \item[] Artificial Scarcity Sampling
+                      \end{itemize}
+              \end{itemize}
+      \end{itemize}
+    \end{center}
+  \end{block}
+\end{textblock}
 
     \begin{textblock}{5.1}(10.5,\secrow)
       \begin{block}{4. Expectation Maximization }
       \begin{center}
 \begin{minipage}[c]{0.95\linewidth}
           \begin{itemize}
-            \item Each zone has a different ${z\in\set{Z}=\{1\until Z\}}$
+            \item Regions are indexed by ${z\in\set{Z}=\{1\until Z\}}$
             \item Gaussian mixture (mean~\eqref{eq:lambdafuntheta} and ${\Sigma\to0}$)
             \item Parameters ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
-            \item Generate $O$ observations close to $\0$
+            \item Observations ${o\in\set{O}=\{1\until O\}}$ of $(\vec{\theta}_{i},\vec{\lambda}_{i})$
           \end{itemize}
-          \vspace{1.cm}
+          \vspace{.5cm}
           \SetKwBlock{Estep}{ E step:}{}
           \SetKwBlock{Mstep}{ M step:}{}
           \begin{algorithm2e}[h]
             \DontPrintSemicolon%
             Initialize parameters $\set{P}_{\mathrm{new}}$\;
-            \Repeat{$\set{P}_{\mathrm{cur}}$ converges to local maximum}{
+            \Repeat{$\set{P}_{\mathrm{cur}}$ converges to a local maximum}{
               $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
               \Estep{
                 Evaluate $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$\;
