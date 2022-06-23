@@ -389,7 +389,7 @@
         EM needs minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
       \end{minipage}
       \begin{itemize}
-        \item \raisebox{-.5ex}{\tikz \node[anchor=north,cross out,draw=red,line width=1.5pt, inner sep=0pt, outer sep=0pt] {Estimation negotiation};} (time dependence)
+        \item \raisebox{-.5ex}{\begin{tikzpicture} \node[anchor=north,line width=1.5pt, inner sep=0pt, outer sep=0pt] (estimation) {During negotiation}; \draw[-,red] (estimation.east) -- (estimation.west);\end{tikzpicture}} (time dependence)
         \item Solution: estimate in a separate phase
               \begin{itemize}
                 \item Generate independent points near $\vec{\theta}_{i}=\0$
@@ -594,17 +594,20 @@
           \end{tikzpicture}
           \caption{3R-2C Thermic Model.}
         \end{figure}
-        \begin{table}[h]
-          \caption{Objective functions $J_{i}$ (\% error)}\label{tab:costsGlobalLocal}
-          \begin{tabular}[t]{cccc}
-            \toprule
-            Agent  & Nominal & Selfish & + Correction\\
-            \midrule
-            \input{../article/table_costs_all_rooms_error.tex}\\
-            % % \input{table_costs_only_global.tex}\\
-            \bottomrule
-          \end{tabular}
-        \end{table}
+        % \begin{table}[h]
+        %   \caption{Objective functions $J_{i}$ (\% error)}\label{tab:costsGlobalLocal}
+        %   \begin{tabular}[t]{cccc}
+        %     \toprule
+        %     Agent  & Nominal & Selfish & + Correction\\
+        %     \midrule
+        %     \input{../article/table_costs_all_rooms_error.tex}\\
+        %     % % \input{table_costs_only_global.tex}\\
+        %     \bottomrule
+        %   \end{tabular}
+        % \end{table}
+        \begin{figure}[h]
+          \includegraphics[width=\textwidth]{../img/barplot_results_poster.pdf}
+        \end{figure}
       \end{minipage}
       \hfill
       \begin{minipage}[c]{26cm}
