@@ -4,7 +4,7 @@ Repository for the paper [[paper site][Expectation-Maximization based defense me
 
 # #+HTML: <p align="center">Watch it:<br><a href="https://youtu.be/"><img src="img/presentation.jpg" width="50%"/><a/></p>
 
-#+HTML: <p align="center">Watch it:<br><a href="poster/poster.pdf"><img src="poster/poster.png" width="50%"/><a/></p>
+#+HTML: <p align="center"><br><a href="poster/poster.pdf"><img src="poster/poster.png" width="50%"/><a/></p>
 
 * About the article
 
