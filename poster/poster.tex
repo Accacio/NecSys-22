@@ -118,15 +118,15 @@
 \begin{document}
 
 \begin{frame}
-  \begin{textblock}{15.6}(.0,-5.)
+  \begin{textblock}{15.6}(.0,-5.1)
     \begin{block}{1. Challenge - False Data injection in dMPC exchange}
-      \begin{minipage}[c]{0.35\paperwidth}
+      \begin{minipage}[c]{0.31\paperwidth}
         \centering
         \begin{itemize}
-          \item Global decomposable quadratic objective $\sum_{i=1}^{M}J_{i}$
-          \item Global coupling constraint $ \sum_{i=1}^{M}\Gamma_{i}\vec{U}_{i}\leq\vec{U}_{\max}$
+          \item Decomposable quadratic objective{\large $\sum_{i=1}^{M}J_{i}$}
+          \item Coupling constraint {\large $ \sum_{i=1}^{M}\Gamma_{i}\vec{U}_{i}\leq\vec{U}_{\max}$}
         \end{itemize}
-        \vspace{.5cm}
+        % \vspace{.25cm}
         \resizebox{!}{8cm}{
         \begin{tikzpicture}[node distance=2cm and 2cm]
           \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
@@ -147,13 +147,15 @@
         \end{tikzpicture}
         }
       \end{minipage}
-      % \begin{minipage}[c]{2cm}
-      %   \centering
-      %   \tikz \draw [line width=7pt, arrows = {-Latex}] (0,0) -- (\textwidth,0);
-      % \end{minipage}
-      \begin{minipage}[c]{0.32\textwidth}
+      \begin{minipage}[c]{0.055\textwidth}
         \centering
-          \resizebox{!}{12cm}{
+        \tikz \draw [line width=7pt, arrows = {-Latex}] (0,0) -- (\textwidth,0) node [midway,above] {Solution};
+      \end{minipage}
+      \hfill
+      \begin{minipage}[c]{0.4\textwidth}
+        \centering
+        Primal Decomposition based distributed MPC
+          \resizebox{!}{10cm}{
           \begin{tikzpicture}[thick,node distance=5.cm and 1cm,
             mpcSmall/.style={
               rectangle,
@@ -180,9 +182,9 @@
               \begin{minipage}{22cm}
                 \begin{equation}
                   \begin{matrix}
-                    \underset{\vec{U}_{1}[k]}{\mathrm{min.}}&&\small &\frac{1}{2} \norm{\vec{U}_{1}[k]}_{H_{1}}+{f_{1}[k]}^T\vec{U}_{1}[k]\\
-                    \mathrm{s.t.}&&&  \bar{\Gamma}_{1}\vec{U}_{1}[k]\preceq\vec{\theta}_{1}[k]:\vec{\lambda}_{1}\\
-                    &&&\vec{U}_{1}[k]\succeq\0
+                    \underset{\vec{U}_{{\rm I}}[k]}{\mathrm{min.}}&&\small &\frac{1}{2} \norm{\vec{U}_{{\rm I}}[k]}_{H_{{\rm I}}}+{f_{{\rm I}}[k]}^T\vec{U}_{{\rm I}}[k]\\
+                    \mathrm{s.t.}&&&  \bar{\Gamma}_{{\rm I}}\vec{U}_{{\rm I}}[k]\preceq\vec{\theta}_{{\rm I}}[k]:\vec{\lambda}_{{\rm I}}\\
+                    &&&\vec{U}_{{\rm I}}[k]\succeq\0
                   \end{matrix}\label{eq:local_problem}
                 \end{equation}
               \end{minipage}
@@ -194,7 +196,7 @@
             rectangle,
             minimum width=2cm,
             minimum height=2cm
-            ] at ($(block1.north east)$) {\bf Agent \large 1};
+            ] at ($(block1.north east)$) {\bf Agent \large $\rm I$};
 
             \node[
             fill=none,
@@ -260,21 +262,20 @@
             % \node[align=center,above=3.cm of mult] { Primal decomposition dMPC};
 
             % \draw[-latex,line width=9pt,red] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$ \faUserSecret};
-            \draw[-latex,line width=9pt] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$};
+            \draw[-latex,line width=9pt] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\vec{\lambda}_{1}[k]$};
             \draw[latex-,line width=9pt] (block1.south)+(-1,0) -- (  coordinator.north -| {$(block1.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{1}[k]$};
 
-            \draw[-latex,line width=9pt] (blockM.south)+(1,.0) -- ( coordinator.north -| {$(blockM.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{M}[k]$};
+            \draw[-latex,line width=9pt] (blockM.south)+(1,.0) -- ( coordinator.north -| {$(blockM.south)+(1,.0)$}) node [right,midway] {$\vec{\lambda}_{M}[k]$};
             \draw[latex-,line width=9pt] (blockM.south)+(-1,0) -- (  coordinator.north -| {$(blockM.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{M}[k]$};
           \end{tikzpicture}
           }
       \end{minipage}
-      \hfill
-      \begin{minipage}[c]{0.15\textwidth}
+      \begin{minipage}[c]{0.2\textwidth}
         \centering
-        {\color{ietr_brightblue} \Large What happens if an agent lies? }\\[1cm]{\color{red}\scalebox{2.5}{\faUserSecret}}
+        Coordinator allocates $\vec{\theta}_{i}$\\
+        Agent has dissatisfaction $\vec{\lambda}_{i}$\\[1.5cm]
+        {\color{ietr_brightblue} \large What happens if an agent lies about $\vec{\lambda}_{i}$? }\\[0.5cm]{\color{red}\scalebox{2.5}{\faUserSecret}}
       \end{minipage}
-
-
     \end{block}
   \end{textblock}
 
@@ -291,51 +292,54 @@
           \item Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
           \item $\uparrow$ dissatisfaction == $\uparrow$ allocation
         \end{itemize}
-        \begin{assumption}\label{ass:linear_cheating}
-          The attacker chooses a linear function
-          \begin{equation*}\label{eq:cheating}
-            \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
-          \end{equation*}
-          $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
-        \end{assumption}
-        \\~\\
-        \centering
-        \begin{tikzpicture}
-          \node (effects) at (0,0) {
-            \begin{minipage}{\textwidth}
-              \begin{itemize}
-                \item Effects
-              \begin{itemize}
-                \item Increase on global objective
-                \item Destabilization
-              \end{itemize}
-              \end{itemize}
-              \vskip 1cm
-              \begin{center}
-                {\color{ietr_brightblue} \Large Example $T_{i}[k]=\tau_{1}I$}
-              \end{center}
-            \end{minipage}
-          };
+        \textbf{\textit{Assumption}}\\
+        % \begin{assumption}\label{ass:linear_cheating}
+        Attacker chooses an \emph{invertible linear function}
+        \begin{equation*}\label{eq:cheating}
+          \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
+        \end{equation*}
+        % $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
+        % \end{assumption}
+        \textbf{\textit{Remark}}\\
+        {\color{ietr_brightblue} Attacker says it is satisfied  \underline{\bf only if it is}}
+        \begin{center}
+          \begin{tikzpicture}
+            \node (effects) at (0,0) {
+              \begin{minipage}{\textwidth}
+                \begin{itemize}
+                  \item Effects of cheating matrix $T_{i}[k]$
+                        \begin{itemize}
+                          \item Increase on global objective
+                          \item Destabilization
+                        \end{itemize}
+                \end{itemize}
+                \vskip 1cm
+                \begin{center}
+                  {\color{ietr_brightblue} \Large Example $T_{i}[k]=\tau_{1}I$}
+                \end{center}
+              \end{minipage}
+            };
 
-          \node[below=.01cm of effects] (figure) {
-            \begin{minipage}{\textwidth}
-              \begin{figure}[h]
-                \centering
-                \includegraphics[width=23cm]{../img/changeOfJ.pdf}
-                % \caption{}
-              \end{figure}
-            \end{minipage}
-          };
-          \draw[line width=.5cm,red,latex-] (10.5,-10) -- (10,-5.5) node[above] {Unstable};
-          \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-11.5) {};
-          \draw[line width=.2cm,blue,latex-] (circle) -- (-8,-19.5) node[below] {Optimal objective};
-        \end{tikzpicture}
-         \\[.8ex]
-         {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
-         \\[1ex]
-         {YES! If we estimate $T_{i}[k]$ and invert it}
-         \\[1ex]
-         {But how??}
+            \node[below=.01cm of effects] (figure) {
+              \begin{minipage}{\textwidth}
+                \begin{figure}[h]
+                  \centering
+                  \includegraphics[width=23cm]{../img/changeOfJ.pdf}
+                  % \caption{}
+                \end{figure}
+              \end{minipage}
+            };
+            \draw[line width=.5cm,red,latex-] (10.5,-10) -- (10,-5.5) node[above] {Unstable};
+            \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-11.5) {};
+            \draw[line width=.2cm,blue,latex-] (circle) -- (-8,-19.5) node[below] {Optimal objective};
+          \end{tikzpicture}
+        \\[.8ex]
+        {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
+        \\[0.5ex]
+        {YES! If we estimate $T_{i}[k]$ and invert it}
+        \\[0.5ex]
+        {But how?}
+        \end{center}
       \end{minipage}
     \end{center}
   \end{block}
@@ -356,36 +360,37 @@
           \end{aligned}
         \end{equation}
         with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
-        \begin{remark}\label{rmk:p_constant}
+        \\\textbf{\textit{Remark}}\\
+        % \begin{remark}\label{rmk:p_constant}
           {\color{ietr_brightblue} Sensibilities $P^{n}_{i}$  are \underline{\textbf{time invariant}}.}
-        \end{remark}
-        \vspace{1.cm}
-        \begin{assumption}
+        % \end{remark}
+        \vspace{.5cm}\\
+        \textbf{\textit{Another assumption}}\\
           In Region 1 \textbf{local constraints are active}:
           \begin{equation}
             \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
           \end{equation}
           % \mbox{with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.}
-        \end{assumption}
-        \begin{assumption}
-          ${\vec{\theta}_{i}=\0}$ belongs to Region $1$
-        \end{assumption}
+        % \end{assumption}
+        % \begin{assumption}
+          and ${\vec{\theta}_{i}=\0}$ belongs to it
+        % \end{assumption}
         \vskip 1cm
         Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$
         \vskip 1cm
-        If we can know {\bf nominal} $\bar{P}_{i}^{1}$, estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
+        If we can know {\bf nominal} $\bar{P}_{i}^{1}$, \\by estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
         \begin{equation}
           \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
         \end{equation}
         \vskip 1cm
         {\color{ietr_brightblue} {\large \textbf{But how do we estimate $\tilde{P}_{i}^{1}[k]$?}}}
-        \vskip 1cm
+        \vskip .5cm
         Enter Expectation Maximization
         \begin{itemize}
           \item Classify data in regions (latent variables)
           \item Estimates parameters using weighted LS
         \end{itemize}
-        \vskip 1.2cm
+        \vskip 1.cm
         EM needs minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
       \end{minipage}
       \begin{itemize}
@@ -399,6 +404,7 @@
               \end{itemize}
       \end{itemize}
     \end{center}
+        \vskip 1.5cm
   \end{block}
 \end{textblock}
 
@@ -550,19 +556,25 @@
 
 
   \begin{textblock}{15.6}(.0,3.9)
-    \begin{block}{6. Example | 4 distinct rooms | 3 scenarios (Nominal, Selfish, Selfish + Correction) }
+    \begin{block}{6. Example: distributed control for a heating network under power scarcity }
       \small
       \begin{minipage}[c]{27cm}
         \centering
         \begin{figure}[h]
           \tiny
-          \begin{tikzpicture}[european]
-            \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
-            \node[minimum height=1cm,below=of house1] (medium) {};
-            \node[color=mpc_agent,right=of medium] (house2)  {\scalebox{3}{\faHome}};
-            \node[color=mpc_agent,below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
-            \node[color=mpc_agent,left=of medium] (house4)  {\scalebox{4}{\faHome}};
-            \node[] at (house4.south) {\color{red}\scalebox{2.5}{\faUserSecret}};
+          \begin{tikzpicture}[european,house/.style={minimum width=1cm,minimum height=1cm}]
+            \node[house,color=mpc_agent] (house4) at (0,0) {\scalebox{3}{\faHome}} ;
+            \node[minimum height=1cm,below=of house4] (medium) {};
+            \node[house,color=mpc_agent,right=of medium] (house3)  {\scalebox{3}{\faHome}} ;
+            \node[house,color=mpc_agent,below=of medium] (house2)  {\scalebox{2.5}{\faHome}};
+            \node[house,color=mpc_agent,left=of medium] (house1)  {\scalebox{4}{\faHome}};
+
+            \node[] at (house1.south) {\color{red}\scalebox{2.5}{\faUserSecret}} ;
+
+            \node[above] at (house4.north east) { \large $\rm IV$};
+            \node[above] at (house3.north east) {\large $\rm III$};
+            \node[below right] at (house2.south east) {\large $\rm II$};
+            \node [above] at (house1.north west) {\large $\rm I$};
 
             \draw[-,line width=3pt] (house1) -- (medium.center);
             \draw[-,line width=3pt] (house2) -- (medium.center);
@@ -572,7 +584,7 @@
 
 
             \begin{scope}[xshift=8cm,yshift=-2cm]
-              \draw (3.,0) circle (5.5cm) coordinate (mycircle) ;
+              \node[draw,circle,minimum width=11cm] (mycircle) at (3.,0)  {};
               \draw (0,0) node[tlground]{} to[isource, l=$P^{\text{heat}}$] ++(0,2)
               to[short, -*] ++(1.5,0) coordinate (a);
 
@@ -589,10 +601,11 @@
 
               \draw (d) to[R=$R^{\text{ow/oa}}$] (e) to[battery,l=$T^{\text{out}}$] ++(0,-2) node[tlground]{};
             \end{scope}
-            \draw[-,line width=1pt] (house2.east |- {$(house2.east)+(0,.35cm)$}) -- ( mycircle -| {$(mycircle)+(-5.5,0)$});
+            \draw[-,line width=1pt] (house3.east |- {$(house3.east)+(0,.35cm)$}) -- ( mycircle -| {$(mycircle)+(-5.5,0)$});
+            \node[align=center,below,yshift=-0.5cm] at (mycircle.north) {\small 3R-2C\\[.5em]\small Thermal Model};
 
           \end{tikzpicture}
-          \caption{3R-2C Thermic Model.}
+          \caption{District with 4 houses}
         \end{figure}
         % \begin{table}[h]
         %   \caption{Objective functions $J_{i}$ (\% error)}\label{tab:costsGlobalLocal}
@@ -610,12 +623,14 @@
         \end{figure}
       \end{minipage}
       \hfill
+      \begin{minipage}[c]{52cm}
+        \begin{tikzpicture}
+          \node[] (figure) {
       \begin{minipage}[c]{26cm}
         \begin{figure}[h]
           \includegraphics[width=\textwidth]{../img/airtemp_roomI/__ErrorWX_command_normErrH_poster.pdf}
-          \caption{\centering Air temperature in room I and the decision variable $E_{I}[k]$ for three scenarios: nominal (N), selfish behavior (S),
-            and selfish behavior with correction (C).}\label{fig:response3Scenarios}
-        \end{figure}
+          \caption{\centering Air temperature in houses $\rm I$ and $\rm II$.}\label{fig:response3Scenarios}
+        \end{figure}%
       \end{minipage}
       \hfill
       \begin{minipage}[c]{26cm}
@@ -624,7 +639,12 @@
           \caption{\centering Control applied in all rooms for the 3 scenarios.}\label{fig:control_3Scenarios}
         \end{figure}
       \end{minipage}
-      \hfill
+          };
+          \node[align=center,red] (attack) at (0,-6.) {\large \faFlash\\\large Attack };
+          \draw[line width=.275cm,red,latex-] (-12.,-1.2) -- (attack.west) ;
+          \draw[line width=.275cm,red,latex-] (14.5,-4) -- (attack);
+        \end{tikzpicture}
+      \end{minipage}
     \end{block}
   \end{textblock}
 
