@@ -2,7 +2,9 @@
 
 Repository for the paper [[paper site][Expectation-Maximization based defense mechanism for distributed Model Predictive Control]] for the [[https://necsys22.control.ee.ethz.ch][9th IFAC Conference on Networked Systems]]
 
-#+HTML: <p align="center">Watch it:<br><a href="https://youtu.be/"><img src="img/presentation.jpg" width="50%"/><a/></p>
+# #+HTML: <p align="center">Watch it:<br><a href="https://youtu.be/"><img src="img/presentation.jpg" width="50%"/><a/></p>
+
+#+HTML: <p align="center">Watch it:<br><a href="poster/poster.pdf"><img src="poster/poster.png" width="50%"/><a/></p>
 
 * About the article
 
