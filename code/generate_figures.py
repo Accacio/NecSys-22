@@ -137,9 +137,10 @@ print("Global &", round(nominal_global,2),"(",nominal_global/nominal_global, ")&
 
 fig, axs = plt.subplots(1, 1,figsize=(7, 3),facecolor=(.0, .0, .0, .0))
 
-nominal_bar=(round(nominal_I,2),round(nominal_II,2),round(nominal_III,2),round(nominal_IV,2),round(nominal_global,2))
-selfish_bar=(round(selfish_I,2),round(selfish_II,2),round(selfish_III,2),round(selfish_IV,2),round(selfish_global,2))
-corrected_bar=(round(corrected_I,2),round(corrected_II,2),round(corrected_III,2),round(corrected_IV,2),round(corrected_global,2))
+nominal_bar=(round(nominal_global,2),round(nominal_IV,2),round(nominal_III,2),round(nominal_II,2),round(nominal_I,2))
+selfish_bar=(round(selfish_global,2),round(selfish_IV,2),round(selfish_III,2),round(selfish_II,2),round(selfish_I,2))
+corrected_bar=(round(corrected_global,2),round(corrected_IV,2),round(corrected_III,2),round(corrected_II,2),round(corrected_I,2))
+labels=[ 'Global','IV', 'III', 'II', 'I']
 
 barHeight=0.25
 br_nominal = np.arange(5)
@@ -150,7 +151,7 @@ plt.barh(br_nominal, nominal_bar, height=barHeight,label='Nominal') # nominal
 plt.barh(br_selfish, selfish_bar, height=barHeight,label='Selfish') # nominal
 plt.barh(br_corrected, corrected_bar, height=barHeight,label='+ Correction') # nominal
 plt.yticks([r - barHeight for r in range(5)],
-           ['I', 'II', 'III', 'IV', 'Global'],fontsize=20)
+           labels,fontsize=20)
 plt.xticks(fontsize = 20)
 
 plt.ylabel('Agents', fontweight ='bold', fontsize = 25)
