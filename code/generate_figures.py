@@ -239,13 +239,13 @@ plt.savefig("../img/airtemp_roomI" + "/__ErrorWX_command_normErrH" +  ".png",bbo
 # rc('font', **arial_font)
 
 
-fig, axs = plt.subplots(2, 1,facecolor=(.0, .0, .0, .0))
+fig, axs = plt.subplots(2, 1,facecolor=(.0, .0, .0, .0),figsize=(6,5))
 
 axs[0].plot(np.arange(0,simK+1),np.matlib.repmat(nominal_Wt[0],simK+1,1),'-',drawstyle='steps-post')
 axs[0].plot(np.arange(0,simK+1),nominal_xt[0,0:simK+1,0],'-',color='magenta',drawstyle='steps-post')
 axs[0].plot(np.arange(0,simK+1),selfish_xt[0,0:simK+1,0],'-',drawstyle='steps-post')
 axs[0].scatter(np.arange(0,simK+1),corrected_xt[0,0:simK+1,0],s=15,color='black')
-axs[0].set_title('Air temperature in room I ($^oC$)',fontsize=20)
+axs[0].set_title('Air temperature in house I ($^oC$)',fontsize=20)
 axs[0].set_ylim([15, 27])
 
 
@@ -253,7 +253,7 @@ axs[1].plot(np.arange(0,simK+1),np.matlib.repmat(nominal_Wt[1],simK+1,1),'-',dra
 axs[1].plot(np.arange(0,simK+1),nominal_xt[0,0:simK+1,1],'-',color='magenta',drawstyle='steps-post')
 axs[1].plot(np.arange(0,simK+1),selfish_xt[0,0:simK+1,1],'-',drawstyle='steps-post')
 axs[1].scatter(np.arange(0,simK+1),corrected_xt[0,0:simK+1,1],s=15,color='black')
-axs[1].set_title('Air temperature in room II ($^oC$)',fontsize=20)
+axs[1].set_title('Air temperature in house II ($^oC$)',fontsize=20)
 axs[1].set_ylim([15, 27])
 
 axs[0].set_xlim([1, simK])
@@ -266,9 +266,8 @@ axs[0].set_xticks([])
 axs[1].set_xticks(np.arange(0,simK+1,4))
 axs[0].tick_params(axis='both', which='major', labelsize=20)
 axs[1].tick_params(axis='both', which='major', labelsize=20)
-axs[0].set_title('Air temperature in room I ($^oC$)',fontsize=20)
 
-axs[1].legend(( 'Reference','Nominal','Agent I is Selfish','+ Correction'),loc='bottom', bbox_to_anchor=(.835, -0.8),ncol=2,fontsize=14)
+axs[1].legend(( 'Reference i','Nominal','Agent I is Selfish','+ Correction'),loc='bottom', bbox_to_anchor=(.835, -0.5),ncol=2,fontsize=14)
 # axs[1].legend(handles,labels,loc='center',ncol=4,fontsize=15)
 
 fig.tight_layout()

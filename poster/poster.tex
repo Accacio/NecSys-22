@@ -252,11 +252,12 @@
             \node[align=center] at ($(coordinator)+(-3.0,0)$) {
               \centering
               \large
-              \begin{minipage}{30cm}
-                \begin{equation} \label{eq:negotiation}
-                  \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p)
-                \end{equation}
-              \end{minipage}
+              Update $\vec{\theta}_{i}$ using past $\vec{\theta}_{i}$ and all $\vec{\lambda}_{i}$
+              % \begin{minipage}{30cm}
+              %   \begin{equation} \label{eq:negotiation}
+              %     \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p)
+              %   \end{equation}
+              % \end{minipage}
             };
             % \node at ($(coordinator)+(.75,0)$) {};
             % \node[align=center,above=3.cm of mult] { Primal decomposition dMPC};
@@ -292,16 +293,17 @@
           \item Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
           \item $\uparrow$ dissatisfaction == $\uparrow$ allocation
         \end{itemize}
-        \textbf{\textit{Assumption}}\\
+        \vskip .5cm
+        \textbf{\textit{Remark}}\\
+        {\color{ietr_brightblue} Attacker says it is satisfied  \underline{\bf only when it is}}
+        \\\textbf{\textit{Assumption}}
         % \begin{assumption}\label{ass:linear_cheating}
-        Attacker chooses an \emph{invertible linear function}
+        \\Attacker chooses an {\color{ietr_brightblue}\emph{invertible}} \emph{linear function}
         \begin{equation*}\label{eq:cheating}
           \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
         \end{equation*}
         % $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
         % \end{assumption}
-        \textbf{\textit{Remark}}\\
-        {\color{ietr_brightblue} Attacker says it is satisfied  \underline{\bf only if it is}}
         \begin{center}
           \begin{tikzpicture}
             \node (effects) at (0,0) {
@@ -315,7 +317,7 @@
                 \end{itemize}
                 \vskip 1cm
                 \begin{center}
-                  {\color{ietr_brightblue} \Large Example $T_{i}[k]=\tau_{1}I$}
+                  {\color{ietr_brightblue} \Large Example $T_{1}[k]=\tau_{1}I$}
                 \end{center}
               \end{minipage}
             };
@@ -364,7 +366,7 @@
         % \begin{remark}\label{rmk:p_constant}
           {\color{ietr_brightblue} Sensibilities $P^{n}_{i}$  are \underline{\textbf{time invariant}}.}
         % \end{remark}
-        \vspace{.5cm}\\
+        \vspace{1cm}\\
         \textbf{\textit{Another assumption}}\\
           In Region 1 \textbf{local constraints are active}:
           \begin{equation}
@@ -375,7 +377,7 @@
         % \begin{assumption}
           and ${\vec{\theta}_{i}=\0}$ belongs to it
         % \end{assumption}
-        \vskip 1cm
+        \vskip 1.5cm
         Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$
         \vskip 1cm
         If we can know {\bf nominal} $\bar{P}_{i}^{1}$, \\by estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
@@ -383,7 +385,7 @@
           \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
         \end{equation}
         \vskip 1cm
-        {\color{ietr_brightblue} {\large \textbf{But how do we estimate $\tilde{P}_{i}^{1}[k]$?}}}
+        {\color{ietr_brightblue} {\large \textbf{But how can we estimate the ${P}_{i}^{1}[k]$?}}}
         \vskip .5cm
         Enter Expectation Maximization
         \begin{itemize}
@@ -491,7 +493,7 @@
             \label{eq:lambda_reconstruction}
             {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
           \end{equation}
-            \item Use adequate $\lambda_{i}$ to update $\theta_{i}$ \eqref{eq:negotiation}
+            \item Use adequate $\lambda_{i}$ to update $\theta_{i}$
                   \end{enumerate}
           \end{enumerate}
       %     \vspace{1cm}
@@ -640,9 +642,9 @@
         \end{figure}
       \end{minipage}
           };
-          \node[align=center,red] (attack) at (0,-6.) {\large \faFlash\\\large Attack };
-          \draw[line width=.275cm,red,latex-] (-12.,-1.2) -- (attack.west) ;
-          \draw[line width=.275cm,red,latex-] (14.5,-4) -- (attack);
+          \node[align=center,red] (attack) at (0,-7.) {\large \faFlash\\\large Attack };
+          \draw[line width=.275cm,red,latex-] (-12.,-3.0) -- (attack.west) ;
+          \draw[line width=.275cm,red,latex-] (14.5,-3.8) -- (attack);
         \end{tikzpicture}
       \end{minipage}
     \end{block}
