@@ -100,6 +100,11 @@
 \usepackage{ amssymb }
 
 \definecolor{mpc_agent}{RGB}{39,154,216}
+\definecolor{lambda_color}{RGB}{146, 0, 243}
+\definecolor{lambda_color}{RGB}{0,0,0}
+
+\definecolor{theta_color}{RGB}{0,0,0}
+% \definecolor{theta_color}{RGB}{4, 0, 243}
 \definecolor{mpc_agent_foreground}{RGB}{39,154,216}
 \colorlet{mpc_agent_foreground}{black}
 \definecolor{mpc_agent}{RGB}{243, 146, 0} % logo necsys
@@ -124,27 +129,27 @@
         \centering
         \begin{itemize}
           \item Decomposable quadratic objective{\large $\sum_{i=1}^{M}J_{i}$}
-          \item Coupling constraint {\large $ \sum_{i=1}^{M}\Gamma_{i}\vec{U}_{i}\leq\vec{U}_{\max}$}
+          \item Coupling constraint {\large $ \sum_{i=1}^{M}\Gamma_{i}\vec{U}_{i}[k]\leq\vec{U}_{\max}$}
         \end{itemize}
         % \vspace{.25cm}
         \resizebox{!}{8cm}{
-        \begin{tikzpicture}[node distance=2cm and 2cm]
-          \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
-          \node[minimum height=1cm,below=of house1] (medium) {};
-          \node[color=mpc_agent,right=of medium] (house2)  {\scalebox{3}{\faHome}};
-          \node[color=mpc_agent,below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
-          \node[color=mpc_agent,left=12cm of medium] (house4)  {\scalebox{10}{\faHome}};
+          \begin{tikzpicture}[node distance=2cm and 2cm]
+            \node[color=mpc_agent] (house1) at (0,0) {\scalebox{3}{\faHome}};
+            \node[minimum height=1cm,below=of house1] (medium) {};
+            \node[color=mpc_agent,right=of medium] (house2)  {\scalebox{3}{\faHome}};
+            \node[color=mpc_agent,below=of medium] (house3)  {\scalebox{2.5}{\faHome}};
+            \node[color=mpc_agent,left=12cm of medium] (house4)  {\scalebox{10}{\faHome}};
 
-          \draw[latex-,line width=5pt] (house1) -- (medium.center);
-          \draw[latex-,line width=5pt] (house2) -- (medium.center);
-          \draw[latex-,line width=5pt] (house3) -- (medium.center);
-          \draw[latex-,line width=5pt] (house4) -- (medium.center) node[above,midway] {\LARGE $\Gamma_{i}\vec{U}_{i}$};
-          \draw[color=black,fill=mpc_coordinator,] (medium) circle [radius=.5cm];
+            \draw[latex-,line width=5pt] (house1) -- (medium.center);
+            \draw[latex-,line width=5pt] (house2) -- (medium.center);
+            \draw[latex-,line width=5pt] (house3) -- (medium.center);
+            \draw[latex-,line width=5pt] (house4) -- (medium.center) node[above,midway] {\LARGE $\Gamma_{i}\vec{U}_{i}$};
+            \draw[color=black,fill=mpc_coordinator,] (medium) circle [radius=.5cm];
 
-          \node[latex-,line width=7pt] at ($(house4) +(-5,3)$) {\huge $J_{i}$};
-          % \node[latex-,line width=7pt] at ($(house4) +(0,0)$) {\LARGE $J_{i}$};
+            \node[latex-,line width=7pt] at ($(house4) +(-5,3)$) {\huge $J_{i}$};
+            % \node[latex-,line width=7pt] at ($(house4) +(0,0)$) {\LARGE $J_{i}$};
 
-        \end{tikzpicture}
+          \end{tikzpicture}
         }
       \end{minipage}
       \begin{minipage}[c]{0.055\textwidth}
@@ -155,7 +160,7 @@
       \begin{minipage}[c]{0.4\textwidth}
         \centering
         Primal Decomposition based distributed MPC
-          \resizebox{!}{10cm}{
+        \resizebox{!}{10cm}{
           \begin{tikzpicture}[thick,node distance=5.cm and 1cm,
             mpcSmall/.style={
               rectangle,
@@ -178,13 +183,13 @@
             ] (block1) {
               \color{mpc_agent_foreground}
               % \small
-                \large
+              \large
               \begin{minipage}{22cm}
                 \begin{equation}
                   \begin{matrix}
                     \underset{\vec{U}_{{\rm I}}[k]}{\mathrm{min.}}&&\small &\frac{1}{2} \norm{\vec{U}_{{\rm I}}[k]}_{H_{{\rm I}}}+{f_{{\rm I}}[k]}^T\vec{U}_{{\rm I}}[k]\\
-                    \mathrm{s.t.}&&&  \bar{\Gamma}_{{\rm I}}\vec{U}_{{\rm I}}[k]\preceq\vec{\theta}_{{\rm I}}[k]:\vec{\lambda}_{{\rm I}}\\
-                    &&&\vec{U}_{{\rm I}}[k]\succeq\0
+                    \mathrm{s.t.}&&&  \vec{U}_{{\rm I}}[k]\succeq\0\\
+                                                                  &&&\bar{\Gamma}_{{\rm I}}\vec{U}_{{\rm I}}[k]\preceq{\color{theta_color}\vec{\theta}_{{\rm I}}[k]}:{\color{lambda_color}\vec{\lambda}_{{\rm I}}[k]}
                   \end{matrix}\label{eq:local_problem}
                 \end{equation}
               \end{minipage}
@@ -212,19 +217,19 @@
             minimum height=8.cm,
             ] (blockM) {
               \color{mpc_agent_foreground}
-\eqref{eq:local_problem}
+              \eqref{eq:local_problem}
 
               % \small
               % \begin{minipage}{23cm}
               %   \begin{equation}
               %     \begin{matrix}
-              %       \underset{\vec{U}_{M}[k]}{\mathrm{minimize}}&&\small &\frac{1}{2} \norm{\vec{U}_{M}[k]}_{H_{M}}+{f_{M}[k]}^T\vec{U}_{M}[k]\\
-              %       \mathrm{subject~ to}&&&  \bar{\Gamma}_{M}\vec{U}_{M}[k]\preceq\vec{\theta}_{M}[k]:\vec{\lambda}_{M}\\
-              %       &&&\vec{U}_{M}[k]\succeq\0
-              %     \end{matrix}\tag{\ref{eq:local_problem}}
-                  % \hspace{10pt minus 1fil}
-              %   \end{equation}
-              % \end{minipage}
+                      %                       \underset{\vec{U}_{M}[k]}{\mathrm{minimize}}&&\small &\frac{1}{2} \norm{\vec{U}_{M}[k]}_{H_{M}}+{f_{M}[k]}^T\vec{U}_{M}[k]\\
+                      %                       \mathrm{subject~ to}&&&  \bar{\Gamma}_{M}\vec{U}_{M}[k]\preceq\vec{\theta}_{M}[k]:\vec{\lambda}_{M}\\
+                      %                                                                                           &&&\vec{U}_{M}[k]\succeq\0
+                                                                                                                      %                     \end{matrix}\tag{\ref{eq:local_problem}}
+                                                                                                                      %                     \hspace{10pt minus 1fil}
+                                                                                                                      %                                                                                                                       \end{equation}
+                                                                                                                      %                                                                                                                       \end{minipage}
             };
 
             \node[
@@ -253,23 +258,23 @@
               \centering
               \large
               Update $\vec{\theta}_{i}$ using past $\vec{\theta}_{i}$ and all $\vec{\lambda}_{i}$
-              % \begin{minipage}{30cm}
-              %   \begin{equation} \label{eq:negotiation}
-              %     \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p)
-              %   \end{equation}
-              % \end{minipage}
+                                                                                                                      %                                                                                                                       \begin{minipage}{30cm}
+                                                                                                                      %                                                                                                                       \begin{equation} \label{eq:negotiation}
+                                                                                                                      %                                                                                                                       \vec{\theta}[k]\pplusone=\Proj^{\set{S}}(\vec{\theta}[k]\p+\rho\p\vec{\lambda}[k]\p)
+                                                                                                                      %                                                                                                                       \end{equation}
+                                                                                                                      %                                                                                                                       \end{minipage}
             };
             % \node at ($(coordinator)+(.75,0)$) {};
             % \node[align=center,above=3.cm of mult] { Primal decomposition dMPC};
 
             % \draw[-latex,line width=9pt,red] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\tilde{\vec{\lambda}}_{1}[k]$ \faUserSecret};
-            \draw[-latex,line width=9pt] (block1.south)+(1,.0) -- ( coordinator.north -| {$(block1.south)+(1,.0)$}) node [right,midway] {$\vec{\lambda}_{1}[k]$};
-            \draw[latex-,line width=9pt] (block1.south)+(-1,0) -- (  coordinator.north -| {$(block1.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{1}[k]$};
+            \draw[-latex,line width=9pt,lambda_color] (block1.south)+(4,.0) -- ( coordinator.north -| {$(block1.south)+(4,.0)$}) node [right,midway] {$\vec{\lambda}_{1}[k]$};
+            \draw[latex-,line width=9pt,theta_color] (block1.south)+(-0,0) -- (  coordinator.north -| {$(block1.south)+(-0,0)$}) node [left,midway] {$\vec{\theta}_{1}[k]$};
 
-            \draw[-latex,line width=9pt] (blockM.south)+(1,.0) -- ( coordinator.north -| {$(blockM.south)+(1,.0)$}) node [right,midway] {$\vec{\lambda}_{M}[k]$};
-            \draw[latex-,line width=9pt] (blockM.south)+(-1,0) -- (  coordinator.north -| {$(blockM.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{M}[k]$};
+            \draw[-latex,line width=9pt,lambda_color] (blockM.south)+(1,.0) -- ( coordinator.north -| {$(blockM.south)+(1,.0)$}) node [right,midway] {$\vec{\lambda}_{M}[k]$};
+            \draw[latex-,line width=9pt,theta_color] (blockM.south)+(-1,0) -- (  coordinator.north -| {$(blockM.south)+(-1,0)$}) node [left,midway] {$\vec{\theta}_{M}[k]$};
           \end{tikzpicture}
-          }
+        }
       \end{minipage}
       \begin{minipage}[c]{0.2\textwidth}
         \centering
@@ -280,145 +285,148 @@
     \end{block}
   \end{textblock}
 
-\def\secrow{-2.8}
-\def\seccol{5.25}
-\def\thirdcol{10.5}
+  \def\secrow{-2.8}
+  \def\seccol{5.25}
+  \def\thirdcol{10.5}
 
-\begin{textblock}{5.1}(0,\secrow)
-  \begin{block}{2. Attack and consequences}
-    \begin{center}
-      \begin{minipage}[c]{.95\textwidth}
-        \begin{itemize}
-          \item $\vec{\lambda}_{i}$ is the dissatisfaction of $i$ to allocation $\vec{\theta}_{i}$
-          \item Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
-          \item $\uparrow$ dissatisfaction == $\uparrow$ allocation
-        \end{itemize}
+  \begin{textblock}{5.1}(0,\secrow)
+    \begin{block}{2. Attack and consequences}
+      \begin{center}
+        \begin{minipage}[c]{.95\textwidth}
+          \begin{itemize}
+            \item $\vec{\lambda}_{i}$ is the dissatisfaction of $i$ to allocation $\vec{\theta}_{i}$
+            \item Attacker increases $\vec{\lambda}_{i}$ using function $\gamma(\cdot)$
+            \item $\uparrow$ dissatisfaction == $\uparrow$ allocation
+          \end{itemize}
+          \vskip .5cm
+          \textbf{\textit{Remark}}\\
+          {\color{ietr_brightblue} Attacker says it is satisfied  \underline{\bf only when it is}}
+          \\\textbf{\textit{Assumption}}
+          % \begin{assumption}\label{ass:linear_cheating}
+          \\Attacker chooses an {\color{ietr_brightblue}\emph{invertible}} \emph{linear function}
+          \begin{equation*}\label{eq:cheating}
+            \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
+          \end{equation*}
+          % $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
+          % \end{assumption}
+          \begin{center}
+            \begin{tikzpicture}
+              \node (effects) at (0,0) {
+                \begin{minipage}{\textwidth}
+                  \begin{itemize}
+                    \item Effects of cheating matrix $T_{i}[k]$
+                          \begin{itemize}
+                            \item Increase on global objective
+                            \item Destabilization
+                          \end{itemize}
+                  \end{itemize}
+                  \vskip 1cm
+                  \begin{center}
+                    {\color{ietr_brightblue} \Large Example $T_{1}[k]=\tau_{1}I$}
+                  \end{center}
+                \end{minipage}
+              };
+
+              \node[below=.01cm of effects] (figure) {
+                \begin{minipage}{\textwidth}
+                  \begin{figure}[h]
+                    \centering
+                    \includegraphics[width=23cm]{../img/changeOfJ.pdf}
+                    % \caption{}
+                  \end{figure}
+                \end{minipage}
+              };
+              \draw[line width=.5cm,red,latex-] (10.5,-10) -- (10,-5.5) node[above] {Unstable};
+              \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-11.5) {};
+              \draw[line width=.2cm,blue,latex-] (circle) -- (-8,-19.5) node[below] {Optimal objective};
+            \end{tikzpicture}
+            \\[.8ex]
+            {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
+            \\[0.5ex]
+            {YES! If we estimate $T_{i}[k]$ and invert it}
+            \\[0.5ex]
+            {But how?}
+          \end{center}
+        \end{minipage}
         \vskip .5cm
-        \textbf{\textit{Remark}}\\
-        {\color{ietr_brightblue} Attacker says it is satisfied  \underline{\bf only when it is}}
-        \\\textbf{\textit{Assumption}}
-        % \begin{assumption}\label{ass:linear_cheating}
-        \\Attacker chooses an {\color{ietr_brightblue}\emph{invertible}} \emph{linear function}
-        \begin{equation*}\label{eq:cheating}
-          \tilde{\lambdai}=\gamma_{i}(\vec{\lambda}_{i})=\Tik\vec{\lambda}_{i},
-        \end{equation*}
-        % $\tilde{\vec{\lambda}}_{i}=\0$ only if $\vec{\lambda}_{i}=\0$ $\rightarrow$ $T_{i}[k]$ is invertible.
-        % \end{assumption}
-        \begin{center}
-          \begin{tikzpicture}
-            \node (effects) at (0,0) {
-              \begin{minipage}{\textwidth}
-                \begin{itemize}
-                  \item Effects of cheating matrix $T_{i}[k]$
-                        \begin{itemize}
-                          \item Increase on global objective
-                          \item Destabilization
-                        \end{itemize}
-                \end{itemize}
-                \vskip 1cm
-                \begin{center}
-                  {\color{ietr_brightblue} \Large Example $T_{1}[k]=\tau_{1}I$}
-                \end{center}
-              \end{minipage}
-            };
+      \end{center}
+    \end{block}
+  \end{textblock}
 
-            \node[below=.01cm of effects] (figure) {
-              \begin{minipage}{\textwidth}
-                \begin{figure}[h]
-                  \centering
-                  \includegraphics[width=23cm]{../img/changeOfJ.pdf}
-                  % \caption{}
-                \end{figure}
-              \end{minipage}
-            };
-            \draw[line width=.5cm,red,latex-] (10.5,-10) -- (10,-5.5) node[above] {Unstable};
-            \node[draw,circle,minimum width=2cm,line width=.2cm,blue] (circle) at (-4.8,-11.5) {};
-            \draw[line width=.2cm,blue,latex-] (circle) -- (-8,-19.5) node[below] {Optimal objective};
-          \end{tikzpicture}
-        \\[.8ex]
-        {\Large \color{ietr_brightblue}\textbf{Can we mitigate the effects?}}
-        \\[0.5ex]
-        {YES! If we estimate $T_{i}[k]$ and invert it}
-        \\[0.5ex]
-        {But how?}
-        \end{center}
-      \end{minipage}
-    \end{center}
-  \end{block}
-\end{textblock}
-
-\begin{textblock}{5.1}(\seccol,\secrow)
-  \begin{block}{3. Estimating cheating matrix $T_{i}[k]$}
-    \begin{center}
-      \centering
-      \begin{minipage}[c]{.95\textwidth}
-        Local problems~\eqref{eq:local_problem} are {\bf QP}
-        \\{\bf Explicit Solution} with {\bf PWA form w.r.t $\vec{\theta}_{i}$}:
-        \begin{equation}
-          \centering
-          \begin{aligned}\label{eq:lambdafuntheta}
-            \lambdaik=
-            -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
-          \end{aligned}
-        \end{equation}
-        with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
-        \\\textbf{\textit{Remark}}\\
-        % \begin{remark}\label{rmk:p_constant}
+  \begin{textblock}{5.1}(\seccol,\secrow)
+    \begin{block}{3. Estimating cheating matrix $T_{i}[k]$}
+      \begin{center}
+        \centering
+        \begin{minipage}[c]{.95\textwidth}
+          Local problems~\eqref{eq:local_problem} are {\bf QP}
+          \\{\bf Explicit Solution} with {\bf PWA form w.r.t $\vec{\theta}_{i}$}:
+          \begin{equation}
+            \centering
+            \begin{aligned}\label{eq:lambdafuntheta}
+              \lambdaik=
+              -P_{i}^{n}\thetaik-\vec{s}_{i}^{n}[k]\text{, if}\ G_{i}^{n}[k]\thetaik \preceq \vec{b}_{i}^{n}[k]
+            \end{aligned}
+          \end{equation}
+          with $n\in\{1\until N\}$. $G_{i}^{n}[k]$ and $\vec{b}_{i}^{n}[k]$ define regions.
+          \\\textbf{\textit{Remark}}\\
+          % \begin{remark}\label{rmk:p_constant}
           {\color{ietr_brightblue} Sensibilities $P^{n}_{i}$  are \underline{\textbf{time invariant}}.}
-        % \end{remark}
-        \vspace{1cm}\\
-        \textbf{\textit{Another assumption}}\\
+          % \end{remark}
+          \vspace{1cm}\\
+          \textbf{\textit{Another assumption}}\\
           In Region 1 \textbf{local constraints are active}:
           \begin{equation}
             \vec{\lambda}_{i}[k]=-P_{i}^{1}\thetaik-\vec{s}_{i}^{1}[k]\text{, if}\ G_{i}^{1}[k]\thetaik \preceq \vec{b}_{i}^{1}[k]
           \end{equation}
           % \mbox{with ${P_{i}^{1}={(\bar{\Gamma}_{i}H_{i}^{-1}\bar{\Gamma}_{i}\T)}^{-1}}$ and ${\vec{s}_{i}^{1}[k]=P_{i}^{1}\bar{\Gamma}_{i}H_{i}^{-1}\fik}$.}
-        % \end{assumption}
-        % \begin{assumption}
+          % \end{assumption}
+          % \begin{assumption}
           and ${\vec{\theta}_{i}=\0}$ belongs to it
-        % \end{assumption}
-        \vskip 1.5cm
-        Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$
-        \vskip 1cm
-        If we can know {\bf nominal} $\bar{P}_{i}^{1}$, \\by estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
-        \begin{equation}
-          \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
-        \end{equation}
-        \vskip 1cm
-        {\color{ietr_brightblue} {\large \textbf{But how can we estimate the ${P}_{i}^{1}[k]$?}}}
-        \vskip .5cm
-        Enter Expectation Maximization
+          % \end{assumption}
+          \vskip 1.5cm
+          Attacker {\bf modifies sensibility} ${\tilde{P}_{i}[k]=T_{i}[k]\bar{P}_{i}}$\\
+          and ${\tilde{\vec{s}}_{i}[k]=T_{i}[k]\vec{s}_{i}[k]}$
+          \vskip .5cm
+          If we can know {\bf nominal} $\bar{P}_{i}^{1}$, \\by estimating ${\tilde{P}_{i}[k]}$, we can find ${T_{i}[k]}^{-1}$:
+          \begin{equation}
+            \widehat{{T_{i}[k]}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}[k]}}^{-1}
+          \end{equation}
+          \vskip 1cm
+          {\color{ietr_brightblue} {\large \textbf{But how can we estimate the $\tilde{P}_{i}^{1}[k]$?}}}
+          \vskip .5cm
+          Enter Expectation Maximization
+          \begin{itemize}
+            \item Classify data in regions (latent variables)
+            \item Estimates parameters using weighted LS
+          \end{itemize}
+          \vskip 1.cm
+          EM needs minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
+        \end{minipage}
         \begin{itemize}
-          \item Classify data in regions (latent variables)
-          \item Estimates parameters using weighted LS
+          \item \raisebox{-.5ex}{\begin{tikzpicture} \node[anchor=north,line width=1.5pt, inner sep=0pt, outer sep=0pt] (estimation) {During negotiation}; \draw[-,red] (estimation.east) -- (estimation.west);\end{tikzpicture}} (time dependence)
+          \item Solution: estimate in a separate phase
+                \begin{itemize}
+                  \item Generate independent points near $\vec{\theta}_{i}=\0$
+                        \begin{itemize}
+                          \item[] Artificial Scarcity Sampling
+                        \end{itemize}
+                \end{itemize}
         \end{itemize}
-        \vskip 1.cm
-        EM needs minimally excited inputs $\vec{\theta}_{i}$ and $\tilde{\vec{\lambda}}_{i}$.
-      \end{minipage}
-      \begin{itemize}
-        \item \raisebox{-.5ex}{\begin{tikzpicture} \node[anchor=north,line width=1.5pt, inner sep=0pt, outer sep=0pt] (estimation) {During negotiation}; \draw[-,red] (estimation.east) -- (estimation.west);\end{tikzpicture}} (time dependence)
-        \item Solution: estimate in a separate phase
-              \begin{itemize}
-                \item Generate independent points near $\vec{\theta}_{i}=\0$
-                      \begin{itemize}
-                        \item[] Artificial Scarcity Sampling
-                      \end{itemize}
-              \end{itemize}
-      \end{itemize}
-    \end{center}
-        \vskip 1.5cm
-  \end{block}
-\end{textblock}
+      \end{center}
+      \vskip 0.9cm
+    \end{block}
+  \end{textblock}
 
-    \begin{textblock}{5.1}(10.5,\secrow)
-      \begin{block}{4. Expectation Maximization }
+  \begin{textblock}{5.1}(10.5,\secrow)
+    \begin{block}{4. Expectation Maximization }
       \begin{center}
-\begin{minipage}[c]{0.95\linewidth}
+        \begin{minipage}[c]{0.95\linewidth}
           \begin{itemize}
             \item Regions are indexed by ${z\in\set{Z}=\{1\until Z\}}$
             \item Gaussian mixture (mean~\eqref{eq:lambdafuntheta} and ${\Sigma\to0}$)
             \item Parameters ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
             \item Observations ${o\in\set{O}=\{1\until O\}}$ of $(\vec{\theta}_{i},\vec{\lambda}_{i})$
+                  stacked as $(\random{\Theta},\random{\Lambda})$ with corresponding $\random{Z}$
           \end{itemize}
           \vspace{.5cm}
           \SetKwBlock{Estep}{ E step:}{}
@@ -426,10 +434,10 @@
           \begin{algorithm2e}[h]
             \DontPrintSemicolon%
             Initialize parameters $\set{P}_{\mathrm{new}}$\;
-            \Repeat{$\set{P}_{\mathrm{cur}}$ converges to a local maximum}{
+            \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
               $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
               \Estep{
-                Evaluate $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$\;
+                Evaluate $\zeta_{zo}(\set{P}_{\mathrm{cur}})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}_{\mathrm{cur}}}$\;
               }
               \Mstep{
                 Reestimate parameters using:
@@ -441,7 +449,9 @@
             }
             \caption{Expectation Maximization}\label{alg:em}
           \end{algorithm2e}
-        \end{minipage}      \end{center}
+        \end{minipage}
+      \end{center}
+      \vskip -1cm
     \end{block}
   \end{textblock}
 
@@ -452,26 +462,26 @@
   %       \begin{minipage}[c]{.95\textwidth}
   %         If $\mathfrak{D}_{i}=0$, no attack:
   %         \begin{itemize}
-  %           \item we can use the $\vec{\lambda}_{i}$ received
-  %         \end{itemize}
-  %         If $\mathfrak{D}_{i}=1$, $\vec{\lambda}_{i}$ received is \textbf{corrupted} $\to$ \textbf{\color{red} attack}
-  %         \begin{itemize}
-  %           \item Estimate $T_{i}^{-1}$:
-  %                 \begin{equation}
-  %                   \widehat{{T_{i}(k)}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}}[k]}^{-1}
-  %                 \end{equation}
-  %           \item Reconstruct $\vec{\lambda}_{i}$:
-  %                 \begin{equation}
-  %                   \label{eq:lambda_reconstruction}
-  %                   {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
-  %                 \end{equation}
-  %         \end{itemize}
-  %       \end{minipage}
-  %     \end{center}
-  %   \end{block}
-  % \end{textblock}
+                    %               \item we can use the $\vec{\lambda}_{i}$ received
+                    %             \end{itemize}
+                    %                     If $\mathfrak{D}_{i}=1$, $\vec{\lambda}_{i}$ received is \textbf{corrupted} $\to$ \textbf{\color{red} attack}
+                    %                     \begin{itemize}
+                    %               \item Estimate $T_{i}^{-1}$:
+                    %                     \begin{equation}
+                    %                     \widehat{{T_{i}(k)}^{-1}}=\bar{P}_{i}^{1}{\widehat{\tilde{P}_{i}^{1}}[k]}^{-1}
+                    %                     \end{equation}
+                    %               \item Reconstruct $\vec{\lambda}_{i}$:
+                    %                     \begin{equation}
+                    %                     \label{eq:lambda_reconstruction}
+                    %                     {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
+                    %                     \end{equation}
+                    %             \end{itemize}
+                    %                     \end{minipage}
+                    %                     \end{center}
+                    %                     \end{block}
+                    %                     \end{textblock}
 
-  \begin{textblock}{5.1}(\thirdcol,1.17)
+  \begin{textblock}{5.1}(\thirdcol,1.19)
     \begin{block}{5. Secure dMPC}
       \begin{center}
         \begin{minipage}[c]{.965\textwidth}
@@ -484,81 +494,25 @@
                           \begin{itemize}
                             \item Artificial Scarcity Sampling + EM
                           \end{itemize}
-            \item Detect attack if $\|\widehat{\tilde{P}_{i}^{1}}[k]-\bar{P}_{i}^{1}\|_{F}\geq\epsilon_{P}$
+                    \item Detect attack if $\|\widehat{\tilde{P}_{i}^{1}}[k]-\bar{P}_{i}^{1}\|_{F}\geq\epsilon_{P}$
                   \end{enumerate}
-                  \item {\bf Negotiation Phase}
+            \item {\bf Negotiation Phase}
                   \begin{enumerate}
                     \item If detected reconstruct $\vec{\lambda}_{i}$
-                  \begin{equation}
-            \label{eq:lambda_reconstruction}
-            {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
-          \end{equation}
-            \item Use adequate $\lambda_{i}$ to update $\theta_{i}$
+                          \begin{equation}
+                            \label{eq:lambda_reconstruction}
+                            {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
+                          \end{equation}
+                    \item Use adequate $\lambda_{i}$ to update $\theta_{i}$
                   \end{enumerate}
           \end{enumerate}
-      %     \vspace{1cm}
-      % \SetKwBlock{negotPhase}{ Negotiation Phase:}{}
-      % \SetKwBlock{detectPhase}{ Detection Phase:}{}
-      %   \begin{algorithm2e}[h]
-      %     \DontPrintSemicolon
-      %     \detectPhase{
-      %       Coordinator sends sequence of $\vec{\theta}_{i}^{o}$, $o\in\set{O}$ \;
-      %       Agents solve~\eqref{eq:local_problem}, and send $\tilde{\vec{\lambda}}^{o}_{i}$, $o\in\set{O}$\;
-      %       Coordinator estimates $\widehat{\tilde{P}_{i}^{1}}[k]$ with \EM{} Alg.~\ref{alg:em}\;
-      %       Coordinator computes $\mathfrak{D}_{i}$ using~\eqref{eq:2}\;
-      %     }
-      %     \negotPhase{
-      %       Apply P.D. with adequate versions of $\vec{\lambda}_{i}\p$:\;
-      %       \quad$\tilde{\vec{\lambda}}_{i}\p$, if $\mathfrak{D}_{i}=0$ and ${\vec{\lambda}_{i}}_{\mathrm{rec}}$, if ${\mathfrak{D}_{i}=1}$~\eqref{eq:lambda_reconstruction}\;
-      %     }
-      %     Apply first control in all agents
-      %     \caption{Modified negotiation.}\label{alg:safeDMPC}
-      %   \end{algorithm2e}
-      %   \vspace{.5cm}
-      \end{minipage}
+        \end{minipage}
       \end{center}
     \end{block}
   \end{textblock}
 
-  % \begin{textblock}{5.1}(\thirdcol,-.075)
-  %   \begin{block}{7. Expectation Maximization}
-  %     \begin{center}
-  %       \begin{minipage}[c]{0.95\linewidth}
-  %         \begin{itemize}
-  %           \item Each zone has a different ${z\in\set{Z}=\{1\until Z\}}$
-  %           \item Gaussian mixture (mean~\eqref{eq:lambdafuntheta} and ${\Sigma\to0}$)
-  %           \item Parameters ${\set{P}=\setbuild{\set{P}^{z}}{z\in\set{Z}}}$, with ${\set{P}^{z}=(\tilde{P}^{z},\tilde{\vec{s}}^{z},\pi^{z})}$.
-  %           \item Generate $O$ observations close to $\0$
-  %         \end{itemize}
-  %         \vspace{1.cm}
-  %         \SetKwBlock{Estep}{ E step:}{}
-  %         \SetKwBlock{Mstep}{ M step:}{}
-  %         \begin{algorithm2e}[h]
-  %           \DontPrintSemicolon%
-  %           Initialize parameters $\set{P}_{\mathrm{new}}$\;
-  %           \Repeat{$\set{P}_{\mathrm{cur}}$ converges}{
-  %             $\set{P}_{\mathrm{cur}}\gets\set{P}_{\mathrm{new}}$\;
-  %             \Estep{
-  %               Evaluate $\zeta_{zo}(\set{P})=\probability{\random{z}_{o}=z|\randomvec{\lambda}_{o},\randomvec{\theta}_{o};\set{P}}$\;
-  %             }
-  %             \Mstep{
-  %               Reestimate parameters using:
-  %               \begin{equation*}
-  %                 \set{P}_{\mathrm{new}}=\arg\underset{\set{P}}{\max\!.}\
-  %                 \expectation[{\zeta_{zo}(\set{P}_{\mathrm{cur}})}]{\ln\probability{\random{\Theta},\random{\Lambda},\random{Z};\set{P}}}
-  %               \end{equation*}
-  %             }
-  %           }
-  %           \caption{Expectation Maximization}\label{alg:em}
-  %         \end{algorithm2e}
-  %       \end{minipage}
-  %     \end{center}
-  %   \end{block}
-  % \end{textblock}
-
-
   \begin{textblock}{15.6}(.0,3.9)
-    \begin{block}{6. Example: distributed control for a heating network under power scarcity }
+    \begin{block}{6. Example: Control of a heating network under power scarcity - 3 Scenarios (Nominal, Selfish, + Correction)}
       \small
       \begin{minipage}[c]{27cm}
         \centering
@@ -612,14 +566,14 @@
         % \begin{table}[h]
         %   \caption{Objective functions $J_{i}$ (\% error)}\label{tab:costsGlobalLocal}
         %   \begin{tabular}[t]{cccc}
-        %     \toprule
-        %     Agent  & Nominal & Selfish & + Correction\\
-        %     \midrule
-        %     \input{../article/table_costs_all_rooms_error.tex}\\
-        %     % % \input{table_costs_only_global.tex}\\
-        %     \bottomrule
-        %   \end{tabular}
-        % \end{table}
+              %               \toprule
+              %               Agent  & Nominal & Selfish & + Correction\\
+              %               \midrule
+              %               \input{../article/table_costs_all_rooms_error.tex}\\
+              %     % %               \input{table_costs_only_global.tex}\\
+              %               \bottomrule
+              %             \end{tabular}
+              %               \end{table}
         \begin{figure}[h]
           \includegraphics[width=\textwidth]{../img/barplot_results_poster.pdf}
         \end{figure}
@@ -628,19 +582,19 @@
       \begin{minipage}[c]{52cm}
         \begin{tikzpicture}
           \node[] (figure) {
-      \begin{minipage}[c]{26cm}
-        \begin{figure}[h]
-          \includegraphics[width=\textwidth]{../img/airtemp_roomI/__ErrorWX_command_normErrH_poster.pdf}
-          \caption{\centering Air temperature in houses $\rm I$ and $\rm II$.}\label{fig:response3Scenarios}
-        \end{figure}%
-      \end{minipage}
-      \hfill
-      \begin{minipage}[c]{26cm}
-        \begin{figure}[h]
-          \includegraphics[width=\textwidth]{../img/airtemp_roomI/control_poster.pdf}
-          \caption{\centering Control applied in all houses for the 3 scenarios.}\label{fig:control_3Scenarios}
-        \end{figure}
-      \end{minipage}
+            \begin{minipage}[c]{26cm}
+              \begin{figure}[h]
+                \includegraphics[width=\textwidth]{../img/airtemp_roomI/__ErrorWX_command_normErrH_poster.pdf}
+                \caption{\centering Air temperature in houses $\rm I$ and $\rm II$.}\label{fig:response3Scenarios}
+              \end{figure}%
+            \end{minipage}
+            \hfill
+            \begin{minipage}[c]{26cm}
+              \begin{figure}[h]
+                \includegraphics[width=\textwidth]{../img/airtemp_roomI/control_poster.pdf}
+                \caption{\centering Control applied in all houses for the 3 scenarios.}\label{fig:control_3Scenarios}
+              \end{figure}
+            \end{minipage}
           };
           \node[align=center,red] (attack) at (0,-7.) {\large \faFlash\\\large Attack };
           \draw[line width=.275cm,red,latex-] (-12.,-3.0) -- (attack.west) ;
