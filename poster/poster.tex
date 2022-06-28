@@ -143,7 +143,7 @@
             \draw[latex-,line width=5pt] (house1) -- (medium.center);
             \draw[latex-,line width=5pt] (house2) -- (medium.center);
             \draw[latex-,line width=5pt] (house3) -- (medium.center);
-            \draw[latex-,line width=5pt] (house4) -- (medium.center) node[above,midway] {\LARGE $\Gamma_{i}\vec{U}_{i}$};
+            \draw[latex-,line width=5pt] (house4) -- (medium.center) node[above,midway] {\LARGE $\Gamma_{i}\vec{U}_{i}[k]$};
             \draw[color=black,fill=mpc_coordinator,] (medium) circle [radius=.5cm];
 
             \node[latex-,line width=7pt] at ($(house4) +(-5,3)$) {\huge $J_{i}$};
@@ -187,9 +187,9 @@
               \begin{minipage}{22cm}
                 \begin{equation}
                   \begin{matrix}
-                    \underset{\vec{U}_{{\rm I}}[k]}{\mathrm{min.}}&&\small &\frac{1}{2} \norm{\vec{U}_{{\rm I}}[k]}_{H_{{\rm I}}}+{f_{{\rm I}}[k]}^T\vec{U}_{{\rm I}}[k]\\
-                    \mathrm{s.t.}&&&  \vec{U}_{{\rm I}}[k]\succeq\0\\
-                                                                  &&&\bar{\Gamma}_{{\rm I}}\vec{U}_{{\rm I}}[k]\preceq{\color{theta_color}\vec{\theta}_{{\rm I}}[k]}:{\color{lambda_color}\vec{\lambda}_{{\rm I}}[k]}
+                    \underset{\vec{U}_{{1}}[k]}{\mathrm{min.}}&&\small &\frac{1}{2} \norm{\vec{U}_{{1}}[k]}_{H_{{1}}}+{f_{{1}}[k]}^T\vec{U}_{{1}}[k]\\
+                    \mathrm{s.t.}&&&  \vec{U}_{{1}}[k]\succeq\0\\
+                                                                  &&&\bar{\Gamma}_{{1}}\vec{U}_{{1}}[k]\preceq{\color{theta_color}\vec{\theta}_{{1}}[k]}:{\color{lambda_color}\vec{\lambda}_{{1}}[k]}
                   \end{matrix}\label{eq:local_problem}
                 \end{equation}
               \end{minipage}
