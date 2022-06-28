@@ -490,11 +490,11 @@
           \begin{enumerate}
             \item {\bf Detection Phase}
                   \begin{enumerate}
-                    \item Estimate sensibility $\widehat{\tilde{P}_{i}^{1}}[k]$
+                    \item Estimate sensibility $\widehat{\tilde{P}_{i}^{1}[k]}$
                           \begin{itemize}
                             \item Artificial Scarcity Sampling + EM
                           \end{itemize}
-                    \item Detect attack if $\|\widehat{\tilde{P}_{i}^{1}}[k]-\bar{P}_{i}^{1}\|_{F}\geq\epsilon_{P}$
+                    \item Detect attack if $\|\widehat{\tilde{P}_{i}^{1}[k]}-\bar{P}_{i}^{1}\|_{F}\geq\epsilon_{P}$
                   \end{enumerate}
             \item {\bf Negotiation Phase}
                   \begin{enumerate}
@@ -503,7 +503,7 @@
                             \label{eq:lambda_reconstruction}
                             {\vec{\lambda}_{i}}_{\mathrm{rec}}=\widehat{{T_{i}[k]}^{-1}} \tilde{\vec{\lambda}_{i}}
                           \end{equation}
-                    \item Use adequate $\lambda_{i}$ to update $\theta_{i}$
+                    \item Use adequate $\vec{\lambda}_{i}$ to update $\vec{\theta}_{i}$
                   \end{enumerate}
           \end{enumerate}
         \end{minipage}
